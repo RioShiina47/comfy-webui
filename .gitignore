@@ -22,9 +22,3 @@ gradio_cached_examples/
 .idea/
 .DS_Store
 Thumbs.db
-
-# Comfy web UI
-ComfyUI/
-ComfyUI_3D/
-frontend/custom/
-output/
