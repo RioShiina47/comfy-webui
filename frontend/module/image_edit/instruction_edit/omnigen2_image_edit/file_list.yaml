@@ -1,0 +1,16 @@
+file: 
+  diffusion_models: 
+    - filename: "omnigen2_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Omnigen2_ComfyUI_repackaged"
+      repository_file_path: "split_files/diffusion_models/omnigen2_fp16.safetensors"  
+  text_encoders: 
+    - filename: "qwen_2.5_vl_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Omnigen2_ComfyUI_repackaged"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_fp16.safetensors"  
+  vae: 
+    - filename: "ae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
+      repository_file_path: "split_files/vae/ae.safetensors"

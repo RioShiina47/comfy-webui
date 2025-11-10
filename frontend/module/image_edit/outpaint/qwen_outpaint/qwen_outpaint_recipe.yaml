@@ -1,0 +1,139 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Qwen UNET"
+    params:
+      unet_name: "qwen_image_fp8_e4m3fn.safetensors"
+      weight_dtype: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load Qwen VAE"
+    params:
+      vae_name: "qwen_image_vae.safetensors"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load Qwen CLIP"
+    params:
+      clip_name: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      type: "qwen_image"
+  lora_loader:
+    class_type: LoraLoaderModelOnly
+    title: "Load Qwen Lightning LoRA"
+    params:
+      lora_name: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+      strength_model: 1.0
+  controlnet_loader:
+    class_type: ControlNetLoader
+    title: "Load Qwen Inpaint ControlNet"
+    params:
+      control_net_name: "Qwen-Image-InstantX-ControlNet-Inpainting.safetensors"
+
+  load_image:
+    class_type: LoadImage
+    title: "Load Base Image"
+  pad_for_outpaint:
+    class_type: ImagePadForOutpaint
+    title: "Pad Image for Outpainting"
+
+  pos_prompt_encoder:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt_encoder:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
+
+  cn_inpaint_apply:
+    class_type: ControlNetInpaintingAliMamaApply
+    title: "ControlNet Inpainting Apply"
+    params:
+      strength: 1.0
+      start_percent: 0.0
+      end_percent: 1.0
+
+  vae_encode:
+    class_type: VAEEncode
+    title: "VAE Encode Padded Image"
+
+  model_sampler:
+    class_type: ModelSamplingAuraFlow
+    title: "Model Sampler (AuraFlow)"
+    params:
+      shift: 3.1
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 8
+      cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
+
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  save_image:
+    class_type: SaveImage
+    title: "Save Image"
+
+connections:
+  - from: "unet_loader:0"
+    to: "lora_loader:model"
+  - from: "lora_loader:0"
+    to: "model_sampler:model"
+
+  - from: "load_image:0"
+    to: "pad_for_outpaint:image"
+
+  - from: "clip_loader:0"
+    to: "pos_prompt_encoder:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt_encoder:clip"
+
+  - from: "pos_prompt_encoder:0"
+    to: "cn_inpaint_apply:positive"
+  - from: "neg_prompt_encoder:0"
+    to: "cn_inpaint_apply:negative"
+  - from: "controlnet_loader:0"
+    to: "cn_inpaint_apply:control_net"
+  - from: "vae_loader:0"
+    to: "cn_inpaint_apply:vae"
+  - from: "pad_for_outpaint:0"
+    to: "cn_inpaint_apply:image"
+  - from: "pad_for_outpaint:1"
+    to: "cn_inpaint_apply:mask"
+
+  - from: "pad_for_outpaint:0"
+    to: "vae_encode:pixels"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+    
+  - from: "model_sampler:0"
+    to: "ksampler:model"
+  - from: "cn_inpaint_apply:0"
+    to: "ksampler:positive"
+  - from: "cn_inpaint_apply:1"
+    to: "ksampler:negative"
+  - from: "vae_encode:0"
+    to: "ksampler:latent_image"
+
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_decode:0"
+    to: "save_image:images"
+
+ui_map:
+  input_image: "load_image:image"
+  
+  left: "pad_for_outpaint:left"
+  top: "pad_for_outpaint:top"
+  right: "pad_for_outpaint:right"
+  bottom: "pad_for_outpaint:bottom"
+  feathering: "pad_for_outpaint:feathering"
+  
+  positive_prompt: "pos_prompt_encoder:text"
+  negative_prompt: "neg_prompt_encoder:text"
+  seed: "ksampler:seed"
+  filename_prefix: "save_image:filename_prefix"

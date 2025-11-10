@@ -1,0 +1,113 @@
+MAX_LORAS: 5
+MAX_CONTROLNETS: 5
+MAX_IPADAPTERS: 5
+MAX_EMBEDDINGS: 5
+MAX_STYLES: 5
+MAX_CONDITIONINGS: 10
+LORA_SOURCE_CHOICES: ["Civitai", "Custom URL", "File"]
+
+RESOLUTION_MAP:
+  neta-lumina:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  sdxl:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  omnigen2:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  sd35:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  sd15:
+    "1:1 (Square)": [512, 512]
+    "16:9 (Landscape)": [896, 512]
+    "9:16 (Portrait)": [512, 896]
+    "4:3 (Classic Landscape)": [683, 512]
+    "3:4 (Classic Portrait)": [512, 683]
+    "3:2 (Landscape)": [768, 512]
+    "2:3 (Portrait)": [512, 768]
+  flux:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  hidream:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  qwen-image:
+    "1:1 (Square)": [1328, 1328]
+    "16:9 (Landscape)": [1664, 928]
+    "9:16 (Portrait)": [928, 1664]
+    "4:3 (Classic)": [1472, 1104]
+    "3:4 (Classic Portrait)": [1104, 1472]
+    "3:2 (Photography)": [1536, 1024]
+    "2:3 (Photography Portrait)": [1024, 1536]
+  hunyuanimage:
+    "1:1 (Square)": [2048, 2048]
+    "16:9 (Landscape)": [2728, 1536]
+    "9:16 (Portrait)": [1536, 2728]
+    "4:3 (Classic)": [2368, 1776]
+    "3:4 (Classic Portrait)": [1776, 2368]
+    "3:2 (Photography)": [2504, 1672]
+    "2:3 (Photography Portrait)": [1672, 2504]
+  chroma1-radiance:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+  chroma1:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
+
+SAMPLER_MAP:
+  euler a: "euler_ancestral"
+  dpm++ 2s a: "dpmpp_2s_ancestral"
+  dpm++ 2m: "dpmpp_2m"
+  dpm++ sde: "dpmpp_sde"
+  dpm++ 2m sde: "dpmpp_2m_sde"
+  dpm++ 3m sde: "dpmpp_3m_sde"
+  ddim: "ddim"
+  uni_pc: "uni_pc"
+  euler_a: "euler_ancestral"
+  dpm++ 2s a karras: "dpmpp_2s_ancestral"
+  dpm++ 2m karras: "dpmpp_2m"
+  dpm++ sde karras: "dpmpp_sde"
+  dpm++ 2m sde karras: "dpmpp_2m_sde"
+  dpm++ 3m sde karras: "dpmpp_3m_sde"

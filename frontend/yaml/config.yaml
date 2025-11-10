@@ -1,0 +1,28 @@
+comfyui_path: "E:/symbolic_link/github.com/comfyanonymous/ComfyUI"
+
+comfyui_backends:
+  default: http://127.0.0.1:8188
+  3d_backend: http://127.0.0.1:8189
+
+# http_proxy: http://127.0.0.1:10808
+# https_proxy: http://127.0.0.1:10808
+
+# hf_cache_path: "E:/hf_cache"
+
+wait_for_all_backends: false
+
+developer_copy_workflow_to_clipboard: false
+
+developer_save_workflow_to_json: false
+
+civitai_api_key: ""
+huggingface_token: ""
+
+server_port: 7888
+enable_login: false
+login_credentials:
+  - username: 
+    password: 
+share_gradio: false
+
+auto_download_models: false

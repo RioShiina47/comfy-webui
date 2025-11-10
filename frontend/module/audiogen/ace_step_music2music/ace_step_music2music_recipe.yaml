@@ -1,0 +1,99 @@
+nodes:
+  ckpt_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+    params:
+      ckpt_name: "ace_step_v1_3.5b.safetensors"
+  
+  load_audio:
+    class_type: LoadAudio
+    title: "Load Input Audio"
+    
+  vae_encode_audio:
+    class_type: VAEEncodeAudio
+    title: "VAE Encode Input Audio"
+
+  text_encoder:
+    class_type: TextEncodeAceStepAudio
+    title: "Text Encoder (ACE Step)"
+  
+  negative_conditioning:
+    class_type: ConditioningZeroOut
+    title: "Negative Conditioning"
+    
+  model_sampler_sd3:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler"
+    params:
+      shift: 5.0
+      
+  tonemap_op:
+    class_type: LatentOperationTonemapReinhard
+    title: "Tonemap Reinhard Operation"
+    params:
+      multiplier: 1.0
+      
+  apply_tonemap:
+    class_type: LatentApplyOperationCFG
+    title: "Apply Tonemap to Model"
+
+  sampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 50
+      cfg: 5.0
+      sampler_name: "euler"
+      scheduler: "simple"
+      
+  vae_decode_audio:
+    class_type: VAEDecodeAudio
+    title: "VAE Decode Audio"
+    
+  save_audio:
+    class_type: SaveAudioMP3
+    title: "Save Audio MP3"
+    params: {}
+
+connections:
+  - from: "ckpt_loader:0"
+    to: "model_sampler_sd3:model"
+  - from: "model_sampler_sd3:0"
+    to: "apply_tonemap:model"
+  - from: "tonemap_op:0"
+    to: "apply_tonemap:operation"
+  
+  - from: "ckpt_loader:1"
+    to: "text_encoder:clip"
+  - from: "ckpt_loader:2"
+    to: "vae_encode_audio:vae"
+  - from: "ckpt_loader:2"
+    to: "vae_decode_audio:vae"
+
+  - from: "load_audio:0"
+    to: "vae_encode_audio:audio"
+  
+  - from: "text_encoder:0"
+    to: "negative_conditioning:conditioning"
+  
+  - from: "apply_tonemap:0"
+    to: "sampler:model"
+  - from: "text_encoder:0"
+    to: "sampler:positive"
+  - from: "negative_conditioning:0"
+    to: "sampler:negative"
+  - from: "vae_encode_audio:0"
+    to: "sampler:latent_image"
+
+  - from: "sampler:0"
+    to: "vae_decode_audio:samples"
+  - from: "vae_decode_audio:0"
+    to: "save_audio:audio"
+
+ui_map:
+  input_audio: "load_audio:audio"
+  tags: "text_encoder:tags"
+  lyrics: "text_encoder:lyrics"
+  denoise: "sampler:denoise"
+  seed: "sampler:seed"
+  filename_prefix: "save_audio:filename_prefix"

@@ -1,0 +1,87 @@
+# Huge preset: Includes a comprehensive set of nodes for full functionality (excluding 3D features).
+# The environment is determined by the collective requirements of all included nodes.
+
+FROM nvidia/cuda:12.9.0-devel-ubuntu24.04
+
+# Set non-interactive installation to avoid getting stuck during the build process.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+# Set environment variables to ensure PyTorch can find CUDA.
+ENV CPLUS_INCLUDE_PATH=/usr/local/cuda/include
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+# Suitable for RTX 30/40 series, please modify according to your GPU.
+ENV TORCH_CUDA_ARCH_LIST="8.9"
+
+# Update and install system dependencies.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+    git wget build-essential \
+    python3.12 python3.12-dev python3.12-venv python3-pip \
+    libsqlite3-dev libgl1 libglib2.0-0 libopengl0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# --- venv environment setup ---
+RUN python3.12 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PIP_FLAGS="--no-cache-dir"
+# --- venv environment setup end ---
+
+# Use pip from the venv.
+RUN pip install ${PIP_FLAGS} "torch==2.8.0" "torchvision" "torchaudio" "xformers" --index-url https://download.pytorch.org/whl/cu129
+
+# Install ComfyUI.
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
+RUN pip install ${PIP_FLAGS} -r requirements.txt
+
+# --- Custom node installation ---
+
+# ComfyUI-Manager
+RUN git clone https://github.com/Comfy-Org/ComfyUI-Manager.git custom_nodes/ComfyUI-Manager
+
+# ComfyUI_IPAdapter_plus
+RUN git clone https://github.com/cubiq/ComfyUI_IPAdapter_plus.git custom_nodes/ComfyUI_IPAdapter_plus
+
+# comfyui_controlnet_aux
+RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git custom_nodes/comfyui_controlnet_aux
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/comfyui_controlnet_aux/requirements.txt
+
+# ComfyUI-RMBG
+RUN git clone https://github.com/1038lab/ComfyUI-RMBG.git custom_nodes/ComfyUI-RMBG
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-RMBG/requirements.txt
+
+# ComfyUI-Upscaler-Tensorrt
+RUN git clone https://github.com/yuvraj108c/ComfyUI-Upscaler-Tensorrt.git custom_nodes/ComfyUI-Upscaler-Tensorrt
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-Upscaler-Tensorrt/requirements.txt
+
+# ComfyUI-Rife-Tensorrt
+RUN git clone https://github.com/yuvraj108c/ComfyUI-Rife-Tensorrt.git custom_nodes/ComfyUI-Rife-Tensorrt
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-Rife-Tensorrt/requirements.txt
+
+# ComfyUI-Depth-Anything-Tensorrt
+RUN git clone https://github.com/yuvraj108c/ComfyUI-Depth-Anything-Tensorrt.git custom_nodes/ComfyUI-Depth-Anything-Tensorrt
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-Depth-Anything-Tensorrt/requirements.txt
+
+# ComfyUI-Dwpose-Tensorrt
+RUN git clone https://github.com/yuvraj108c/ComfyUI-Dwpose-Tensorrt.git custom_nodes/ComfyUI-Dwpose-Tensorrt
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-Dwpose-Tensorrt/requirements.txt
+
+# comfyui-easy-use
+RUN git clone https://github.com/yolain/ComfyUI-Easy-Use.git custom_nodes/ComfyUI-Easy-Use
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-Easy-Use/requirements.txt
+
+# ComfyUI-QwenVL
+RUN git clone https://github.com/1038lab/ComfyUI-QwenVL.git custom_nodes/ComfyUI-QwenVL
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-QwenVL/requirements.txt
+
+# --- Custom node installation end ---
+
+
+# Expose port and set the startup command.
+EXPOSE 8188
+CMD ["python", "main.py", "--listen", "0.0.0.0", "--reserve-vram", "2.0", "--cache-none"]

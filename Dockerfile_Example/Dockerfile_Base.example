@@ -1,0 +1,55 @@
+# Base preset: Includes only the core ComfyUI and ComfyUI-Manager.
+# The environment is built to meet the latest official ComfyUI requirements.
+
+FROM nvidia/cuda:13.0.0-devel-ubuntu24.04
+
+# Set non-interactive installation to avoid getting stuck during the build process.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+# Set environment variables to ensure PyTorch can find CUDA.
+ENV CPLUS_INCLUDE_PATH=/usr/local/cuda/include
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+# Suitable for RTX 30/40 series, please modify according to your GPU.
+ENV TORCH_CUDA_ARCH_LIST="8.9"
+
+# Update and install system dependencies.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    software-properties-common \
+    && add-apt-repository ppa:deadsnakes/ppa \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+    git wget build-essential \
+    python3.13 python3.13-dev python3.13-venv python3-pip \
+    libsqlite3-dev libgl1 libglib2.0-0 libopengl0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# --- venv environment setup ---
+RUN python3.13 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PIP_FLAGS="--no-cache-dir"
+# --- venv environment setup end ---
+
+# Use pip from the venv.
+RUN pip install ${PIP_FLAGS} "torch==2.9.0" "torchvision" "torchaudio" --index-url https://download.pytorch.org/whl/cu130
+
+# Install ComfyUI.
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
+RUN pip install ${PIP_FLAGS} -r requirements.txt
+
+# Install SageAttention
+RUN pip install sageattention==2.2.0 --no-build-isolation
+
+# --- Custom node installation ---
+
+# ComfyUI-Manager
+RUN git clone https://github.com/Comfy-Org/ComfyUI-Manager.git custom_nodes/ComfyUI-Manager
+
+# --- Custom node installation end ---
+
+
+# Expose port and set the startup command.
+EXPOSE 8188
+CMD ["python", "main.py", "--listen", "0.0.0.0", "--reserve-vram", "2.0", "--use-sage-attention", "--cache-none"]

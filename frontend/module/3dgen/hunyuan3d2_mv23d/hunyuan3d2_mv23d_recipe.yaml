@@ -1,0 +1,82 @@
+nodes:
+  load_front_image:
+    class_type: LoadImage
+    title: "Load Front Image"
+  load_back_image:
+    class_type: LoadImage
+    title: "Load Back Image"
+  load_left_image:
+    class_type: LoadImage
+    title: "Load Left Image"
+  
+  bg_remover:
+    class_type: "[Comfy3D] Multi Background Remover"
+    title: "Remove Backgrounds"
+
+  load_shape_pipeline:
+    class_type: "[Comfy3D] Load Hunyuan3D V2 ShapeGen Pipeline"
+    title: "Load ShapeGen Pipeline"
+    params:
+      generation_mode: "Hunyuan3D-2mv"
+      weights_format: "safetensors"
+      flash_vdm: true
+
+  shape_generator:
+    class_type: "[Comfy3D] Hunyuan3D V2 ShapeGen MV"
+    title: "Generate 3D Shape"
+    params:
+      guidance_scale: 5
+      num_inference_steps: 40
+      octree_resolution: 256
+
+  save_shape_mesh:
+    class_type: "[Comfy3D] Save 3D Mesh"
+    title: "Save Shape Mesh"
+
+  load_tex_pipeline:
+    class_type: "[Comfy3D] Load Hunyuan3D V2 TexGen Pipeline"
+    title: "Load TexGen Pipeline"
+    params:
+      generation_mode: "Turbo"
+
+  texture_painter:
+    class_type: "[Comfy3D] Hunyuan3D V2 Paint Model Turbo MV"
+    title: "Paint Texture on Mesh"
+
+  save_textured_mesh:
+    class_type: "[Comfy3D] Save 3D Mesh"
+    title: "Save Textured Mesh"
+
+connections:
+  - from: "load_front_image:0"
+    to: "bg_remover:image_front"
+  - from: "load_back_image:0"
+    to: "bg_remover:image_back"
+  - from: "load_left_image:0"
+    to: "bg_remover:image_left"
+  
+  - from: "load_shape_pipeline:0"
+    to: "shape_generator:shapegen_pipe"
+  - from: "bg_remover:0"
+    to: "shape_generator:images"
+    
+  - from: "shape_generator:0"
+    to: "save_shape_mesh:mesh"
+  
+  - from: "load_tex_pipeline:0"
+    to: "texture_painter:hunyuan3d_v2_texgen_pipe"
+  - from: "shape_generator:0"
+    to: "texture_painter:mesh"
+  - from: "bg_remover:0"
+    to: "texture_painter:images"
+    
+  - from: "texture_painter:0"
+    to: "save_textured_mesh:mesh"
+
+ui_map:
+  input_front_image: "load_front_image:image"
+  input_back_image: "load_back_image:image"
+  input_left_image: "load_left_image:image"
+  seed: "shape_generator:seed"
+  shape_save_path: "save_shape_mesh:save_path"
+  textured_save_path: "save_textured_mesh:save_path"

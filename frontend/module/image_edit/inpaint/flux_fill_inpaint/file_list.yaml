@@ -1,0 +1,20 @@
+file: 
+  diffusion_models: 
+    - filename: "FLUX.1-Fill-dev_fp8.safetensors"
+      source: "hf"
+      repo_id: "1038lab/FLUX.1-Fill-dev_fp8"
+      repository_file_path: "FLUX.1-Fill-dev_fp8.safetensors"
+  text_encoders: 
+    - filename: "clip_l.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "clip_l.safetensors"
+    - filename: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+  vae: 
+    - filename: "ae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
+      repository_file_path: "split_files/vae/ae.safetensors"

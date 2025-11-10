@@ -1,0 +1,56 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Input Image"
+  load_video:
+    class_type: LoadVideo
+    title: "Load Input Video"
+  get_frames:
+    class_type: GetVideoComponents
+    title: "Get Video Frames"
+  
+  mask_to_image_converter:
+    class_type: MaskToImage
+    title: "Convert Mask to Image"
+    
+  resize_frames_1:
+    class_type: ResizeAndPadImage
+    title: "Resize Frames (Output 1)"
+  create_video_1:
+    class_type: CreateVideo
+    title: "Create Video (Output 1)"
+  save_video_1:
+    class_type: SaveVideo
+    title: "Save Video (Output 1)"
+    params:
+      format: "mp4"
+      codec: "h264"
+      
+  resize_frames_2:
+    class_type: ResizeAndPadImage
+    title: "Resize Frames (Output 2)"
+  create_video_2:
+    class_type: CreateVideo
+    title: "Create Video (Output 2)"
+  save_video_2:
+    class_type: SaveVideo
+    title: "Save Video (Output 2)"
+    params:
+      format: "mp4"
+      codec: "h264"
+
+  save_image_1:
+    class_type: SaveImage
+    title: "Save Image (Output 1)"
+    params: {}
+      
+  save_image_2:
+    class_type: SaveImage
+    title: "Save Image (Output 2)"
+    params: {}
+
+connections: []
+
+ui_map:
+  input_image_filename: "load_image:image"
+  input_video_filename: "load_video:file"

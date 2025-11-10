@@ -1,0 +1,45 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+
+  scale_image:
+    class_type: ImageScaleToTotalPixels
+    title: "Scale Image"
+    params:
+      megapixels: 1.0
+      upscale_method: "area"
+
+  qwen_vl:
+    class_type: "AILab_QwenVL"
+    title: "QwenVL Tagger"
+    params:
+      quantization: "None (FP16)"
+      max_tokens: 1024
+      keep_model_loaded: false
+  
+  save_text:
+    class_type: "easy saveText"
+    title: "Save Text"
+    params:
+      file_extension: "txt"
+      overwrite: true
+
+connections:
+  - from: "load_image:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "qwen_vl:image"
+  - from: "qwen_vl:0"
+    to: "save_text:text"
+
+ui_map:
+  input_image: "load_image:image"
+  
+  model_name: "qwen_vl:model_name"
+  preset_prompt: "qwen_vl:preset_prompt"
+  custom_prompt: "qwen_vl:custom_prompt"
+  seed: "qwen_vl:seed"
+  
+  output_file_path: "save_text:output_file_path"
+  filename_prefix: "save_text:file_name"

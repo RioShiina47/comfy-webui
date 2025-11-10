@@ -1,0 +1,41 @@
+nodes:
+  input_image_loader:
+    class_type: LoadImage
+    title: "Load Image for Outpaint"
+  scale_image:
+    class_type: ImageScaleToTotalPixels
+    title: "Scale Image to Total Pixels"
+    params:
+      upscale_method: "nearest-exact"
+  pad_image:
+    class_type: ImagePadForOutpaint
+    title: "Pad Image for Outpainting"
+  vae_encode:
+    class_type: VAEEncodeForInpaint
+    title: "VAE Encode (for Inpainting)"
+  latent_source:
+    class_type: RepeatLatentBatch
+    title: "Repeat Latent Batch"
+
+connections:
+  - from: "input_image_loader:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "pad_image:image"
+  - from: "pad_image:0"
+    to: "vae_encode:pixels"
+  - from: "pad_image:1"
+    to: "vae_encode:mask"
+  - from: "vae_encode:0"
+    to: "latent_source:samples"
+
+ui_map:
+  input_image: "input_image_loader:image"
+  megapixels: "scale_image:megapixels"
+  left: "pad_image:left"
+  top: "pad_image:top"
+  right: "pad_image:right"
+  bottom: "pad_image:bottom"
+  feathering: "pad_image:feathering"
+  grow_mask_by: "vae_encode:grow_mask_by"
+  batch_size: "latent_source:amount"
