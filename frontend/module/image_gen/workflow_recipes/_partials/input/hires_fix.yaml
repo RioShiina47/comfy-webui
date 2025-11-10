@@ -1,0 +1,27 @@
+nodes:
+  input_image_loader:
+    class_type: LoadImage
+    title: "Load Input Image"
+  vae_encode:
+    class_type: VAEEncode
+    title: "VAE Encode (Hires Pre-step)"
+  latent_upscaler:
+    class_type: LatentUpscaleBy
+    title: "Upscale Latent By"
+  latent_source:
+    class_type: RepeatLatentBatch
+    title: "Repeat Latent Batch for Hires"
+
+connections:
+  - from: "input_image_loader:0"
+    to: "vae_encode:pixels"
+  - from: "vae_encode:0"
+    to: "latent_upscaler:samples"
+  - from: "latent_upscaler:0"
+    to: "latent_source:samples"
+
+ui_map:
+  input_image: "input_image_loader:image"
+  hires_upscaler: "latent_upscaler:upscale_method"
+  hires_scale_by: "latent_upscaler:scale_by"
+  batch_size: "latent_source:amount"

@@ -1,0 +1,56 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      weight_dtype: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "chroma"
+      device: "default"
+  t5_tokenizer:
+    class_type: T5TokenizerOptions
+    title: "T5TokenizerOptions"
+    params:
+      min_padding: 1
+      min_length: 0
+  fresca:
+    class_type: FreSca
+    title: "FreSca"
+    params:
+      scale_low: 1.0
+      scale_high: 2.5
+      freq_cutoff: 30
+
+connections:
+  - from: "unet_loader:0"
+    to: "fresca:model"
+  - from: "fresca:0"
+    to: "ksampler:model"
+  
+  - from: "clip_loader:0"
+    to: "t5_tokenizer:clip"
+  - from: "t5_tokenizer:0"
+    to: "pos_prompt:clip"
+  - from: "t5_tokenizer:0"
+    to: "neg_prompt:clip"
+    
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+  
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+ui_map:
+  unet_name: "unet_loader:unet_name"
+  vae_name: "vae_loader:vae_name"
+  clip_name: "clip_loader:clip_name"

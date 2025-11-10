@@ -1,0 +1,92 @@
+nodes:
+  ckpt_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+    params:
+      ckpt_name: "ace_step_v1_3.5b.safetensors"
+  
+  text_encoder:
+    class_type: TextEncodeAceStepAudio
+    title: "Text Encoder (ACE Step)"
+  
+  empty_latent:
+    class_type: EmptyAceStepLatentAudio
+    title: "Empty Latent Audio"
+  
+  negative_conditioning:
+    class_type: ConditioningZeroOut
+    title: "Negative Conditioning"
+    
+  model_sampler_sd3:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler"
+    params:
+      shift: 5.0
+      
+  tonemap_op:
+    class_type: LatentOperationTonemapReinhard
+    title: "Tonemap Reinhard Operation"
+    params:
+      multiplier: 1.0
+      
+  apply_tonemap:
+    class_type: LatentApplyOperationCFG
+    title: "Apply Tonemap to Model"
+
+  sampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      denoise: 1.0
+      
+  vae_decode_audio:
+    class_type: VAEDecodeAudio
+    title: "VAE Decode Audio"
+    
+  save_audio:
+    class_type: SaveAudioMP3
+    title: "Save Audio MP3"
+    params: {}
+
+connections:
+  - from: "ckpt_loader:0"
+    to: "model_sampler_sd3:model"
+  - from: "model_sampler_sd3:0"
+    to: "apply_tonemap:model"
+    
+  - from: "tonemap_op:0"
+    to: "apply_tonemap:operation"
+  
+  - from: "ckpt_loader:1"
+    to: "text_encoder:clip"
+  
+  - from: "text_encoder:0"
+    to: "negative_conditioning:conditioning"
+  
+  - from: "apply_tonemap:0"
+    to: "sampler:model"
+  - from: "text_encoder:0"
+    to: "sampler:positive"
+  - from: "negative_conditioning:0"
+    to: "sampler:negative"
+  - from: "empty_latent:0"
+    to: "sampler:latent_image"
+
+  - from: "sampler:0"
+    to: "vae_decode_audio:samples"
+  - from: "ckpt_loader:2"
+    to: "vae_decode_audio:vae"
+    
+  - from: "vae_decode_audio:0"
+    to: "save_audio:audio"
+
+ui_map:
+  tags: "text_encoder:tags"
+  lyrics: "text_encoder:lyrics"
+  seconds: "empty_latent:seconds"
+  seed: "sampler:seed"
+  steps: "sampler:steps"
+  cfg: "sampler:cfg"
+  sampler_name: "sampler:sampler_name"
+  scheduler: "sampler:scheduler"
+  filename_prefix: "save_audio:filename_prefix"

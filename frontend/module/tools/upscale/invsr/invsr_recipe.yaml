@@ -1,0 +1,41 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Input Image"
+  
+  load_invsr_models:
+    class_type: LoadInvSRModels
+    title: "Load InvSR Models"
+    params:
+      sd_model: "stabilityai/sd-turbo"
+      invsr_model: "noise_predictor_sd_turbo_v5_diftune.pth"
+      dtype: "fp16"
+      tiled_vae: true
+      
+  invsr_sampler:
+    class_type: InvSRSampler
+    title: "InvSR Sampler"
+    params:
+      cfg: 1
+      batch_size: 1
+      chopping_batch_size: 4
+      chopping_size: 128
+      color_fix: "none"
+      
+  save_image:
+    class_type: SaveImage
+    title: "Save Upscaled Image"
+
+connections:
+  - from: "load_image:0"
+    to: "invsr_sampler:images"
+  - from: "load_invsr_models:0"
+    to: "invsr_sampler:invsr_pipe"
+  - from: "invsr_sampler:0"
+    to: "save_image:images"
+
+ui_map:
+  input_image_filename: "load_image:image"
+  num_steps: "invsr_sampler:num_steps"
+  seed: "invsr_sampler:seed"
+  filename_prefix: "save_image:filename_prefix"

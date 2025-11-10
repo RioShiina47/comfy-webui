@@ -1,0 +1,30 @@
+file: 
+  clip_vision: 
+    - filename: "clip_vision_h.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/clip_vision/clip_vision_h.safetensors"
+  diffusion_models: 
+    - filename: "wan2.2_animate_14B_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
+      repository_file_path: "split_files/diffusion_models/wan2.2_animate_14B_bf16.safetensors" 
+  loras: 
+    - filename: "Wan21_I2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors"
+      source: "hf"
+      repo_id: "lightx2v/Wan2.1-I2V-14B-720P-StepDistill-CfgDistill-Lightx2v"
+      repository_file_path: "loras/Wan21_I2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors"
+    - filename: "WanAnimate_relight_lora_fp16.safetensors"
+      source: "hf"
+      repo_id: "Kijai/WanVideo_comfy"
+      repository_file_path: "WanAnimate_relight_lora_fp16.safetensors"
+  text_encoders: 
+    - filename: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+  vae: 
+    - filename: "wan_2.1_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/vae/wan_2.1_vae.safetensors"

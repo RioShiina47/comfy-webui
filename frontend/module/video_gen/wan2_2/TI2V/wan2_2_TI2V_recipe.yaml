@@ -1,0 +1,91 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "wan2.2_ti2v_5B_fp16.safetensors"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "wan"
+      device: "default"
+      clip_name: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "wan2.2_vae.safetensors"
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive Prompt)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative Prompt)"
+  model_sampler:
+    class_type: ModelSamplingSD3
+    params:
+      shift: 8.0
+  latent_gen:
+    class_type: Wan22ImageToVideoLatent
+    title: "Wan22ImageToVideoLatent"
+    params:
+      batch_size: 1
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      denoise: 1.0
+      scheduler: "simple"
+      steps: 20
+      cfg: 7.0
+      sampler_name: "euler"
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  create_video:
+    class_type: CreateVideo
+    params:
+      fps: 24
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params:
+      format: "mp4"
+      codec: "h264"
+
+connections:
+  - from: "unet_loader:0"
+    to: "model_sampler:model"
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "vae_loader:0"
+    to: "latent_gen:vae"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "model_sampler:0"
+    to: "ksampler:model"
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+  - from: "latent_gen:0"
+    to: "ksampler:latent_image"
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_decode:0"
+    to: "create_video:images"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  aspect_ratio:
+    width: "latent_gen:width"
+    height: "latent_gen:height"
+  video_length: "latent_gen:length"
+  seed: "ksampler:seed"
+  filename_prefix: "save_video:filename_prefix"

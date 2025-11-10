@@ -1,0 +1,80 @@
+# 3D preset: Includes nodes tailored for 3D-related features.
+# The environment is configured to meet the specific requirements of these 3D nodes.
+
+FROM nvidia/cuda:12.8.0-devel-ubuntu24.04
+
+# Set non-interactive installation to avoid getting stuck during the build process.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+# Set environment variables to ensure PyTorch can find CUDA.
+ENV CPLUS_INCLUDE_PATH=/usr/local/cuda/include
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+# [Fix] Moved the comment above the instruction
+# Suitable for RTX 30/40 series, please modify according to your GPU.
+ENV TORCH_CUDA_ARCH_LIST="8.9"
+
+# Update and install system dependencies.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git wget build-essential python3-pip python3-venv python3.12-dev \
+    libsqlite3-dev libgl1 libglib2.0-0 libopengl0\
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# --- venv environment setup ---
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PIP_FLAGS="--no-cache-dir"
+# --- venv environment setup end ---
+
+# Use pip from the venv.
+RUN pip install ${PIP_FLAGS} "torch==2.7.0" "torchvision" "torchaudio" "xformers" --index-url https://download.pytorch.org/whl/cu128
+
+# Install ComfyUI.
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
+RUN pip install ${PIP_FLAGS} -r requirements.txt
+
+# --- Custom node installation ---
+
+# ComfyUI-Manager
+RUN git clone https://github.com/Comfy-Org/ComfyUI-Manager.git custom_nodes/ComfyUI-Manager
+
+# ComfyUI-3D-Pack
+RUN git clone https://github.com/MrForExample/ComfyUI-3D-Pack.git custom_nodes/ComfyUI-3D-Pack
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-3D-Pack/requirements.txt
+RUN WHL_URL=https://github.com/MrForExample/Comfy3D_Pre_Builds/raw/main/_Build_Wheels/_Wheels_linux_py312_torch2.7.0_cu128 && \
+    WHL_DIR=./custom_nodes/ComfyUI-3D-Pack/_wheels && \
+    mkdir -p ${WHL_DIR} && \
+    wget -P ${WHL_DIR} ${WHL_URL}/nvdiffrast-0.3.3-py3-none-any.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/simple_knn-0.0.0-cp312-cp312-linux_x86_64.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/diff_gaussian_rasterization-0.0.0-cp312-cp312-linux_x86_64.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/pointnet2_ops-3.0.0-cp312-cp312-linux_x86_64.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/vox2seq-0.0.0-cp312-cp312-linux_x86_64.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/custom_rasterizer-0.1-cp312-cp312-linux_x86_64.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/torch_scatter-2.1.2-cp312-cp312-linux_x86_64.whl && \
+    wget -P ${WHL_DIR} ${WHL_URL}/pytorch3d-0.7.8-cp312-cp312-linux_x86_64.whl && \
+    pip install ${PIP_FLAGS} ${WHL_DIR}/*.whl && \
+    rm -rf ${WHL_DIR}
+RUN python ./custom_nodes/ComfyUI-3D-Pack/install.py
+
+# Compile the C++ version of mesh_inpaint_processor to solve the InPaint Function import issue.
+RUN COMPILE_DIR=./custom_nodes/ComfyUI-3D-Pack/Gen_3D_Modules/Hunyuan3D_2_1/hy3dpaint/DifferentiableRenderer/ && \
+    cd ${COMPILE_DIR} && \
+    c++ -O3 -Wall -shared -std=c++11 -fPIC `python -m pybind11 --includes` mesh_inpaint_processor.cpp -o mesh_inpaint_processor`python -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"`
+
+# fix
+RUN pip uninstall -y diso && \
+    FORCE_CUDA=1 pip install ${PIP_FLAGS} "diso"
+
+RUN pip uninstall -y onnxruntime-gpu && \
+    pip install ${PIP_FLAGS} "diffusers==0.32.2" "onnxruntime-gpu"
+# --- Custom node installation end ---
+
+RUN mkdir -p /root/.u2net \
+    && wget -O /root/.u2net/u2net.onnx https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx
+
+
+# Expose port and set the startup command.
+EXPOSE 8189
+CMD ["python", "main.py", "--listen", "0.0.0.0", "--reserve-vram", "2.0", "--port", "8189", "--cache-none"]

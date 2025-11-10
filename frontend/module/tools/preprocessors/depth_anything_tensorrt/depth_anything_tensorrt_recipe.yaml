@@ -1,0 +1,58 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+  depth_processor_img:
+    class_type: DepthAnythingTensorrt
+    title: "Depth Anything (Image)"
+  save_image:
+    class_type: SaveImage
+    title: "Save Depth Map Image"
+    params: {}
+
+  load_video:
+    class_type: LoadVideo
+    title: "Load Video"
+  get_frames:
+    class_type: GetVideoComponents
+    title: "Get Video Frames"
+  depth_processor_vid:
+    class_type: DepthAnythingTensorrt
+    title: "Depth Anything (Video)"
+  create_video:
+    class_type: CreateVideo
+    title: "Create Depth Map Video"
+  save_video:
+    class_type: SaveVideo
+    title: "Save Depth Map Video"
+    params:
+      format: "mp4"
+      codec: "h264"
+
+connections:
+  - from: "load_image:0"
+    to: "depth_processor_img:images"
+  - from: "depth_processor_img:0"
+    to: "save_image:images"
+
+  - from: "load_video:0"
+    to: "get_frames:video"
+  - from: "get_frames:0"
+    to: "depth_processor_vid:images"
+  - from: "depth_processor_vid:0"
+    to: "create_video:images"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+ui_map:
+  engine:
+    - "depth_processor_img:engine"
+    - "depth_processor_vid:engine"
+  filename_prefix:
+    - "save_image:filename_prefix"
+    - "save_video:filename_prefix"
+
+  input_image_filename: "load_image:image"
+
+  input_video_filename: "load_video:file"
+  fps: "create_video:fps"

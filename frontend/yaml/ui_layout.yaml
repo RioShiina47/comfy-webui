@@ -1,0 +1,73 @@
+main_tabs_order:
+  - "ImageGen":
+    - "txt2img"
+    - "img2img"
+    - "Inpaint"
+    - "Outpaint"
+    - "Hires. fix"
+
+  - "ImageEdit":
+    - "Instruction Edit":
+      - "Qwen-Image-Edit"
+      - "Flux-Kontext-Dev"
+      - "OmniGen2-Image_Edit"
+    - "Reference Edit":
+      - "ByteDance USO"
+    - "Inpaint":
+      - "FLUX-Fill-Dev Inpaint"
+      - "Qwen-Image Inpaint"
+      - "Flux.1-Dev-OneReward Inpaint"
+    - "Outpaint":
+      - "FLUX-Fill-Dev Outpaint"
+      - "Qwen-Image Outpaint"
+      - "Flux.1-Dev-OneReward Outpaint"
+
+  - "VideoGen":
+    - "wan2.2":
+      - "txt2video"
+      - "img2video"
+      - "sound2video"
+      - "FLFV"
+      - "Fun Camera"
+      - "Fun Control"
+      - "Fun Inpaint"
+      - "TI2V"
+      - "Animate"
+    - "wan2.1":
+      - "txt2video(alpha)"
+    - "HuMo":
+      - "HuMo"
+      
+  - "AudioGen":
+    - "ACE-Step":
+      - "txt2music"
+      - "music2music"
+
+  - "3DGen":
+    - "simple_img_to_3D":
+      - "Hunyuan3D-2"
+    - "three-view_img_to_3D":
+      - "Hunyuan3D-2mv"
+
+  - "Tools":
+    - "Preprocessors":
+      - "ControlNet Auxiliary Preprocessors"
+      - "Depth-Anything-Tensorrt"
+      - "Dwpose-Tensorrt"
+      - "Video-Depth-Anything"
+    - "VL":
+      - "QwenVL"
+    - "Tagger":
+      - "WD14 Tagger"
+      - "CLIP Interrogator"
+    - "Media Info"
+    - "Fill":
+      - "Inpaint"
+      - "Outpaint"
+    - "RMBG"
+    - "RIFE"
+    - "Upscale":
+      - "Upscaler-Tensorrt"
+      - "InvSR"
+    
+  - "History"

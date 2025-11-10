@@ -1,0 +1,56 @@
+default:
+  enabled_chains:
+    - lora
+    - controlnet
+    - ipadapter
+    - embedding
+    - style
+    - conditioning
+
+neta-lumina:
+  enabled_chains:
+    - lora
+    - controlnet
+    - ipadapter
+    - embedding
+    - conditioning
+
+sdxl:
+  enabled_chains:
+    - lora
+    - controlnet
+    - ipadapter
+    - embedding
+    - conditioning
+
+sd15:
+  enabled_chains:
+    - lora
+    - controlnet
+    - ipadapter
+    - embedding
+    - conditioning
+
+flux:
+  enabled_chains:
+    - controlnet
+    - style
+    - conditioning
+
+omnigen2:
+  enabled_chains:
+    - conditioning
+    - reference_latent
+
+qwen-image:
+  enabled_chains:
+    - controlnet
+    - conditioning
+
+hidream:
+  enabled_chains:
+    - conditioning
+
+hunyuanimage:
+  enabled_chains:
+    - conditioning

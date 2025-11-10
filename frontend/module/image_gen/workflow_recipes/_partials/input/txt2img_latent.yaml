@@ -1,0 +1,11 @@
+nodes:
+  latent_source:
+    class_type: "{{ latent_generator_template }}"
+    title: "Empty Latent Image"
+
+connections: []
+
+ui_map:
+  width: "latent_source:width"
+  height: "latent_source:height"
+  batch_size: "latent_source:batch_size"

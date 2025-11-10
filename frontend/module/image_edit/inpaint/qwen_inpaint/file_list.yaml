@@ -1,0 +1,26 @@
+file: 
+  diffusion_models: 
+    - filename: "qwen_image_fp8_e4m3fn.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors"
+  text_encoders: 
+    - filename: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"
+  controlnet: 
+    - filename: "Qwen-Image-InstantX-ControlNet-Inpainting.safetensors"
+      source: "hf"
+      repo_id: "InstantX/Qwen-Image-ControlNet-Inpainting"
+      repository_file_path: "diffusion_pytorch_model.safetensors"
+  loras: 
+    - filename: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+      source: "hf"
+      repo_id: "lightx2v/Qwen-Image-Lightning"
+      repository_file_path: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+  vae: 
+    - filename: "qwen_image_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/vae/qwen_image_vae.safetensors"

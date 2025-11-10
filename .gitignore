@@ -1,0 +1,30 @@
+# Python
+# ---------------------------------
+# Byte-compiled / optimized / C extensions
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+.Python
+env/
+venv/
+.venv/
+
+# Gradio cache
+gradio_cached_examples/
+
+
+# IDE & OS Files
+# ---------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Comfy web UI
+ComfyUI/
+ComfyUI_3D/
+frontend/custom/
+output/

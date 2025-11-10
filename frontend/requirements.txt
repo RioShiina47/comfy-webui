@@ -1,0 +1,13 @@
+gradio[mcp]
+requests
+websocket-client
+imageio
+imageio-ffmpeg
+PyYAML
+pydantic
+pydub
+pyperclip
+hf_xet
+tqdm
+pymediainfo
+aria2
