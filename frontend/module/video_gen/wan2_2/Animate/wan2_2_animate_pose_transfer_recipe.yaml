@@ -1,0 +1,200 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load UNET"
+    params: { unet_name: "wan2.2_animate_14B_bf16.safetensors", weight_dtype: "default" }
+  lora_loader_light:
+    class_type: LoraLoaderModelOnly
+    title: "Load LoRA Light"
+    params: { strength_model: 1.0, lora_name: "Wan21_I2V_14B_lightx2v_cfg_step_distill_lora_rank64.safetensors" }
+  lora_loader_relight:
+    class_type: LoraLoaderModelOnly
+    title: "Load LoRA Relight"
+    params: { strength_model: 1.0, lora_name: "WanAnimate_relight_lora_fp16.safetensors" }
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params: { type: "wan", device: "default", clip_name: "umt5_xxl_fp8_e4m3fn_scaled.safetensors" }
+  clip_vision_loader:
+    class_type: CLIPVisionLoader
+    title: "Load CLIP Vision"
+    params: { clip_name: "clip_vision_h.safetensors" }
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params: { vae_name: "wan_2.1_vae.safetensors" }
+  
+  load_ref_image:
+    class_type: LoadImage
+    title: "Load Reference Image"
+  load_motion_video:
+    class_type: LoadVideo
+    title: "Load Motion Video"
+
+  get_motion_frames:
+    class_type: GetVideoComponents
+    title: "Get Motion Frames"
+  dwpose_face:
+    class_type: DWPreprocessor
+    title: "DWPose (Face)"
+    params: { detect_hand: "disable", detect_body: "disable", detect_face: "enable", resolution: 512, bbox_detector: "yolox_l.onnx", pose_estimator: "dw-ll_ucoco_384_bs5.torchscript.pt" }
+  dwpose_body:
+    class_type: DWPreprocessor
+    title: "DWPose (Body+Hand)"
+    params: { detect_hand: "enable", detect_body: "enable", detect_face: "disable", resolution: 512, bbox_detector: "yolox_l.onnx", pose_estimator: "dw-ll_ucoco_384_bs5.torchscript.pt" }
+  
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "Positive Prompt"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "Negative Prompt"
+  clip_vision_encode:
+    class_type: CLIPVisionEncode
+    title: "CLIP Vision Encode"
+    params: { crop: "none" }
+    
+  model_sampler:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler"
+    params: { shift: 8.0 }
+    
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params: { format: "auto", codec: "auto" }
+
+  animate_preprocessor_preview:
+    class_type: WanAnimateToVideo
+    title: "Animate Preprocessor (Preview)"
+    params: { batch_size: 1, continue_motion_max_frames: 5, video_frame_offset: 0, continue_motion: null, background_video: null, character_mask: null }
+  ksampler_preview:
+    class_type: KSampler
+    title: "KSampler (Preview)"
+    params: { steps: 4, cfg: 1.0, sampler_name: "euler", scheduler: "simple", denoise: 1.0 }
+  trim_latent_preview:
+    class_type: TrimVideoLatent
+    title: "Trim Video Latent (Preview)"
+  vae_decode_preview:
+    class_type: VAEDecode
+    title: "VAE Decode (Preview)"
+  image_from_batch_preview:
+    class_type: ImageFromBatch
+    title: "Get Image from Batch (Preview)"
+    params: { batch_index: 1, length: 4096 }
+
+  template_animate_preprocessor:
+    class_type: WanAnimateToVideo
+    title: "Animate Preprocessor"
+    params: { batch_size: 1, continue_motion_max_frames: 5 }
+  template_ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params: { steps: 4, cfg: 1.0, sampler_name: "euler", scheduler: "simple", denoise: 1.0 }
+
+connections:
+  - from: "unet_loader:0"
+    to: "lora_loader_light:model"
+  - from: "lora_loader_light:0"
+    to: "lora_loader_relight:model"
+  - from: "lora_loader_relight:0"
+    to: "model_sampler:model"
+  - from: "load_motion_video:0"
+    to: "get_motion_frames:video"
+  - from: "get_motion_frames:0"
+    to: "dwpose_face:image"
+  - from: "get_motion_frames:0"
+    to: "dwpose_body:image"
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "clip_vision_loader:0"
+    to: "clip_vision_encode:clip_vision"
+  - from: "load_ref_image:0"
+    to: "clip_vision_encode:image"
+
+  - from: "pos_prompt:0"
+    to: "animate_preprocessor_preview:positive"
+  - from: "neg_prompt:0"
+    to: "animate_preprocessor_preview:negative"
+  - from: "vae_loader:0"
+    to: "animate_preprocessor_preview:vae"
+  - from: "clip_vision_encode:0"
+    to: "animate_preprocessor_preview:clip_vision_output"
+  - from: "load_ref_image:0"
+    to: "animate_preprocessor_preview:reference_image"
+  - from: "dwpose_face:0"
+    to: "animate_preprocessor_preview:face_video"
+  - from: "dwpose_body:0"
+    to: "animate_preprocessor_preview:pose_video"
+  - from: "model_sampler:0"
+    to: "ksampler_preview:model"
+  - from: "animate_preprocessor_preview:0"
+    to: "ksampler_preview:positive"
+  - from: "animate_preprocessor_preview:1"
+    to: "ksampler_preview:negative"
+  - from: "animate_preprocessor_preview:2"
+    to: "ksampler_preview:latent_image"
+  - from: "ksampler_preview:0"
+    to: "trim_latent_preview:samples"
+  - from: "animate_preprocessor_preview:3"
+    to: "trim_latent_preview:trim_amount"
+  - from: "trim_latent_preview:0"
+    to: "vae_decode_preview:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode_preview:vae"
+  - from: "vae_decode_preview:0"
+    to: "image_from_batch_preview:image"
+  - from: "animate_preprocessor_preview:4"
+    to: "image_from_batch_preview:batch_index"
+  - from: "image_from_batch_preview:0"
+    to: "create_video:images"
+
+  - from: "create_video:0"
+    to: "save_video:video"
+  - from: "get_motion_frames:2"
+    to: "create_video:fps"
+  - from: "get_motion_frames:1"
+    to: "create_video:audio"
+    
+  - from: "pos_prompt:0"
+    to: "template_animate_preprocessor:positive"
+  - from: "neg_prompt:0"
+    to: "template_animate_preprocessor:negative"
+  - from: "vae_loader:0"
+    to: "template_animate_preprocessor:vae"
+  - from: "clip_vision_encode:0"
+    to: "template_animate_preprocessor:clip_vision_output"
+  - from: "load_ref_image:0"
+    to: "template_animate_preprocessor:reference_image"
+  - from: "dwpose_face:0"
+    to: "template_animate_preprocessor:face_video"
+  - from: "dwpose_body:0"
+    to: "template_animate_preprocessor:pose_video"
+  - from: "model_sampler:0"
+    to: "template_ksampler:model"
+    
+dynamic_wan_animate_chains:
+  wan_animate_chain:
+    mode: "pose_transfer"
+    create_video_node: "create_video"
+    template_preprocessor: "template_animate_preprocessor"
+    template_sampler: "template_ksampler"
+    template_trim_latent: "trim_latent_preview"
+    template_vae_decode: "vae_decode_preview"
+    template_image_from_batch: "image_from_batch_preview"
+
+ui_map:
+  ref_image: "load_ref_image:image"
+  motion_video: "load_motion_video:file"
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  width: "animate_preprocessor_preview:width"
+  height: "animate_preprocessor_preview:height"
+  video_length: "animate_preprocessor_preview:length"
+  filename_prefix: "save_video:filename_prefix"
+  seed: "ksampler_preview:seed"

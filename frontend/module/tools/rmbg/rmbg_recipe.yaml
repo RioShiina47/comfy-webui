@@ -1,0 +1,91 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+
+  load_video:
+    class_type: LoadVideo
+    title: "Load Video"
+  get_frames:
+    class_type: GetVideoComponents
+    title: "Get Video Frames"
+
+  rmbg_node:
+    class_type: RMBG
+    title: "Remove Background (RMBG)"
+  
+  mask_converter:
+    class_type: MaskToImage
+    title: "Convert Mask to Image"
+
+  save_image_result:
+    class_type: SaveImage
+    title: "Save Result Image"
+  save_image_mask:
+    class_type: SaveImage
+    title: "Save Mask Image"
+  
+  create_video_result:
+    class_type: CreateVideo
+    title: "Create Result Video"
+  create_video_mask:
+    class_type: CreateVideo
+    title: "Create Mask Video"
+
+  save_video_result:
+    class_type: SaveVideo
+    title: "Save Result Video"
+    params:
+      format: "mp4"
+      codec: "h264"
+  save_video_mask:
+    class_type: SaveVideo
+    title: "Save Mask Video"
+    params:
+      format: "mp4"
+      codec: "h264"
+
+connections:
+  - from: "rmbg_node:1"
+    to: "mask_converter:mask"
+
+  - from: "rmbg_node:0"
+    to: "save_image_result:images"
+  - from: "mask_converter:0"
+    to: "save_image_mask:images"
+
+  - from: "load_video:0"
+    to: "get_frames:video"
+  - from: "rmbg_node:0"
+    to: "create_video_result:images"
+  - from: "mask_converter:0"
+    to: "create_video_mask:images"
+  - from: "create_video_result:0"
+    to: "save_video_result:video"
+  - from: "create_video_mask:0"
+    to: "save_video_mask:video"
+
+ui_map:
+  input_image_filename: "load_image:image"
+  input_video_filename: "load_video:file"
+  
+  model: "rmbg_node:model"
+  sensitivity: "rmbg_node:sensitivity"
+  process_res: "rmbg_node:process_res"
+  mask_blur: "rmbg_node:mask_blur"
+  mask_offset: "rmbg_node:mask_offset"
+  invert_output: "rmbg_node:invert_output"
+  refine_foreground: "rmbg_node:refine_foreground"
+  background: "rmbg_node:background"
+  background_color: "rmbg_node:background_color"
+
+  fps: 
+    - "create_video_result:fps"
+    - "create_video_mask:fps"
+
+  filename_prefix_result:
+    - "save_image_result:filename_prefix"
+    - "save_video_result:filename_prefix"
+  filename_prefix_mask:
+    - "save_image_mask:filename_prefix"
+    - "save_video_mask:filename_prefix"

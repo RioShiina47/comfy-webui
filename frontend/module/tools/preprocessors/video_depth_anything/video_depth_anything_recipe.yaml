@@ -1,0 +1,44 @@
+nodes:
+  load_video:
+    class_type: LoadVideo
+    title: "Load Video"
+  get_frames:
+    class_type: GetVideoComponents
+    title: "Get Video Frames"
+  load_model:
+    class_type: LoadVideoDepthAnythingModel
+    title: "Load Video Depth Anything Model"
+  processor:
+    class_type: VideoDepthAnythingProcess
+    title: "Video Depth Anything Process"
+  create_video:
+    class_type: CreateVideo
+    title: "Create Depth Map Video"
+  save_video:
+    class_type: SaveVideo
+    title: "Save Depth Map Video"
+    params:
+      format: "mp4"
+      codec: "h264"
+
+connections:
+  - from: "load_video:0"
+    to: "get_frames:video"
+  - from: "get_frames:0"
+    to: "processor:images"
+  - from: "load_model:0"
+    to: "processor:vda_model"
+  - from: "processor:0"
+    to: "create_video:images"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+ui_map:
+  input_video_filename: "load_video:file"
+  model: "load_model:model"
+  input_size: "processor:input_size"
+  max_res: "processor:max_res"
+  precision: "processor:precision"
+  colormap: "processor:colormap"
+  fps: "create_video:fps"
+  filename_prefix: "save_video:filename_prefix"

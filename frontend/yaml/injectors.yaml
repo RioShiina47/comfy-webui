@@ -1,0 +1,21 @@
+injector_definitions:
+  dynamic_lora_chains: 
+    module: "chain_injectors.lora_injector"
+  dynamic_controlnet_chains: 
+    module: "chain_injectors.controlnet_injector"
+  dynamic_ipadapter_chains:
+    module: "chain_injectors.ipadapter_injector"
+  dynamic_reference_latent_chains:
+    module: "chain_injectors.reference_latent_injector"
+  dynamic_conditioning_chains:
+    module: "chain_injectors.conditioning_injector"
+  dynamic_style_chains:
+    module: "chain_injectors.style_injector"
+  
+injector_order:
+  - dynamic_lora_chains
+  - dynamic_ipadapter_chains
+  - dynamic_reference_latent_chains
+  - dynamic_conditioning_chains
+  - dynamic_style_chains
+  - dynamic_controlnet_chains

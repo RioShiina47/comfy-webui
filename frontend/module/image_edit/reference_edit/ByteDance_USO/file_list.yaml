@@ -1,0 +1,35 @@
+file: 
+  clip_vision: 
+    - filename: "sigclip_vision_patch14_384.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/sigclip_vision_384"
+      repository_file_path: "sigclip_vision_patch14_384.safetensors"
+  diffusion_models: 
+    - filename: "flux1-dev-fp8-e4m3fn.safetensors"
+      source: "hf"
+      repo_id: "Kijai/flux-fp8"
+      repository_file_path: "flux1-dev-fp8-e4m3fn.safetensors" 
+  loras: 
+    - filename: "uso-flux1-dit-lora-v1.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/USO_1.0_Repackaged"
+      repository_file_path: "split_files/loras/uso-flux1-dit-lora-v1.safetensors"
+  model_patches: 
+    - filename: "uso-flux1-projector-v1.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/USO_1.0_Repackaged"
+      repository_file_path: "split_files/model_patches/uso-flux1-projector-v1.safetensors"
+  text_encoders: 
+    - filename: "clip_l.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "clip_l.safetensors"
+    - filename: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+  vae: 
+    - filename: "ae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
+      repository_file_path: "split_files/vae/ae.safetensors"

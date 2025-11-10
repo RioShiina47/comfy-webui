@@ -1,0 +1,98 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load FLUX Kontext UNET"
+    params:
+      unet_name: "flux1-dev-kontext_fp8_scaled.safetensors"
+      weight_dtype: "default"
+  clip_loader:
+    class_type: DualCLIPLoader
+    title: "Load FLUX Dual CLIP"
+    params:
+      clip_name1: "clip_l.safetensors"
+      clip_name2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+      type: "flux"
+      device: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load FLUX VAE"
+    params:
+      vae_name: "ae.safetensors"
+  
+  pos_prompt_encoder:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt_encoder:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
+  
+  flux_guidance:
+    class_type: FluxGuidance
+    title: "FluxGuidance"
+    params:
+      guidance: 2.5
+
+  latent_source:
+    class_type: EmptySD3LatentImage
+    title: "Empty Latent (SD3)"
+
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      denoise: 1.0
+      steps: 20
+      cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "simple"
+
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  save_image:
+    class_type: SaveImage
+    title: "Save Image"
+    params: {}
+
+connections:
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  
+  - from: "clip_loader:0"
+    to: "pos_prompt_encoder:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt_encoder:clip"
+  
+  - from: "pos_prompt_encoder:0"
+    to: "flux_guidance:conditioning"
+    
+  - from: "unet_loader:0"
+    to: "ksampler:model"
+  - from: "flux_guidance:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt_encoder:0"
+    to: "ksampler:negative"
+  - from: "latent_source:0"
+    to: "ksampler:latent_image"
+
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_decode:0"
+    to: "save_image:images"
+
+dynamic_reference_latent_chains:
+  image_stitch_chain:
+    vae_node: "vae_loader"
+    flux_guidance_node: "flux_guidance"
+    ksampler_node: "ksampler"
+
+ui_map:
+  positive_prompt: "pos_prompt_encoder:text"
+  negative_prompt: "neg_prompt_encoder:text"
+  
+  seed: "ksampler:seed"
+  width: "latent_source:width"
+  height: "latent_source:height"
+  batch_size: "latent_source:batch_size"
+  
+  filename_prefix: "save_image:filename_prefix"

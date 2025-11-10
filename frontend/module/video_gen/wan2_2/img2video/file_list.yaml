@@ -1,0 +1,29 @@
+file: 
+  diffusion_models: 
+    - filename: "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
+      repository_file_path: "split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
+    - filename: "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
+      repository_file_path: "split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
+  loras: 
+    - filename: "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
+      repository_file_path: "split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
+    - filename: "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
+      repository_file_path: "split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+  text_encoders: 
+    - filename: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+  vae: 
+    - filename: "wan_2.1_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/vae/wan_2.1_vae.safetensors"
