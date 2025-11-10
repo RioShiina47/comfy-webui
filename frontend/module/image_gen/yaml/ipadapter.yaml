@@ -1,0 +1,25 @@
+IPAdapter_presets:
+  SD1.5:
+    - "LIGHT - SD1.5 only (low strength)"
+    - "STANDARD (medium strength)"
+    - "VIT-G (medium strength)"
+    - "PLUS (high strength)"
+    - "PLUS FACE (portraits)"
+    - "FULL FACE - SD1.5 only (portraits stronger)"
+  SDXL:
+    - "STANDARD (medium strength)"
+    - "VIT-G (medium strength)"
+    - "PLUS (high strength)"
+    - "PLUS FACE (portraits)"
+
+IPAdapter_FaceID_presets:
+  SD1.5:
+    - "FACEID"
+    - "FACEID PLUS - SD1.5 only"
+    - "FACEID PLUS V2"
+    - "FACEID PORTRAIT (style transfer)"
+  SDXL:
+    - "FACEID"
+    - "FACEID PLUS V2"
+    - "FACEID PORTRAIT (style transfer)"
+    - "FACEID PORTRAIT UNNORM - SDXL only (strong)"

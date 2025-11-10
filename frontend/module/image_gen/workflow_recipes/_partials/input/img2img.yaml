@@ -1,0 +1,20 @@
+nodes:
+  input_image_loader:
+    class_type: LoadImage
+    title: "Load Input Image"
+  vae_encode:
+    class_type: VAEEncode
+    title: "VAE Encode (Img2Img)"
+  latent_source:
+    class_type: RepeatLatentBatch
+    title: "Repeat Latent Batch"
+
+connections:
+  - from: "input_image_loader:0"
+    to: "vae_encode:pixels"
+  - from: "vae_encode:0"
+    to: "latent_source:samples"
+    
+ui_map:
+  input_image: "input_image_loader:image"
+  batch_size: "latent_source:amount"

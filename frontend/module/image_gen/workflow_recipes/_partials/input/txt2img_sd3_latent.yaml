@@ -1,0 +1,11 @@
+nodes:
+  latent_source:
+    class_type: "EmptySD3LatentImage"
+    title: "EmptySD3LatentImage"
+
+connections: []
+
+ui_map:
+  width: "latent_source:width"
+  height: "latent_source:height"
+  batch_size: "latent_source:batch_size"

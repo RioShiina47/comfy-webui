@@ -1,0 +1,71 @@
+services:
+  backend_defalut:
+    container_name: comfyui_defalut
+    build:
+      context: ./ComfyUI
+    runtime: nvidia
+    volumes:
+      - comfyui_input:/app/input
+      - comfyui_models:/app/models
+      - comfyui_defalut_custom_nodes:/app/custom_nodes
+      - ./output:/app/output
+    ports:
+      - "8188:8188"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  backend_3d:
+    container_name: comfyui_3d
+    build:
+      context: ./ComfyUI_3D
+    runtime: nvidia
+    volumes:
+      - comfyui_input:/app/input
+      - comfyui_models:/app/models
+      - comfyui_3d_custom_nodes:/app/custom_nodes
+      - ./output:/app/output
+    ports:
+      - "8189:8189"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  frontend:
+    container_name: comfy_webui_frontend
+    build:
+      context: ./frontend
+    env_file:
+      - .env
+    environment:
+      - HF_CACHE_PATH=/root/.cache/huggingface
+    ports:
+      - "7888:7888"
+    volumes:
+      - comfyui_models:/app/ComfyUI/models'
+      - comfyui_input:/app/ComfyUI/input
+      - ./output:/app/ComfyUI/output
+      - ./frontend/custom:/app/custom
+      - comfyui_hf_home:/root/.cache/huggingface
+    depends_on:
+      - backend_defalut
+      - backend_3d
+
+volumes:
+  comfyui_models:
+  comfyui_input:
+  comfyui_hf_home:
+  comfyui_defalut_custom_nodes:
+  comfyui_3d_custom_nodes:

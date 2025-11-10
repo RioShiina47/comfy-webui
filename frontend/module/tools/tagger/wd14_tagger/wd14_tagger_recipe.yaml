@@ -1,0 +1,33 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+
+  wd14_tagger:
+    class_type: "WD14Tagger|pysssss"
+    title: "WD14 Tagger"
+  
+  save_text:
+    class_type: "easy saveText"
+    title: "Save Text"
+    params:
+      file_extension: "txt"
+      overwrite: true
+
+connections:
+  - from: "load_image:0"
+    to: "wd14_tagger:image"
+  - from: "wd14_tagger:0"
+    to: "save_text:text"
+
+ui_map:
+  input_image: "load_image:image"
+  model: "wd14_tagger:model"
+  threshold: "wd14_tagger:threshold"
+  character_threshold: "wd14_tagger:character_threshold"
+  replace_underscore: "wd14_tagger:replace_underscore"
+  trailing_comma: "wd14_tagger:trailing_comma"
+  exclude_tags: "wd14_tagger:exclude_tags"
+  
+  output_file_path: "save_text:output_file_path"
+  filename_prefix: "save_text:file_name"

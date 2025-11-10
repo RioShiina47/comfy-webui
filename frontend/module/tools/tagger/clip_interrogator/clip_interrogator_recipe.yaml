@@ -1,0 +1,29 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+
+  interrogator:
+    class_type: "easy imageInterrogator"
+    title: "Image To Prompt"
+  
+  save_text:
+    class_type: "easy saveText"
+    title: "Save Text"
+    params:
+      file_extension: "txt"
+      overwrite: true
+
+connections:
+  - from: "load_image:0"
+    to: "interrogator:image"
+  - from: "interrogator:0"
+    to: "save_text:text"
+
+ui_map:
+  input_image: "load_image:image"
+  mode: "interrogator:mode"
+  use_lowvram: "interrogator:use_lowvram"
+  
+  output_file_path: "save_text:output_file_path"
+  filename_prefix: "save_text:file_name"

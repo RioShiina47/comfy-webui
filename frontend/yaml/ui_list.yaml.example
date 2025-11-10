@@ -1,0 +1,50 @@
+# -----------------------------------------------------------------------------
+#                     UI Module Loading Configuration
+# -----------------------------------------------------------------------------
+#
+# Use this file to precisely control which UI modules are loaded, including built-in
+# modules and any custom modules you add.
+#
+# This can help reduce memory usage and speed up application startup, especially
+# when you only need a subset of features.
+#
+# Configuration instructions:
+#
+# 1. Default behavior (load all UIs):
+#    If the 'include' list is missing, empty, or commented out, the app will
+#    auto-discover and load all '_ui.py' files under 'module/' and
+#    'custom/module/'.
+#
+#    include: []
+#
+# 2. Load specific UIs precisely:
+#    To load only specific UIs, list the modules you need under 'include:'.
+#    Module paths should use Python package path format.
+#
+#    - Use dot '.' as the directory separator
+#    - File names do not require the '.py' suffix
+#
+# -----------------------------------------------------------------------------
+# Example: load built-in text-to-image, media info tool, and a user-defined UI module
+# -----------------------------------------------------------------------------
+#
+# Assume you created a custom module at
+# 'frontend/custom/module/my_tools/super_upscaler_ui.py'.
+#
+# include:
+#   # Load built-in modules
+#   - module.image_gen.txt2img_ui
+#   - module.tools.media_info_ui
+#
+#   # Load custom module
+#   - custom.module.my_tools.super_upscaler_ui
+#
+# -----------------------------------------------------------------------------
+#
+# To apply your configuration, copy this file to 'frontend/custom/yaml/' and
+# rename it to 'ui_list.yaml', then edit as needed.
+#
+# -----------------------------------------------------------------------------
+
+# Load all modules by default
+include: []

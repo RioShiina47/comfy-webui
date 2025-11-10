@@ -1,0 +1,77 @@
+ControlNet:
+  SDXL:
+    - Filepath: "controlnet-union-sdxl-1.0_promax.safetensors"
+      Series: "xinsir Union"
+      Type: ["Tile Deblur", "Tile variation", "Tile Super Resolution", "Image Inpainting", "Image Outpainting", "OpenPose", "Depth", "Canny", "Lineart", "Anime Lineart", "Mlsd", "Scribble", "Hed", "Pidi(Softedge)", "Teed", "Segment", "Normal"]
+    - Filepath: "controlnet-tile-sdxl-1.0.safetensors"
+      Series: "xinsir"
+      Type: ["Tile"]
+    - Filepath: "controlnet-canny-sdxl-1.0_V2.safetensors"
+      Series: "xinsir"
+      Type: ["Canny"]
+    - Filepath: "controlnet-openpose-sdxl-1.0.safetensors"
+      Series: "xinsir"
+      Type: ["OpenPose"]
+    - Filepath: "controlnet-openpose-sdxl-1.0.safetensors"
+      Series: "xinsir"
+      Type: ["OpenPose(Twins)"]
+    - Filepath: "controlnet-depth-sdxl-1.0"
+      Series: "xinsir"
+      Type: ["Depth"]
+    - Filepath: "controlnet-scribble-sdxl-1.0.safetensors"
+      Series: "xinsir"
+      Type: ["Scribble"]
+    - Filepath: "anime-painter.safetensors"
+      Series: "xinsir"
+      Type: ["Anime Painter"]
+  FLUX:
+    - Filepath: "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"
+      Series: "Shakker Labs"
+      Type: ["Union"]
+  Qwen-Image:
+    - Filepath: "Qwen-Image-InstantX-ControlNet-Union.safetensors"
+      Series: "InstantX"
+      Type: ["Union"]
+  SD1.5:
+    - Filepath: "control_v11p_sd15_canny_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Canny"]
+    - Filepath: "control_v11f1p_sd15_depth_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Depth"]
+    - Filepath: "control_v11p_sd15_openpose_fp16.safetensors"
+      Series: "Standard"
+      Type: ["OpenPose"]
+    - Filepath: "control_v11p_sd15_lineart_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Lineart"]
+    - Filepath: "control_v11p_sd15_softedge_fp16.safetensors"
+      Series: "Standard"
+      Type: ["SoftEdge"]
+    - Filepath: "control_v11p_sd15_scribble_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Scribble"]
+    - Filepath: "control_v11p_sd15_seg_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Segmentation"]
+    - Filepath: "control_v11p_sd15_normalbae_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Normal BAE"]
+    - Filepath: "control_v11p_sd15_mlsd_fp16.safetensors"
+      Series: "Standard"
+      Type: ["MLSD"]
+    - Filepath: "control_v11p_sd15_inpaint_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Inpaint"]
+    - Filepath: "control_v11f1e_sd15_tile_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Tile"]
+    - Filepath: "control_v11e_sd15_shuffle_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Shuffle"]
+    - Filepath: "control_v11e_sd15_ip2p_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Instruct P2P"]
+    - Filepath: "control_v11p_sd15s2_lineart_anime_fp16.safetensors"
+      Series: "Standard"
+      Type: ["Anime Lineart"]

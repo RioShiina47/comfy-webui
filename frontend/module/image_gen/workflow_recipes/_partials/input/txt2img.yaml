@@ -1,0 +1,2 @@
+imports:
+  - "_partials/input/txt2img_{{ latent_type }}.yaml"

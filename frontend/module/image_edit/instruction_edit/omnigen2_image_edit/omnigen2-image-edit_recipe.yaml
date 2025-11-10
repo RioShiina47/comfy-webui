@@ -1,0 +1,124 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "omnigen2_fp16.safetensors"
+      weight_dtype: "default"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      clip_name: "qwen_2.5_vl_fp16.safetensors"
+      type: "omnigen2"
+      device: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "ae.safetensors"
+  
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
+  
+  latent_source:
+    class_type: EmptySD3LatentImage
+    title: "Empty Latent"
+
+  scheduler:
+    class_type: BasicScheduler
+    title: "Basic Scheduler"
+    params:
+      denoise: 1.0
+      
+  sampler_selector:
+    class_type: KSamplerSelect
+    title: "KSamplerSelect"
+    
+  noise_generator:
+    class_type: RandomNoise
+    title: "RandomNoise"
+    
+  guider:
+    class_type: DualCFGGuider
+    title: "DualCFGGuider"
+    params:
+      cfg_cond2_negative: 2.0
+      style: "regular"
+      
+  sampler:
+    class_type: SamplerCustomAdvanced
+    title: "SamplerCustomAdvanced"
+
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  save_image:
+    class_type: SaveImage
+    title: "Save Image"
+
+connections:
+  - from: "unet_loader:0"
+    to: "scheduler:model"
+  - from: "unet_loader:0"
+    to: "guider:model"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+
+  - from: "pos_prompt:0"
+    to: "guider:cond1"
+  - from: "neg_prompt:0"
+    to: "guider:cond2"
+  - from: "neg_prompt:0"
+    to: "guider:negative"
+    
+  - from: "noise_generator:0"
+    to: "sampler:noise"
+  - from: "guider:0"
+    to: "sampler:guider"
+  - from: "sampler_selector:0"
+    to: "sampler:sampler"
+  - from: "scheduler:0"
+    to: "sampler:sigmas"
+  - from: "latent_source:0"
+    to: "sampler:latent_image"
+    
+  - from: "sampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_decode:0"
+    to: "save_image:images"
+
+dynamic_reference_latent_chains:
+  image_stitch_chain:
+    vae_node: "vae_loader"
+    guider_node: "guider"
+    guider_target_inputs:
+      - "cond1"
+      - "cond2"
+    start_connections:
+      cond1: "pos_prompt:0"
+      cond2: "neg_prompt:0"
+
+ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  
+  seed: "noise_generator:noise_seed"
+  steps: "scheduler:steps"
+  scheduler: "scheduler:scheduler"
+  sampler_name: "sampler_selector:sampler_name"
+  cfg: "guider:cfg_conds"
+
+  width: "latent_source:width"
+  height: "latent_source:height"
+  batch_size: "latent_source:batch_size"
+  
+  filename_prefix: "save_image:filename_prefix"

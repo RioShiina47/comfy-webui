@@ -1,0 +1,23 @@
+nodes:
+  inpaint_loader:
+    class_type: LoadImage
+    title: "Load Inpaint Image+Mask"
+  vae_encode:
+    class_type: VAEEncodeForInpaint
+    title: "VAE Encode (for Inpainting)"
+  latent_source:
+    class_type: RepeatLatentBatch
+    title: "Repeat Latent Batch"
+
+connections:
+  - from: "inpaint_loader:0"
+    to: "vae_encode:pixels"
+  - from: "inpaint_loader:1"
+    to: "vae_encode:mask"
+  - from: "vae_encode:0"
+    to: "latent_source:samples"
+
+ui_map:
+  input_image: "inpaint_loader:image"
+  batch_size: "latent_source:amount"
+  grow_mask_by: "vae_encode:grow_mask_by"

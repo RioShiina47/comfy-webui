@@ -1,0 +1,65 @@
+nodes:
+  ckpt_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+  model_sampler:
+    class_type: ModelSamplingAuraFlow
+    title: "ModelSamplingAuraFlow"
+    params:
+      shift: 4.0
+
+connections:
+  - from: "ckpt_loader:0"
+    to: "model_sampler:model"
+  - from: "model_sampler:0"
+    to: "ksampler:model"
+  
+  - from: "ckpt_loader:1"
+    to: "pos_prompt:clip"
+  - from: "ckpt_loader:1"
+    to: "neg_prompt:clip"
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+    
+  - from: "ckpt_loader:2"
+    to: "vae_decode:vae"
+  - from: "ckpt_loader:2"
+    to: "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    start: "ckpt_loader" 
+    output_map:
+      "0": "model" 
+      "1": "clip"  
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["model_sampler:model"]
+      "clip": ["pos_prompt:clip", "neg_prompt:clip"]
+
+dynamic_controlnet_chains:
+  controlnet_chain:
+    template: "ControlNetApplyAdvanced"
+    ksampler_node: "ksampler"
+
+dynamic_ipadapter_chains:
+  ipadapter_chain:
+    end: "ksampler"
+    final_preset: "{{ ipadapter_final_preset }}"
+    final_weight: "{{ ipadapter_final_weight }}"
+    final_embeds_scaling: "{{ ipadapter_embeds_scaling }}"
+    final_loader_type: "{{ ipadapter_final_loader_type }}"
+    final_lora_strength: "{{ ipadapter_final_lora_strength }}"
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    ksampler_node: "ksampler"
+    clip_source: "ckpt_loader:1"
+
+ui_map:
+  model_name: "ckpt_loader:ckpt_name"

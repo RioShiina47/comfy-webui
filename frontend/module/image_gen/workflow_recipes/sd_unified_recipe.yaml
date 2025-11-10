@@ -1,0 +1,11 @@
+imports:
+  - "_partials/_base_sampler_sd.yaml"
+  - "_partials/input/{{ task_type }}.yaml"
+  - "_partials/conditioning/{{ model_type }}.yaml"
+
+connections:
+  - from: "latent_source:0"
+    to: "ksampler:latent_image"
+
+ui_map:
+  vae_loader: "vae_encode:vae"

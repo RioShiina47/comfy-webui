@@ -1,0 +1,20 @@
+file: 
+  diffusion_models: 
+    - filename: "flux1-dev-kontext_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux1-kontext-dev_ComfyUI"
+      repository_file_path: "split_files/diffusion_models/flux1-dev-kontext_fp8_scaled.safetensors"
+  text_encoders: 
+    - filename: "clip_l.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "clip_l.safetensors"
+    - filename: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+  vae: 
+    - filename: "ae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
+      repository_file_path: "split_files/vae/ae.safetensors"

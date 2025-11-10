@@ -1,0 +1,6 @@
+file: 
+  checkpoints: 
+    - filename: "ace_step_v1_3.5b.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ACE-Step_ComfyUI_repackaged"
+      repository_file_path: "all_in_one/ace_step_v1_3.5b.safetensors"
