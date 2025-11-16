@@ -1,6 +1,6 @@
 import gradio as gr
 from core import node_info_manager
-from .config_loader import load_constants_config
+from .config_loader import load_constants_config, load_model_config
 from .event_handlers import on_lora_upload, on_embedding_upload
 from .vae_utils import on_vae_upload
 
@@ -20,9 +20,20 @@ def create_model_architecture_filter_ui(prefix: str):
 
 def create_sdxl_category_filter_ui(prefix: str, **kwargs):
     key = lambda name: f"{prefix}_{name}"
+    
+    model_config = load_model_config()
+    sdxl_models = model_config.get("Checkpoints", {}).get("SDXL", {}).get("models", [])
+    
+    categories = set()
+    for model in sdxl_models:
+        if "category" in model and model["category"]:
+            categories.add(model["category"])
+            
+    choices = ["ALL"] + sorted(list(categories))
+
     return gr.Dropdown(
         label="Filter Models",
-        choices=["ALL", "Illustrious"],
+        choices=choices,
         value="ALL",
         interactive=True,
         visible=True,
@@ -191,7 +202,7 @@ def create_controlnet_ui(components, prefix):
         for i in range(constants.get('MAX_CONTROLNETS', 5)):
             with gr.Row(visible=(i < 1)) as row:
                 with gr.Column(scale=1):
-                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload"))
+                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
                 with gr.Column(scale=2):
                     types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
                     series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
@@ -210,7 +221,7 @@ def create_ipadapter_ui(components, prefix):
         components[key('ipadapter_accordion')] = ipadapter_accordion
         
         with gr.Row():
-            components[key('ipadapter_final_preset')] = gr.Dropdown(label="Final Preset", choices=[], interactive=True)
+            components[key('ipadapter_final_preset')] = gr.Dropdown(label="Preset", choices=[], interactive=True)
             components[key('ipadapter_embeds_scaling')] = gr.Dropdown(
                 label="Embeds Scaling", 
                 choices=['V only', 'K+V', 'K+V w/ C penalty', 'K+mean(V) w/ C penalty'],
@@ -242,9 +253,8 @@ def create_ipadapter_ui(components, prefix):
         for i in range(constants.get('MAX_IPADAPTERS', 5)):
             with gr.Row(visible=(i < 1)) as row:
                 with gr.Column(scale=1):
-                    images.append(gr.Image(label=f"IPAdapter Image {i+1}", type="pil", sources="upload"))
+                    images.append(gr.Image(label=f"IPAdapter Image {i+1}", type="pil", sources="upload", height=256))
                 with gr.Column(scale=2):
-                    presets.append(gr.Dropdown(label="Preset", choices=[], interactive=True))
                     weights.append(gr.Slider(label="Weight", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
                     lora_strengths.append(gr.Slider(label="LoRA Strength", minimum=0.0, maximum=2.0, step=0.05, value=0.6, interactive=True, visible=False))
                 ipa_rows.append(row)
