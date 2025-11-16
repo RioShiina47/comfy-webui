@@ -27,7 +27,7 @@ Comfy web UI is more than a modular, mobile-first frontend for ComfyUI — it's 
 This project integrates many popular AI generation models and utilities into a single, one-stop creative suite.
 
 - **🖥️ Dual UI modes**
-  - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/PC/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control.
+  - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/PC/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control. **[HF spaces](https://huggingface.co/spaces/RioShiina/ImageGen-SDXL)** 🤗
   - **[One-tap compact panels](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/Phone/ImageEdit.png) (VideoGen, AudioGen, 3DGen):** Use best-practice fixed parameters to maximize simplicity, optimized for mobile.
 
 - **🤖 [API & MCP ready](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/PC/API_MCP/API_MCP.png) — Workflow as a Service**
