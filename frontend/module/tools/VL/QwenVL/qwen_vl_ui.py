@@ -29,7 +29,7 @@ def create_ui():
             raise ValueError("Could not fetch all required options from node info.")
     except Exception as e:
         print(f"[UI Build Error] Could not get options for AILab_QwenVL: {e}")
-        preset_prompt_choices = ["Prompt Style - Detailed", "Prompt Style - Simple", "Prompt Style - Poetic", "Custom"]
+        preset_prompt_choices = ['Prompt Style - Tags', 'Prompt Style - Simple', 'Prompt Style - Detailed', 'Prompt Style - Extreme Detailed', 'Prompt Style - Cinematic', 'Creative - Detailed Analysis', 'Creative - Summarize Video', 'Creative - Short Story', 'Creative - Refine & Expand Prompt']
         model_choices = ["Qwen3-VL-4B-Instruct-FP8", "Qwen2-VL-7B-Instruct-FP8"]
         quantization_choices = ["None (FP16)", "INT8", "INT4"]
         gr.Warning("Could not load QwenVL options. Is 'ComfyUI_AILab_Qwen' installed and the backend running?")
