@@ -28,9 +28,9 @@ def inject(assembler, chain_definition, chain_items):
     for i, item_data in enumerate(chain_items):
         loader_type = item_data.get('loader_type', 'Unified')
         
-        loader_template_name = "comfyui_ipadapter_plus/IPAdapterUnifiedLoader"
+        loader_template_name = "IPAdapterUnifiedLoader"
         if loader_type == 'FaceID':
-            loader_template_name = "comfyui_ipadapter_plus/IPAdapterUnifiedLoaderFaceID"
+            loader_template_name = "IPAdapterUnifiedLoaderFaceID"
 
         image_loader_id = assembler._get_unique_id()
         image_loader_node = assembler._get_node_template_from_api("LoadImage")
@@ -40,6 +40,7 @@ def inject(assembler, chain_definition, chain_items):
         image_scaler_id = assembler._get_unique_id()
         image_scaler_node = assembler._get_node_template_from_api("ImageScaleToTotalPixels")
         image_scaler_node['inputs']['image'] = [image_loader_id, 0]
+        image_scaler_node['inputs']['upscale_method'] = 'bicubic'
         image_scaler_node['inputs']['megapixels'] = megapixels
         assembler.workflow[image_scaler_id] = image_scaler_node
 
@@ -48,11 +49,12 @@ def inject(assembler, chain_definition, chain_items):
         ipadapter_loader_node['inputs']['preset'] = item_data['preset']
         ipadapter_loader_node['inputs']['model'] = current_model_connection
         if loader_type == 'FaceID':
-             ipadapter_loader_node['inputs']['lora_strength'] = item_data.get('lora_strength', 0.6)
+            ipadapter_loader_node['inputs']['lora_strength'] = item_data.get('lora_strength', 0.6)
+            ipadapter_loader_node['inputs']['provider'] = item_data.get('provider', 'CPU')
         assembler.workflow[ipadapter_loader_id] = ipadapter_loader_node
         
         encoder_id = assembler._get_unique_id()
-        encoder_node = assembler._get_node_template_from_api("comfyui_ipadapter_plus/IPAdapterEncoder")
+        encoder_node = assembler._get_node_template_from_api("IPAdapterEncoder")
         encoder_node['inputs']['weight'] = item_data['weight']
         encoder_node['inputs']['ipadapter'] = [ipadapter_loader_id, 1]
         encoder_node['inputs']['image'] = [image_scaler_id, 0]
@@ -62,23 +64,23 @@ def inject(assembler, chain_definition, chain_items):
         neg_embed_outputs.append([encoder_id, 1])
 
     pos_combiner_id = assembler._get_unique_id()
-    pos_combiner_node = assembler._get_node_template_from_api("comfyui_ipadapter_plus/IPAdapterCombineEmbeds")
+    pos_combiner_node = assembler._get_node_template_from_api("IPAdapterCombineEmbeds")
     pos_combiner_node['inputs']['method'] = final_settings.get('final_combine_method', 'concat')
     for i, conn in enumerate(pos_embed_outputs):
         pos_combiner_node['inputs'][f'embed{i+1}'] = conn
     assembler.workflow[pos_combiner_id] = pos_combiner_node
 
     neg_combiner_id = assembler._get_unique_id()
-    neg_combiner_node = assembler._get_node_template_from_api("comfyui_ipadapter_plus/IPAdapterCombineEmbeds")
+    neg_combiner_node = assembler._get_node_template_from_api("IPAdapterCombineEmbeds")
     neg_combiner_node['inputs']['method'] = final_settings.get('final_combine_method', 'concat')
     for i, conn in enumerate(neg_embed_outputs):
         neg_combiner_node['inputs'][f'embed{i+1}'] = conn
     assembler.workflow[neg_combiner_id] = neg_combiner_node
 
     final_loader_type = final_settings.get('final_loader_type', 'Unified')
-    final_loader_template_name = "comfyui_ipadapter_plus/IPAdapterUnifiedLoader"
+    final_loader_template_name = "IPAdapterUnifiedLoader"
     if final_loader_type == 'FaceID':
-        final_loader_template_name = "comfyui_ipadapter_plus/IPAdapterUnifiedLoaderFaceID"
+        final_loader_template_name = "IPAdapterUnifiedLoaderFaceID"
 
     final_loader_id = assembler._get_unique_id()
     final_loader_node = assembler._get_node_template_from_api(final_loader_template_name)
@@ -86,11 +88,13 @@ def inject(assembler, chain_definition, chain_items):
     final_loader_node['inputs']['model'] = current_model_connection
     if final_loader_type == 'FaceID':
         final_loader_node['inputs']['lora_strength'] = final_settings.get('final_lora_strength', 0.6)
+        final_loader_node['inputs']['provider'] = final_settings.get('final_provider', 'CPU')
     assembler.workflow[final_loader_id] = final_loader_node
     
     final_embeds_applier_id = assembler._get_unique_id()
-    final_embeds_applier_node = assembler._get_node_template_from_api("comfyui_ipadapter_plus/IPAdapterEmbeds")
+    final_embeds_applier_node = assembler._get_node_template_from_api("IPAdapterEmbeds")
     final_embeds_applier_node['inputs']['weight'] = final_settings.get('final_weight', 1.0)
+    final_embeds_applier_node['inputs']['weight_type'] = final_settings.get('final_weight_type', 'linear')
     final_embeds_applier_node['inputs']['embeds_scaling'] = final_settings.get('final_embeds_scaling', 'V only')
     final_embeds_applier_node['inputs']['model'] = [final_loader_id, 0]
     final_embeds_applier_node['inputs']['ipadapter'] = [final_loader_id, 1]

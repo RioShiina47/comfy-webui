@@ -90,7 +90,7 @@ def process_ipadapter_inputs(vals):
     if not ipa_images:
         return []
 
-    ipa_presets = vals.get('ipadapter_presets', [])
+    final_preset = vals.get('ipadapter_final_preset')
     ipa_weights = vals.get('ipadapter_weights', [])
     ipa_lora_strengths = vals.get('ipadapter_lora_strengths', [])
     
@@ -101,7 +101,7 @@ def process_ipadapter_inputs(vals):
 
     for i in range(len(ipa_images)):
         image_pil = ipa_images[i]
-        preset = ipa_presets[i] if i < len(ipa_presets) else None
+        preset = final_preset
         weight = ipa_weights[i] if i < len(ipa_weights) else 1.0
         lora_strength = ipa_lora_strengths[i] if i < len(ipa_lora_strengths) else 0.6
 
@@ -119,7 +119,6 @@ def process_ipadapter_inputs(vals):
             ipadapters.append(item_data)
     
     if ipadapters:
-        final_preset = vals.get('ipadapter_final_preset')
         final_weight = vals.get('ipadapter_final_weight')
         final_embeds_scaling = vals.get('ipadapter_embeds_scaling')
         final_combine_method = vals.get('ipadapter_combine_method')

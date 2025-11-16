@@ -1,0 +1,21 @@
+file: 
+  clip_vision: 
+    - filename: "clip_vision_h.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/clip_vision/clip_vision_h.safetensors"
+  diffusion_models: 
+    - filename: "ChronoEdit_fp8_e4m3fn_scaled_VAI.safetensors"
+      source: "hf"
+      repo_id: "vantagewithai/ChronoEdit-fp8-scaled"
+      repository_file_path: "ChronoEdit_fp8_e4m3fn_scaled_VAI.safetensors"
+  text_encoders: 
+    - filename: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+  vae: 
+    - filename: "wan_2.1_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
+      repository_file_path: "split_files/vae/wan_2.1_vae.safetensors"
