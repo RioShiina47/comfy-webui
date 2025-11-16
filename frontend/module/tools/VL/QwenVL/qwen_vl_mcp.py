@@ -56,7 +56,7 @@ def Vision_Query(
 
     params = {
         'input_image': input_image_pil,
-        'preset_prompt': "Custom",
+        'preset_prompt': "Prompt Style - Simple",
         'custom_prompt': custom_prompt,
         'model_mode': "Thinking" if thinking else "Instruct",
         'quantization': "None (FP16)",
