@@ -8,6 +8,7 @@ main_tabs_order:
 
   - "ImageEdit":
     - "Instruction Edit":
+      - "ChronoEdit"
       - "Qwen-Image-Edit"
       - "Flux-Kontext-Dev"
       - "OmniGen2-Image_Edit"

@@ -261,20 +261,18 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             ipadapter_visible = model_type in ["sdxl", "sd15", "sd35"]
             updates[ipadapter_accordion] = gr.update(visible=ipadapter_visible)
             
-            if ipadapter_visible and ipadapter_presets_list:
+            if ipadapter_visible:
                 arch_key_ipa = "SDXL" if model_type in ["sdxl", "sd35"] else "SD1.5"
                 unified_presets = ipadapter_presets_config.get("IPAdapter_presets", {}).get(arch_key_ipa, [])
                 faceid_presets = ipadapter_presets_config.get("IPAdapter_FaceID_presets", {}).get(arch_key_ipa, [])
                 all_presets = unified_presets + faceid_presets
                 default_preset = unified_presets[0] if unified_presets else (faceid_presets[0] if faceid_presets else None)
                 
-                preset_update = gr.update(choices=all_presets, value=default_preset)
-                for preset_dd in ipadapter_presets_list: updates[preset_dd] = preset_update
-
                 if ipadapter_final_preset:
                     updates[ipadapter_final_preset] = gr.update(choices=all_presets, value=default_preset)
+
+                is_faceid = default_preset in faceid_presets
                 if ipadapter_final_lora_strength_slider:
-                    is_faceid = default_preset in faceid_presets
                     updates[ipadapter_final_lora_strength_slider] = gr.update(visible=is_faceid)
                 
                 if ipadapter_lora_strengths_list:
@@ -342,32 +340,29 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             show_api=False
         )
 
-    def on_preset_change(preset_value):
+    def on_final_preset_change(preset_value):
         ipadapter_presets_config = load_ipadapter_presets()
         faceid_presets_sd15 = ipadapter_presets_config.get("IPAdapter_FaceID_presets", {}).get("SD1.5", [])
         faceid_presets_sdxl = ipadapter_presets_config.get("IPAdapter_FaceID_presets", {}).get("SDXL", [])
-        is_faceid = preset_value in faceid_presets_sd15 or preset_value in faceid_presets_sdxl
-        return gr.update(visible=is_faceid)
+        all_faceid_presets = faceid_presets_sd15 + faceid_presets_sdxl
+        is_faceid = preset_value in all_faceid_presets
+        
+        updates = [gr.update(visible=is_faceid)]
+        for _ in ipadapter_lora_strengths_list:
+            updates.append(gr.update(visible=is_faceid))
+        
+        return tuple(updates)
 
-    if ipadapter_final_preset and ipadapter_final_lora_strength_slider:
+    if ipadapter_final_preset and ipadapter_final_lora_strength_slider and ipadapter_lora_strengths_list:
+         outputs_to_update = [ipadapter_final_lora_strength_slider] + ipadapter_lora_strengths_list
          ipadapter_final_preset.change(
-            fn=on_preset_change,
+            fn=on_final_preset_change,
             inputs=[ipadapter_final_preset],
-            outputs=[ipadapter_final_lora_strength_slider],
+            outputs=outputs_to_update,
             show_progress=False,
             show_api=False
         )
 
-    if ipadapter_presets_list and ipadapter_lora_strengths_list:
-        for i in range(constants.get('MAX_IPADAPTERS', 5)):
-            ipadapter_presets_list[i].change(
-                fn=on_preset_change,
-                inputs=[ipadapter_presets_list[i]],
-                outputs=[ipadapter_lora_strengths_list[i]],
-                show_progress=False,
-                show_api=False
-            )
-    
     def on_cn_type_change(selected_type, model_type):
         cn_config = load_controlnet_models()
         arch_key = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina"}.get(model_type, "SDXL")

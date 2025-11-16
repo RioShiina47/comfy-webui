@@ -1,0 +1,163 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "ChronoEdit_fp8_e4m3fn_scaled_VAI.safetensors"
+      weight_dtype: "default"
+  lora_loader:
+    class_type: LoraLoaderModelOnly
+    title: "Load LoRA"
+    params:
+      lora_name: "chronoedit_distill_lora.safetensors"
+      strength_model: 1.0
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "wan"
+      device: "default"
+      clip_name: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "wan_2.1_vae.safetensors"
+  clip_vision_loader:
+    class_type: CLIPVisionLoader
+    title: "Load CLIP Vision"
+    params:
+      clip_name: "clip_vision_h.safetensors"
+
+  load_image:
+    class_type: LoadImage
+    title: "Load Start Image"
+  scale_image:
+    class_type: ImageScaleToTotalPixels
+    title: "Scale Image to Total Pixels"
+    params:
+      upscale_method: "nearest-exact"
+      megapixels: 0.92
+  
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive Prompt)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative Prompt)"
+  
+  clip_vision_encode:
+    class_type: CLIPVisionEncode
+    title: "CLIP Vision Encode"
+    params:
+      crop: "none"
+  
+  i2v_preprocessor:
+    class_type: WanImageToVideo
+    title: "WanImageToVideo"
+    params:
+      length: 5
+      batch_size: 1
+
+  model_sampler:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler"
+    params:
+      shift: 2.0
+  scale_rope:
+    class_type: ScaleROPE
+    title: "ScaleROPE"
+    params:
+      scale_x: 1
+      shift_x: 0
+      scale_y: 1
+      shift_y: 0
+      scale_t: 7
+      shift_t: 0
+      
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 4
+      cfg: 1.0
+      sampler_name: "uni_pc"
+      scheduler: "simple"
+      denoise: 1.0
+      
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  
+  image_from_batch:
+    class_type: ImageFromBatch
+    title: "Image From Batch"
+    params:
+      batch_index: 4
+      length: 1
+      
+  save_image:
+    class_type: SaveImage
+    title: "Save Image"
+
+connections:
+  - from: "unet_loader:0"
+    to: "lora_loader:model"
+  - from: "lora_loader:0"
+    to: "model_sampler:model"
+  - from: "model_sampler:0"
+    to: "scale_rope:model"
+  - from: "scale_rope:0"
+    to: "ksampler:model"
+    
+  - from: "load_image:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "clip_vision_encode:image"
+  - from: "scale_image:0"
+    to: "i2v_preprocessor:start_image"
+  
+  - from: "clip_vision_loader:0"
+    to: "clip_vision_encode:clip_vision"
+
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "pos_prompt:0"
+    to: "i2v_preprocessor:positive"
+  - from: "neg_prompt:0"
+    to: "i2v_preprocessor:negative"
+  - from: "vae_loader:0"
+    to: "i2v_preprocessor:vae"
+  - from: "clip_vision_encode:0"
+    to: "i2v_preprocessor:clip_vision_output"
+    
+  - from: "i2v_preprocessor:0"
+    to: "ksampler:positive"
+  - from: "i2v_preprocessor:1"
+    to: "ksampler:negative"
+  - from: "i2v_preprocessor:2"
+    to: "ksampler:latent_image"
+
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_decode:0"
+    to: "image_from_batch:image"
+  - from: "image_from_batch:0"
+    to: "save_image:images"
+
+ui_map:
+  start_image: "load_image:image"
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  
+  aspect_ratio:
+    width: "i2v_preprocessor:width"
+    height: "i2v_preprocessor:height"
+
+  seed: "ksampler:seed"
+  
+  filename_prefix: "save_image:filename_prefix"
