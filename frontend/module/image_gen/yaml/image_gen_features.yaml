@@ -7,6 +7,10 @@ default:
     - style
     - conditioning
 
+z-image:
+  enabled_chains:
+    - conditioning
+
 neta-lumina:
   enabled_chains:
     - lora

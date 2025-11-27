@@ -59,6 +59,7 @@ def update_model_list(architecture_filter: str, category_filter: str):
     chroma1_models_data = checkpoints.get("Chroma1", {}).get("models", [])
     omnigen2_models_data = checkpoints.get("OmniGen2", {}).get("models", [])
     neta_lumina_models_data = checkpoints.get("Neta-Lumina", {}).get("models", [])
+    z_image_models_data = checkpoints.get("Z-Image", {}).get("models", [])
     
     sdxl_models_display = [m['display_name'] for m in sdxl_models_data]
     sd35_models_display = [m['display_name'] for m in sd35_models_data]
@@ -71,10 +72,13 @@ def update_model_list(architecture_filter: str, category_filter: str):
     chroma1_models_display = [m['display_name'] for m in chroma1_models_data]
     omnigen2_models_display = [m['display_name'] for m in omnigen2_models_data]
     neta_lumina_models_display = [m['display_name'] for m in neta_lumina_models_data]
+    z_image_models_display = [m['display_name'] for m in z_image_models_data]
 
     choices = []
     if architecture_filter == "ALL":
-        choices = sdxl_models_display + sd35_models_display + flux_models_display + omnigen2_models_display + neta_lumina_models_display + hunyuan_models_display + hidream_models_display + qwen_models_display + chroma1_models_display + chroma_radiance_models_display + sd15_models_display
+        choices = z_image_models_display + sdxl_models_display + sd35_models_display + flux_models_display + omnigen2_models_display + neta_lumina_models_display + hunyuan_models_display + hidream_models_display + qwen_models_display + chroma1_models_display + chroma_radiance_models_display + sd15_models_display
+    elif architecture_filter == "Z-Image":
+        choices = z_image_models_display
     elif architecture_filter == "SDXL":
         choices = sdxl_models_display
     elif architecture_filter == "SD3.5":
@@ -217,7 +221,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         defaults = get_model_generation_defaults(selected_model_name, model_type, model_defaults)
         
         cn_config = load_controlnet_models()
-        arch_key_map = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina"}
+        arch_key_map = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina", "z-image": "Z-Image"}
         arch_key = arch_key_map.get(model_type, "SDXL")
         
         if controlnet_accordion and 'controlnet' in enabled_chains:
@@ -365,7 +369,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
 
     def on_cn_type_change(selected_type, model_type):
         cn_config = load_controlnet_models()
-        arch_key = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina"}.get(model_type, "SDXL")
+        arch_key = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina", "z-image": "Z-Image"}.get(model_type, "SDXL")
         
         series_choices = []
         if arch_key in cn_config and selected_type:
@@ -388,7 +392,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
 
     def on_cn_series_change(selected_series, selected_type, model_type):
         cn_config = load_controlnet_models()
-        arch_key = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina"}.get(model_type, "SDXL")
+        arch_key = {"sdxl": "SDXL", "sd35": "SDXL", "sd15": "SD1.5", "flux": "FLUX", "qwen-image": "Qwen-Image", "hunyuanimage": "HunyuanImage", "chroma1": "Chroma1", "chroma1-radiance": "Chroma1-Radiance", "omnigen2": "OmniGen2", "neta-lumina": "Neta-Lumina", "z-image": "Z-Image"}.get(model_type, "SDXL")
         
         filepath = "None"
         if arch_key in cn_config and selected_series and selected_type:
