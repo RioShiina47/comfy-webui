@@ -7,6 +7,14 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+Z-Image:
+  _defaults:
+    steps: 9
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    total_pixels: 1048576
+
 OmniGen2:
   _defaults:
     steps: 20

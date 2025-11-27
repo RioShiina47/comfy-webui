@@ -1,4 +1,12 @@
 Checkpoints:
+  Z-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "Tongyi-MAI/Z Image Turbo"
+        components:
+          unet: "z_image_turbo_bf16.safetensors"
+          vae: "ae.safetensors"
+          clip: "qwen_3_4b.safetensors"
   Neta-Lumina:
     latent_type: sd3_latent
     models:
