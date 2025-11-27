@@ -11,7 +11,7 @@ def create_model_architecture_filter_ui(prefix: str):
     components = {}
     with gr.Row():
         components[key('model_filter')] = gr.Radio(
-            ["ALL", "FLUX", "OmniGen2", "Neta-Lumina", "SDXL", "SD3.5", "HunyuanImage", "HiDream", "Qwen-Image", "Chroma1", "Chroma1-Radiance", "SD1.5"], 
+            ["ALL", "Z-Image", "FLUX", "OmniGen2", "Neta-Lumina", "SDXL", "SD3.5", "HunyuanImage", "HiDream", "Qwen-Image", "Chroma1", "Chroma1-Radiance", "SD1.5"], 
             label="Model Architecture", 
             value="ALL",
             interactive=True
