@@ -144,6 +144,10 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    - filename: "z_image_turbo_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/z_image_turbo"
+      repository_file_path: "split_files/diffusion_models/z_image_turbo_bf16.safetensors"
     - filename: "qwen_image_fp8_e4m3fn.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
@@ -292,6 +296,10 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    - filename: "qwen_3_4b.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/z_image_turbo"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b.safetensors"
     - filename: "clip_l.safetensors"
       source: "hf"
       repo_id: "comfyanonymous/flux_text_encoders"
