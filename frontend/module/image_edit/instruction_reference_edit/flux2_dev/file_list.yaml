@@ -1,0 +1,16 @@
+file: 
+  text_encoders: 
+    - filename: "mistral_3_small_flux2_fp8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux2-dev"
+      repository_file_path: "split_files/text_encoders/mistral_3_small_flux2_fp8.safetensors"
+  unet: 
+    - filename: "flux2-dev-Q3_K_S.gguf"
+      source: "hf"
+      repo_id: "city96/FLUX.2-dev-gguf"
+      repository_file_path: "flux2-dev-Q3_K_S.gguf"
+  vae: 
+    - filename: "flux2-vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux2-dev"
+      repository_file_path: "split_files/vae/flux2-vae.safetensors"

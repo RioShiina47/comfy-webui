@@ -1,4 +1,4 @@
-# Normal preset: Includes ComfyUI, Manager, IPAdapter_plus, and ControlNet_Aux nodes.
+# Normal preset: Includes ComfyUI, Manager, IPAdapter_plus, ControlNet_Aux nodes and ComfyUI-GGUF.
 # The environment is determined by the requirements of these specific nodes.
 
 FROM nvidia/cuda:12.9.0-devel-ubuntu24.04
@@ -50,6 +50,10 @@ RUN git clone https://github.com/cubiq/ComfyUI_IPAdapter_plus.git custom_nodes/C
 # comfyui_controlnet_aux
 RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git custom_nodes/comfyui_controlnet_aux
 RUN pip install ${PIP_FLAGS} -r ./custom_nodes/comfyui_controlnet_aux/requirements.txt
+
+# ComfyUI-GGUF
+RUN git clone https://github.com/city96/ComfyUI-GGUF.git custom_nodes/ComfyUI-GGUF
+RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-GGUF/requirements.txt
 
 # --- Custom node installation end ---
 
