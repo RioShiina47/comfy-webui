@@ -1,6 +1,6 @@
 import gradio as gr
 from core import node_info_manager
-from .config_loader import load_constants_config, load_model_config
+from .config_loader import load_constants_config, load_model_config, load_architectures_config
 from .event_handlers import on_lora_upload, on_embedding_upload
 from .vae_utils import on_vae_upload
 
@@ -9,9 +9,14 @@ constants = load_constants_config()
 def create_model_architecture_filter_ui(prefix: str):
     key = lambda name: f"{prefix}_{name}"
     components = {}
+    
+    config = load_architectures_config()
+    ordered_architectures = config.get("architecture_order", [])
+    choices = ["ALL"] + ordered_architectures
+
     with gr.Row():
         components[key('model_filter')] = gr.Radio(
-            ["ALL", "Z-Image", "FLUX", "OmniGen2", "Neta-Lumina", "SDXL", "SD3.5", "HunyuanImage", "HiDream", "Qwen-Image", "Chroma1", "Chroma1-Radiance", "SD1.5"], 
+            choices, 
             label="Model Architecture", 
             value="ALL",
             interactive=True
