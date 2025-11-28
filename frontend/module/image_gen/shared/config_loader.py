@@ -8,6 +8,7 @@ _controlnet_models_config = None
 _ipadapter_presets_config = None
 _constants_config = None
 _features_config = None
+_architectures_config = None
 
 def _load_local_yaml(filename: str):
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,6 +40,12 @@ def load_constants_config():
     if _constants_config is None:
         _constants_config = _load_local_yaml("constants.yaml")
     return _constants_config
+
+def load_architectures_config():
+    global _architectures_config
+    if _architectures_config is None:
+        _architectures_config = _load_local_yaml("model_architectures.yaml")
+    return _architectures_config
 
 def load_model_config():
     global _model_config
