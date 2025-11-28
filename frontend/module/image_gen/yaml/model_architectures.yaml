@@ -1,0 +1,51 @@
+architecture_order:
+  - "Z-Image"
+  - "FLUX"
+  - "OmniGen2"
+  - "Neta-Lumina"
+  - "SDXL"
+  - "SD3.5"
+  - "HunyuanImage"
+  - "HiDream"
+  - "Qwen-Image"
+  - "Chroma1"
+  - "Chroma1-Radiance"
+  - "SD1.5"
+
+architectures:
+  "Z-Image":
+    model_type: "z-image"
+    controlnet_key: "Z-Image"
+  "FLUX":
+    model_type: "flux"
+    controlnet_key: "FLUX"
+  "OmniGen2":
+    model_type: "omnigen2"
+    controlnet_key: "OmniGen2"
+  "Neta-Lumina":
+    model_type: "neta-lumina"
+    controlnet_key: "Neta-Lumina"
+  "SDXL":
+    model_type: "sdxl"
+    controlnet_key: "SDXL"
+  "SD3.5":
+    model_type: "sd35"
+    controlnet_key: "SD3.5"
+  "HunyuanImage":
+    model_type: "hunyuanimage"
+    controlnet_key: "HunyuanImage"
+  "HiDream":
+    model_type: "hidream"
+    controlnet_key: "HiDream"
+  "Qwen-Image":
+    model_type: "qwen-image"
+    controlnet_key: "Qwen-Image"
+  "Chroma1":
+    model_type: "chroma1"
+    controlnet_key: "Chroma1"
+  "Chroma1-Radiance":
+    model_type: "chroma1-radiance"
+    controlnet_key: "Chroma1-Radiance"
+  "SD1.5":
+    model_type: "sd15"
+    controlnet_key: "SD1.5"
