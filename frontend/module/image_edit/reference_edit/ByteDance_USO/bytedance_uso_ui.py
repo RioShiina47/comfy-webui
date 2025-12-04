@@ -1,12 +1,8 @@
 import gradio as gr
-import random
-import os
-from PIL import Image
-from core.workflow_assembler import WorkflowAssembler
-from core.comfy_api import run_workflow_and_get_output
-from core.config import COMFYUI_INPUT_PATH
-from module.image_gen.sd_shared import create_run_generation_logic
-from core.workflow_utils import get_filename_prefix
+import traceback
+
+from .bytedance_uso_logic import process_inputs
+from core.utils import create_batched_run_generation
 
 UI_INFO = {
     "workflow_recipe": "bytedance_uso_recipe.yaml",
@@ -27,14 +23,6 @@ ASPECT_RATIO_PRESETS = {
     "3:2 (Photography)": (1216, 832),
     "2:3 (Photography Portrait)": (832, 1216)
 }
-
-def save_temp_image(img: Image.Image, name: str) -> str:
-    if not isinstance(img, Image.Image):
-        return None
-    filename = f"temp_uso_ref_{name}_{random.randint(1000, 9999)}.png"
-    filepath = os.path.join(COMFYUI_INPUT_PATH, filename)
-    img.save(filepath, "PNG")
-    return os.path.basename(filepath)
 
 def create_ui():
     components = {}
@@ -208,57 +196,7 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
         show_api=False
     )
 
-def process_uso_reference_inputs(vals):
-    references = []
-    ref_images = vals.get('reference_images', [])
-    if not ref_images:
-        return []
-    
-    ref_guidances = vals.get('reference_guidances', [])
-
-    for i in range(len(ref_images)):
-        image_pil = ref_images[i]
-        guidance = ref_guidances[i] if i < len(ref_guidances) else 3.5
-
-        if image_pil is not None:
-            image_filename = save_temp_image(image_pil, f"content_{i}")
-            references.append({
-                "image": image_filename,
-                "guidance": guidance,
-            })
-    return references
-
-def process_uso_style_reference_inputs(vals):
-    references = []
-    style_ref_images = vals.get('style_reference_images', [])
-    if not style_ref_images:
-        return []
-    
-    for i in range(len(style_ref_images)):
-        image_pil = style_ref_images[i]
-        if image_pil is not None:
-            image_filename = save_temp_image(image_pil, f"style_{i}")
-            references.append({"image": image_filename})
-    return references
-
-def process_inputs(ui_values, seed_override=None):
-    vals = {k.replace(f'{PREFIX}_', ''): v for k, v in ui_values.items() if isinstance(k, str) and k.startswith(PREFIX)}
-
-    if not vals.get('positive_prompt'):
-        raise gr.Error("Prompt is required.")
-
-    seed = int(vals.get('seed', -1))
-    vals['seed'] = seed_override if seed_override is not None else (random.randint(0, 2**32 - 1) if seed == -1 else seed)
-    
-    vals['filename_prefix'] = ui_values.get(f'{PREFIX}_filename_prefix', get_filename_prefix())
-
-    vals['uso_reference_chain'] = process_uso_reference_inputs(vals)
-    vals['uso_style_reference_chain'] = process_uso_style_reference_inputs(vals)
-
-    recipe_path = UI_INFO["workflow_recipe"]
-    module_path = os.path.dirname(os.path.abspath(__file__))
-    assembler = WorkflowAssembler(recipe_path, base_path=module_path)
-    workflow = assembler.assemble(vals)
-    return workflow, {"extra_pnginfo": {"workflow": ""}}
-
-run_generation = create_run_generation_logic(process_inputs, UI_INFO, PREFIX)
+run_generation = create_batched_run_generation(
+    process_inputs,
+    lambda status, files: (status, files)
+)

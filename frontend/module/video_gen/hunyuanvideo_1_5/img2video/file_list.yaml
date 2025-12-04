@@ -1,0 +1,29 @@
+file: 
+  diffusion_models: 
+    - filename: "hunyuanvideo1.5_720p_i2v_cfg_distilled_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HunyuanVideo_1.5_repackaged"
+      repository_file_path: "split_files/diffusion_models/hunyuanvideo1.5_720p_i2v_cfg_distilled_fp8_scaled.safetensors"
+    - filename: "hunyuanvideo1.5_1080p_sr_distilled_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HunyuanVideo_1.5_repackaged"
+      repository_file_path: "split_files/diffusion_models/hunyuanvideo1.5_1080p_sr_distilled_fp8_scaled.safetensors"
+  latent_upscale_models: 
+    - filename: "hunyuanvideo15_latent_upsampler_1080p.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HunyuanVideo_1.5_repackaged"
+      repository_file_path: "split_files/latent_upscale_models/hunyuanvideo15_latent_upsampler_1080p.safetensors"
+  text_encoders: 
+    - filename: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"
+    - filename: "byt5_small_glyphxl_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HunyuanImage_2.1_ComfyUI"
+      repository_file_path: "split_files/text_encoders/byt5_small_glyphxl_fp16.safetensors" 
+  vae: 
+    - filename: "hunyuanvideo15_vae_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HunyuanVideo_1.5_repackaged"
+      repository_file_path: "split_files/vae/hunyuanvideo15_vae_fp16.safetensors"

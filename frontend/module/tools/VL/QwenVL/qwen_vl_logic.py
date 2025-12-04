@@ -1,22 +1,13 @@
 import random
 import os
 import tempfile
-from PIL import Image
 
 from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
 from core.workflow_utils import get_filename_prefix
+from core.utils import save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "qwen_vl_recipe.yaml"
-
-def save_temp_image(img: Image.Image) -> str:
-    if not isinstance(img, Image.Image):
-        return None
-    filename = f"temp_qwen_vl_input_{random.randint(1000, 9999)}.png"
-    filepath = os.path.join(COMFYUI_INPUT_PATH, filename)
-    img.save(filepath, "PNG")
-    print(f"Saved temporary image to {filepath}")
-    return os.path.basename(filepath)
 
 def process_inputs(params):
     local_params = params.copy()
@@ -34,8 +25,7 @@ def process_inputs(params):
         local_params['model_name'] = "Qwen3-VL-4B-Instruct-FP8"
     
     seed = int(local_params.get('seed', -1))
-    if seed == -1:
-        local_params['seed'] = random.randint(0, 2**32 - 1)
+    local_params['seed'] = handle_seed(seed)
     
     temp_dir = tempfile.gettempdir()
     unique_filename = f"qwen_vl_desc_{get_filename_prefix()}_{random.randint(1000, 9999)}.txt"

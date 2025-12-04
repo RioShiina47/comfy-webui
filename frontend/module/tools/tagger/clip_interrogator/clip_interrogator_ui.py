@@ -1,16 +1,10 @@
 import gradio as gr
-import random
 import os
-import shutil
 import traceback
-import tempfile
 import time
-from PIL import Image
 
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
+from .clip_interrogator_logic import process_inputs
 from core.comfy_api import run_workflow_and_get_output
-from core.workflow_utils import get_filename_prefix
 
 UI_INFO = {
     "workflow_recipe": "clip_interrogator_recipe.yaml",
@@ -20,15 +14,6 @@ UI_INFO = {
 }
 
 MODE_CHOICES = ["fast", "classic", "best", "negative"]
-
-def save_temp_image(img: Image.Image) -> str:
-    if not isinstance(img, Image.Image):
-        return None
-    filename = f"temp_interrogator_input_{random.randint(1000, 9999)}.png"
-    filepath = os.path.join(COMFYUI_INPUT_PATH, filename)
-    img.save(filepath, "PNG")
-    print(f"Saved temporary image to {filepath}")
-    return os.path.basename(filepath)
 
 def create_ui():
     components = {}
@@ -59,30 +44,6 @@ def get_main_output_components(components: dict):
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     pass
-
-def process_inputs(ui_values):
-    local_ui_values = ui_values.copy()
-    
-    input_img = local_ui_values.get('input_image')
-    if input_img is None:
-        raise gr.Error("Please upload an input image.")
-        
-    local_ui_values['input_image'] = save_temp_image(input_img)
-    
-    temp_dir = tempfile.gettempdir()
-    unique_filename = f"interrogator_prompt_{get_filename_prefix()}_{random.randint(1000, 9999)}.txt"
-    expected_output_path = os.path.join(temp_dir, unique_filename)
-    
-    expected_output_path = expected_output_path.replace("\\", "/")
-    
-    local_ui_values['output_file_path'] = os.path.dirname(expected_output_path)
-    local_ui_values['filename_prefix'] = os.path.basename(expected_output_path).replace('.txt', '')
-
-    module_path = os.path.dirname(os.path.abspath(__file__))
-    assembler = WorkflowAssembler(UI_INFO["workflow_recipe"], base_path=module_path)
-    workflow = assembler.assemble(local_ui_values)
-    
-    return workflow, {"expected_text_file_path": expected_output_path}
 
 def run_generation(ui_values):
     final_text_content = "Processing..."

@@ -50,29 +50,6 @@ def get_latent_type_for_model(selected_model_name: str) -> str:
                 return arch_data.get("latent_type", "latent")
     return "latent"
 
-def save_temp_image_from_pil(img, prefix):
-    if not isinstance(img, Image.Image): return None
-    filename = f"temp_{prefix}_{random.randint(1000, 9999)}.png"
-    filepath = os.path.join(COMFYUI_INPUT_PATH, filename)
-    img.save(filepath, "PNG")
-    return os.path.basename(filepath)
-
-def create_mask_from_layer(image_editor_output):
-    if not image_editor_output or image_editor_output.get('background') is None or not image_editor_output.get('layers'):
-        return None
-
-    background = image_editor_output['background']
-    composite_mask = Image.new('RGBA', background.size, (0, 0, 0, 0))
-
-    for layer_pil in image_editor_output['layers']:
-        if layer_pil:
-            composite_mask.paste(layer_pil, (0, 0), layer_pil)
-
-    r, g, b, a = composite_mask.split()
-    white_rgb_mask = Image.merge('RGBA', [Image.new('L', r.size, 255), Image.new('L', g.size, 255), Image.new('L', b.size, 255), a])
-    
-    return white_rgb_mask
-
 def parse_generation_parameters_for_ui(full_prompt_text: str):
     if not full_prompt_text: return {}
     data = {}

@@ -1,20 +1,10 @@
-import random
 import os
-from PIL import Image
 from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH, COMFYUI_OUTPUT_PATH
 from core.workflow_utils import get_filename_prefix
+from core.utils import save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "hunyuan3d2_img23d_recipe.yaml"
-
-def save_temp_image(img: Image.Image) -> str:
-    if not isinstance(img, Image.Image):
-        return None
-    filename = f"temp_hunyuan3d_input_{random.randint(1000, 9999)}.png"
-    filepath = os.path.join(COMFYUI_INPUT_PATH, filename)
-    img.save(filepath, "PNG")
-    print(f"Saved temporary image to {filepath}")
-    return filename
 
 def process_inputs(params, seed_override=None):
     local_params = params.copy()
@@ -25,13 +15,8 @@ def process_inputs(params, seed_override=None):
 
     local_params['input_image'] = save_temp_image(input_img)
 
-    if seed_override is not None:
-        local_params['seed'] = seed_override
-    else:
-        seed = int(local_params.get('seed', -1))
-        if seed == -1:
-            seed = random.randint(0, 2**32 - 1)
-        local_params['seed'] = seed
+    seed = seed_override if seed_override is not None else int(local_params.get('seed', -1))
+    local_params['seed'] = handle_seed(seed)
     
     unique_prefix = get_filename_prefix()
     
