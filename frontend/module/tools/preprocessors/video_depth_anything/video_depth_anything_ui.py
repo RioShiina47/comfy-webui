@@ -1,28 +1,13 @@
 import gradio as gr
-import random
-import os
-import shutil
 import traceback
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
-from core.media_utils import get_media_metadata
-from core.comfy_api import run_workflow_and_get_output
-from core.workflow_utils import get_filename_prefix
+from .video_depth_anything_logic import process_inputs, MODEL_CHOICES, PRECISION_CHOICES, COLORMAP_CHOICES
+from core.utils import create_simple_run_generation
 
 UI_INFO = {
-    "workflow_recipe": "video_depth_anything_recipe.yaml",
     "main_tab": "Tools",
     "sub_tab": "Video-Depth-Anything",
     "run_button_text": "🕹️ Run Video Depth Preprocessor"
 }
-
-MODEL_CHOICES = [
-    "video_depth_anything_vits.pth",
-    "video_depth_anything_vitb.pth",
-    "video_depth_anything_vitl.pth"
-]
-PRECISION_CHOICES = ["fp16", "fp32"]
-COLORMAP_CHOICES = ["gray", "viridis", "plasma", "inferno", "magma", "cividis", "turbo"]
 
 def create_ui():
     components = {}
@@ -55,52 +40,7 @@ def get_main_output_components(components: dict):
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     pass
 
-def save_temp_video(file_obj) -> str:
-    if file_obj is None: return None
-    ext = os.path.splitext(file_obj)[1] or ".mp4"
-    temp_filename = f"temp_video_depth_{random.randint(1000, 9999)}{ext}"
-    save_path = os.path.join(COMFYUI_INPUT_PATH, temp_filename)
-    shutil.copy(file_obj, save_path)
-    print(f"Saved temporary input video to: {save_path}")
-    return temp_filename
-
-def process_inputs(ui_values):
-    local_ui_values = ui_values.copy()
-    
-    input_video = local_ui_values.get('input_video')
-    if input_video is None:
-        raise gr.Error("Please provide an input video.")
-    
-    local_ui_values['filename_prefix'] = get_filename_prefix()
-    local_ui_values['input_video_filename'] = save_temp_video(input_video)
-    
-    metadata = get_media_metadata(input_video, is_video=True)
-    local_ui_values['fps'] = metadata.get('fps', 30)
-    
-    recipe_path = UI_INFO["workflow_recipe"]
-    module_path = os.path.dirname(os.path.abspath(__file__))
-    assembler = WorkflowAssembler(recipe_path, base_path=module_path)
-    workflow = assembler.assemble(local_ui_values)
-    
-    return workflow, None
-
-def run_generation(ui_values):
-    final_files = []
-    try:
-        yield ("Status: Preparing...", None)
-        
-        workflow, extra_data = process_inputs(ui_values)
-        workflow_package = (workflow, extra_data)
-        
-        for status, output_files in run_workflow_and_get_output(workflow_package):
-            if output_files and isinstance(output_files, list):
-                final_files = output_files
-            
-            yield (status, final_files[0] if final_files else None)
-
-    except Exception as e:
-        traceback.print_exc()
-        yield (f"Error: {e}", None)
-        return
-
-    yield ("Status: Loaded successfully!", final_files[0] if final_files else None)
+run_generation = create_simple_run_generation(
+    process_inputs,
+    lambda status, files: (status, files)
+)
