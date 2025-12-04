@@ -1,15 +1,13 @@
 import gradio as gr
 import os
-import random
-from PIL import Image
 import numpy as np
+from PIL import Image
 
 from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
+from core.utils import save_temp_image, create_mask_from_layer, handle_seed
 from .shared.utils import (
     get_model_path,
-    save_temp_image_from_pil,
-    create_mask_from_layer,
     get_latent_type_for_model
 )
 from .shared.input_processors import (
@@ -39,7 +37,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     if task_type in ['img2img', 'hires_fix']:
         if vals.get('input_image') is None:
             raise gr.Error(f"An input image is required for {task_type}.")
-        vals['input_image'] = save_temp_image_from_pil(vals.get('input_image'), f"{task_type}_input")
+        vals['input_image'] = save_temp_image(vals.get('input_image'))
     
     elif task_type == 'inpaint':
         img_dict = vals.get('input_image_dict')
@@ -52,12 +50,12 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         inverted_alpha_np = 255 - mask_alpha_np
         inverted_alpha_pil = Image.fromarray(inverted_alpha_np, mode='L')
         background_img.putalpha(inverted_alpha_pil)
-        vals['input_image'] = save_temp_image_from_pil(background_img, "inpaint_composite")
+        vals['input_image'] = save_temp_image(background_img)
 
     elif task_type == 'outpaint':
         if vals.get('input_image') is None:
             raise gr.Error("Outpainting requires an input image.")
-        vals['input_image'] = save_temp_image_from_pil(vals.get('input_image'), "outpaint_input")
+        vals['input_image'] = save_temp_image(vals.get('input_image'))
         vals['megapixels'] = 0.25
         vals['grow_mask_by'] = vals.get('feathering')
 
@@ -114,8 +112,8 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     vals['style_chain'] = process_style_inputs(vals)
     vals['conditioning_chain'] = process_conditioning_inputs(vals)
 
-    seed = int(vals.get('seed', -1))
-    vals['seed'] = seed_override if seed_override is not None else (random.randint(0, 2**32 - 1) if seed == -1 else seed)
+    seed = seed_override if seed_override is not None else vals.get('seed', -1)
+    vals['seed'] = handle_seed(seed)
     
     workflow = assembler.assemble(vals)
     

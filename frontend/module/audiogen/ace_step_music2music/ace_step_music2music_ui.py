@@ -2,10 +2,8 @@ import gradio as gr
 import random
 import os
 import shutil
-import traceback
-from core.comfy_api import run_workflow_and_get_output
-
 from .ace_step_music2music_logic import process_inputs
+from core.utils import create_simple_run_generation
 
 UI_INFO = {
     "workflow_recipe": "ace_step_music2music_recipe.yaml",
@@ -65,24 +63,7 @@ def get_main_output_components(components: dict):
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     pass
 
-def run_generation(ui_values):
-    final_audio = None
-    
-    try:
-        yield ("Status: Preparing...", None)
-        
-        workflow, extra_data = process_inputs(ui_values)
-        workflow_package = (workflow, extra_data)
-        
-        for status, output_files in run_workflow_and_get_output(workflow_package):
-            if output_files and isinstance(output_files, list):
-                final_audio = output_files[0]
-            
-            yield (status, final_audio)
-
-    except Exception as e:
-        traceback.print_exc()
-        yield (f"Error: {e}", None)
-        return
-
-    yield ("Status: Loaded successfully!", final_audio)
+run_generation = create_simple_run_generation(
+    process_inputs,
+    lambda status, files: (status, files)
+)

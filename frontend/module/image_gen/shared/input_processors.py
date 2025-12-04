@@ -2,7 +2,7 @@ import gradio as gr
 import os
 from core.config import CIVITAI_API_KEY
 from core.download_utils import get_lora_path, get_embedding_path
-from .utils import save_temp_image_from_pil
+from core.utils import save_temp_image
 from .config_loader import load_ipadapter_presets
 
 def process_lora_inputs(vals):
@@ -74,7 +74,7 @@ def process_controlnet_inputs(vals):
         cn_path = cn_filepaths[i] if i < len(cn_filepaths) else "None"
 
         if image_pil is not None and strength > 0 and cn_path and cn_path != "None":
-            image_filename = save_temp_image_from_pil(image_pil, f"cn_{i}")
+            image_filename = save_temp_image(image_pil)
             controlnets.append({
                 "image": image_filename,
                 "strength": strength,
@@ -106,7 +106,7 @@ def process_ipadapter_inputs(vals):
         lora_strength = ipa_lora_strengths[i] if i < len(ipa_lora_strengths) else 0.6
 
         if image_pil is not None and weight > 0 and preset:
-            image_filename = save_temp_image_from_pil(image_pil, f"ipa_{i}")
+            image_filename = save_temp_image(image_pil)
             loader_type = 'FaceID' if preset in all_faceid_presets else 'Unified'
             item_data = {
                 "image": image_filename,
@@ -156,7 +156,7 @@ def process_style_inputs(vals):
         strength = style_strengths[i] if i < len(style_strengths) else 1.0
 
         if image_pil is not None and strength > 0:
-            image_filename = save_temp_image_from_pil(image_pil, f"style_{i}")
+            image_filename = save_temp_image(image_pil)
             styles.append({
                 "image": image_filename,
                 "strength": strength,

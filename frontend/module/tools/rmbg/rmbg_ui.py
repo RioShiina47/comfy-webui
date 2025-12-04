@@ -1,13 +1,7 @@
 import gradio as gr
-import random
-import os
-import shutil
 import traceback
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
-from core.media_utils import get_media_metadata
+from .rmbg_logic import process_inputs
 from core.comfy_api import run_workflow_and_get_output
-from core.workflow_utils import get_filename_prefix
 
 UI_INFO = {
     "workflow_recipe": "rmbg_recipe.yaml",
@@ -72,55 +66,10 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
         }
     components['input_type'].change(fn=update_input_visibility, inputs=[components['input_type']], outputs=list(update_input_visibility("Image").keys()), show_api=False)
 
-def save_temp_file(file_obj, name_prefix: str, is_video=False) -> str:
-    if file_obj is None: return None
-    if is_video:
-        ext = os.path.splitext(file_obj)[1] or ".mp4"
-        temp_filename = f"temp_{name_prefix}_{random.randint(1000, 9999)}{ext}"
-        save_path = os.path.join(COMFYUI_INPUT_PATH, temp_filename)
-        shutil.copy(file_obj, save_path)
-    else:
-        temp_filename = f"temp_{name_prefix}_{random.randint(1000, 9999)}.png"
-        save_path = os.path.join(COMFYUI_INPUT_PATH, temp_filename)
-        file_obj.save(save_path, "PNG")
-    print(f"Saved temporary input file to: {save_path}")
-    return temp_filename
-
-def process_inputs(ui_values):
-    local_ui_values = ui_values.copy()
-    is_video = local_ui_values.get('input_type') == "Video"
-    
-    input_file_obj = local_ui_values.get('input_video') if is_video else local_ui_values.get('input_image')
-    if input_file_obj is None:
-        raise gr.Error(f"Please provide an input {local_ui_values.get('input_type').lower()}.")
-    
-    unique_prefix = get_filename_prefix()
-    local_ui_values['filename_prefix_result'] = f"{unique_prefix}_result"
-    local_ui_values['filename_prefix_mask'] = f"{unique_prefix}_mask"
-    
-    if is_video:
-        local_ui_values['input_video_filename'] = save_temp_file(input_file_obj, "rmbg_input", is_video=True)
-        metadata = get_media_metadata(input_file_obj, is_video=True)
-        local_ui_values['fps'] = metadata.get('fps', 30)
-    else:
-        local_ui_values['input_image_filename'] = save_temp_file(input_file_obj, "rmbg_input", is_video=False)
-        
-    recipe_path = UI_INFO["workflow_recipe"]
-    module_path = os.path.dirname(os.path.abspath(__file__))
-    assembler = WorkflowAssembler(recipe_path, base_path=module_path)
-    workflow = assembler.assemble(local_ui_values)
-
-    if is_video:
-        workflow[assembler.node_map['rmbg_node']]['inputs']['image'] = [assembler.node_map['get_frames'], 0]
-    else:
-        workflow[assembler.node_map['rmbg_node']]['inputs']['image'] = [assembler.node_map['load_image'], 0]
-        
-    return workflow, None
-
 def run_generation(ui_values):
     final_files = []
     try:
-        yield ("Status: Preparing...", None)
+        yield ("Status: Preparing...", gr.update(), gr.update(), gr.update())
         
         workflow, extra_data = process_inputs(ui_values)
         workflow_package = (workflow, extra_data)
@@ -131,11 +80,27 @@ def run_generation(ui_values):
                 if new_files:
                     final_files.extend(new_files)
             
-            yield (status, final_files)
+            result_files = sorted([f for f in final_files if "result" in os.path.basename(f)])
+            mask_files = sorted([f for f in final_files if "mask" in os.path.basename(f)])
+            
+            is_video = ui_values.get('input_type') == "Video"
+            
+            gallery_update = result_files + mask_files if not is_video else gr.update()
+            video_result_update = result_files[0] if is_video and result_files else gr.update()
+            video_mask_update = mask_files[0] if is_video and mask_files else gr.update()
+
+            yield (status, gallery_update, video_result_update, video_mask_update)
 
     except Exception as e:
         traceback.print_exc()
-        yield (f"Error: {e}", None)
+        yield (f"Error: {e}", gr.update(), gr.update(), gr.update())
         return
 
-    yield ("Status: Loaded successfully!", final_files)
+    result_files = sorted([f for f in final_files if "result" in os.path.basename(f)])
+    mask_files = sorted([f for f in final_files if "mask" in os.path.basename(f)])
+    is_video = ui_values.get('input_type') == "Video"
+    gallery_update = result_files + mask_files if not is_video else gr.update()
+    video_result_update = result_files[0] if is_video and result_files else gr.update()
+    video_mask_update = mask_files[0] if is_video and mask_files else gr.update()
+    
+    yield ("Status: Loaded successfully!", gallery_update, video_result_update, video_mask_update)
