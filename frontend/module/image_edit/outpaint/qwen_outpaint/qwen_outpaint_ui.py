@@ -1,13 +1,8 @@
 import gradio as gr
-import os
-import random
-from PIL import Image
-import numpy as np
+import traceback
 
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
-from module.image_gen.sd_shared import save_temp_image_from_pil
-from core.workflow_utils import get_filename_prefix
+from .qwen_outpaint_logic import process_inputs
+from core.utils import create_simple_run_generation
 
 UI_INFO = { 
     "workflow_recipe": "qwen_outpaint_recipe.yaml",
@@ -62,46 +57,7 @@ def get_main_output_components(components: dict):
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     pass
 
-def process_inputs(ui_values, seed_override=None):
-    vals = {k.replace(f'{PREFIX}_', ''): v for k, v in ui_values.items() if isinstance(k, str) and k.startswith(PREFIX)}
-    
-    input_img = vals.get('input_image')
-    if input_img is None:
-        raise gr.Error("Input image is required for Outpainting.")
-    
-    vals['input_image'] = save_temp_image_from_pil(input_img, f"{PREFIX}_input")
-    
-    recipe_path = UI_INFO["workflow_recipe"]
-    module_path = os.path.dirname(os.path.abspath(__file__))
-    assembler = WorkflowAssembler(recipe_path, base_path=module_path)
-    
-    seed = int(vals.get('seed', -1))
-    vals['seed'] = seed_override if seed_override is not None else (random.randint(0, 2**32 - 1) if seed == -1 else seed)
-    vals['filename_prefix'] = get_filename_prefix()
-
-    workflow = assembler.assemble(vals)
-    return workflow, {"extra_pnginfo": {"workflow": ""}}
-
-def run_generation(ui_values):
-    from core.comfy_api import run_workflow_and_get_output
-    import traceback
-
-    final_files = []
-    try:
-        yield ("Status: Preparing...", None)
-        
-        workflow, extra_data = process_inputs(ui_values)
-        workflow_package = (workflow, extra_data)
-        
-        for status, output_files in run_workflow_and_get_output(workflow_package):
-            if output_files and isinstance(output_files, list):
-                final_files = output_files
-            
-            yield (status, final_files)
-
-    except Exception as e:
-        traceback.print_exc()
-        yield (f"Error: {e}", None)
-        return
-
-    yield ("Status: Loaded successfully!", final_files)
+run_generation = create_simple_run_generation(
+    process_inputs,
+    lambda status, files: (status, files)
+)

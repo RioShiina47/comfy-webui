@@ -4,8 +4,8 @@ import os
 import traceback
 from PIL import Image
 
-from .chrono_edit_logic import process_inputs
-from core.comfy_api import run_workflow_and_get_output
+from .chrono_edit_logic import process_inputs as process_inputs_logic
+from core.utils import create_batched_run_generation
 
 UI_INFO = {
     "workflow_recipe": "chrono_edit_recipe.yaml",
@@ -62,39 +62,15 @@ def get_main_output_components(components: dict):
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     pass
 
-def run_generation(ui_values):
-    all_output_files = []
-    
-    try:
-        batch_count = int(ui_values.get('batch_count', 1))
-        original_seed = int(ui_values.get('seed', -1))
+def process_inputs(ui_values, seed_override=None):
+    local_ui_values = ui_values.copy()
+    selected_ratio = local_ui_values.get('aspect_ratio')
+    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
+    local_ui_values['width'] = width
+    local_ui_values['height'] = height
+    return process_inputs_logic(local_ui_values, seed_override)
 
-        for i in range(batch_count):
-            current_seed = original_seed + i if original_seed != -1 else None
-            batch_msg = f" (Batch {i + 1}/{batch_count})" if batch_count > 1 else ""
-            
-            yield (f"Status: Preparing{batch_msg}...", None)
-            
-            local_ui_values = ui_values.copy()
-            selected_ratio = local_ui_values.get('aspect_ratio')
-            width, height = ASPECT_RATIO_PRESETS[selected_ratio]
-            local_ui_values['width'] = width
-            local_ui_values['height'] = height
-            
-            workflow, extra_data = process_inputs(local_ui_values, seed_override=current_seed)
-            workflow_package = (workflow, extra_data)
-            
-            for status, output_path in run_workflow_and_get_output(workflow_package):
-                status_msg = f"Status: {status.replace('Status: ', '')}{batch_msg}"
-                
-                if output_path and isinstance(output_path, list):
-                    all_output_files.extend(p for p in output_path if p not in all_output_files)
-
-                yield (status_msg, all_output_files)
-
-    except Exception as e:
-        traceback.print_exc()
-        yield (f"Error: {e}", None)
-        return
-
-    yield ("Status: Loaded successfully!", all_output_files)
+run_generation = create_batched_run_generation(
+    process_inputs,
+    lambda status, files: (status, files)
+)

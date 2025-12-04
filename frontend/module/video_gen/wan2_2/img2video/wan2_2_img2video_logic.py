@@ -1,21 +1,11 @@
-import random
 import os
-import shutil
 from PIL import Image
 from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
 from core.workflow_utils import get_filename_prefix
+from core.utils import save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "wan2_2_img2video_recipe.yaml"
-
-def save_temp_image(image_pil: Image.Image) -> str:
-    if image_pil is None: return None
-    comfyui_input_dir = COMFYUI_INPUT_PATH
-    temp_filename = f"temp_i2v_input_{random.randint(1000, 9999)}.png"
-    save_path = os.path.join(comfyui_input_dir, temp_filename)
-    image_pil.save(save_path, "PNG")
-    print(f"Saved temporary input image to: {save_path}")
-    return temp_filename
 
 def process_inputs(params, seed_override=None):
     local_params = params.copy()
@@ -25,13 +15,8 @@ def process_inputs(params, seed_override=None):
 
     local_params['start_image'] = save_temp_image(start_image_pil.copy())
     
-    if seed_override is not None:
-        local_params['seed'] = seed_override
-    else:
-        seed = int(local_params.get('seed', -1))
-        if seed == -1:
-            seed = random.randint(0, 999999999999999)
-        local_params['seed'] = seed
+    seed = seed_override if seed_override is not None else int(local_params.get('seed', -1))
+    local_params['seed'] = handle_seed(seed)
         
     local_params['video_length'] = int(local_params.get('video_length', 81))
     local_params['filename_prefix'] = get_filename_prefix()
