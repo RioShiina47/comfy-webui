@@ -1,4 +1,4 @@
-gradio[mcp]
+gradio[mcp]==5.50.0
 requests
 websocket-client
 imageio
