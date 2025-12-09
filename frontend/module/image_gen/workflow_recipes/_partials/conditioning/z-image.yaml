@@ -39,6 +39,13 @@ connections:
   - from: "vae_loader:0"
     to: "vae_encode:vae"
 
+dynamic_diffsynth_controlnet_chains:
+  diffsynth_controlnet_chain:
+    template: "QwenImageDiffsynthControlnet"
+    model_sampler_node: "model_sampler"
+    ksampler_node: "ksampler"
+    vae_source: "vae_loader:0"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"

@@ -13,6 +13,7 @@ from .shared.utils import (
 from .shared.input_processors import (
     process_lora_inputs,
     process_controlnet_inputs,
+    process_diffsynth_controlnet_inputs,
     process_ipadapter_inputs,
     process_embedding_inputs,
     process_style_inputs,
@@ -108,6 +109,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
 
     vals['lora_chain'] = process_lora_inputs(vals)
     vals['controlnet_chain'] = process_controlnet_inputs(vals)
+    vals['diffsynth_controlnet_chain'] = process_diffsynth_controlnet_inputs(vals)
     vals['ipadapter_chain'] = process_ipadapter_inputs(vals)
     vals['style_chain'] = process_style_inputs(vals)
     vals['conditioning_chain'] = process_conditioning_inputs(vals)

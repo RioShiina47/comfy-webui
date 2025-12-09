@@ -84,6 +84,29 @@ def process_controlnet_inputs(vals):
             })
     return controlnets
 
+def process_diffsynth_controlnet_inputs(vals):
+    controlnets = []
+    cn_images = vals.get('diffsynth_controlnet_images', [])
+    if not cn_images:
+        return []
+
+    cn_strengths = vals.get('diffsynth_controlnet_strengths', [])
+    cn_filepaths = vals.get('diffsynth_controlnet_filepaths', [])
+
+    for i in range(len(cn_images)):
+        image_pil = cn_images[i]
+        strength = cn_strengths[i] if i < len(cn_strengths) else 1.0
+        cn_path = cn_filepaths[i] if i < len(cn_filepaths) else "None"
+
+        if image_pil is not None and strength > 0 and cn_path and cn_path != "None":
+            image_filename = save_temp_image(image_pil)
+            controlnets.append({
+                "image": image_filename,
+                "strength": strength,
+                "control_net_name": cn_path,
+            })
+    return controlnets
+
 def process_ipadapter_inputs(vals):
     ipadapters = []
     ipa_images = vals.get('ipadapter_images', [])

@@ -42,20 +42,6 @@ dynamic_lora_chains:
       "model": ["model_sampler:model"]
       "clip": ["pos_prompt:clip", "neg_prompt:clip"]
 
-dynamic_controlnet_chains:
-  controlnet_chain:
-    template: "ControlNetApplyAdvanced"
-    ksampler_node: "ksampler"
-
-dynamic_ipadapter_chains:
-  ipadapter_chain:
-    end: "ksampler"
-    final_preset: "{{ ipadapter_final_preset }}"
-    final_weight: "{{ ipadapter_final_weight }}"
-    final_embeds_scaling: "{{ ipadapter_embeds_scaling }}"
-    final_loader_type: "{{ ipadapter_final_loader_type }}"
-    final_lora_strength: "{{ ipadapter_final_lora_strength }}"
-
 dynamic_conditioning_chains:
   conditioning_chain:
     ksampler_node: "ksampler"
