@@ -53,6 +53,7 @@ dynamic_controlnet_chains:
   controlnet_chain:
     template: "ControlNetApplyAdvanced"
     ksampler_node: "ksampler"
+    vae_source: "vae_loader:0"
 
 dynamic_conditioning_chains:
   conditioning_chain:

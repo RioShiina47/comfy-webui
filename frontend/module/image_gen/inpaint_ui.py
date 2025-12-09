@@ -7,7 +7,8 @@ from .sd_shared import (
     parse_generation_parameters_for_ui, register_shared_events,
     create_model_architecture_filter_ui, create_sdxl_category_filter_ui,
     create_run_generation_logic, create_style_ui,
-    create_conditioning_ui, create_vae_override_ui
+    create_conditioning_ui, create_vae_override_ui,
+    create_diffsynth_controlnet_ui
 )
 from .image_gen_logic import process_inputs as process_inputs_logic
 
@@ -105,6 +106,7 @@ def create_ui():
         with gr.Column() as accordion_wrapper:
              create_lora_ui(components, PREFIX)
              create_controlnet_ui(components, PREFIX)
+             create_diffsynth_controlnet_ui(components, PREFIX)
              create_ipadapter_ui(components, PREFIX)
              create_embedding_ui(components, PREFIX)
              create_conditioning_ui(components, PREFIX)
