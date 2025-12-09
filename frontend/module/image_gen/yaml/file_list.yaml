@@ -144,6 +144,12 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # Ovis-Image
+    - filename: "ovis_image_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Ovis-Image"
+      repository_file_path: "split_files/diffusion_models/ovis_image_bf16.safetensors"
+    # Z-Image
     - filename: "z_image_turbo_bf16.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"
@@ -290,12 +296,24 @@ file:
       source: "hf"
       repo_id: "h94/IP-Adapter-FaceID"
       repository_file_path: "ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+  model_patches: 
+    # Z-Image
+    - filename: "Z-Image-Turbo-Fun-Controlnet-Union.safetensors"
+      source: "hf"
+      repo_id: "alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union"
+      repository_file_path: "Z-Image-Turbo-Fun-Controlnet-Union.safetensors"
   style_models: 
     - filename: "flux1-redux-dev.safetensors"
       source: "hf"
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    # Ovis-Image
+    - filename: "ovis_2.5.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Ovis-Image"
+      repository_file_path: "split_files/text_encoders/ovis_2.5.safetensors"
+    # Z-Image
     - filename: "qwen_3_4b.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"

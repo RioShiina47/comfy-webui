@@ -15,6 +15,14 @@ Z-Image:
     scheduler: "simple"
     total_pixels: 1048576
 
+Ovis-Image:
+  _defaults:
+    steps: 20
+    cfg: 5.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    total_pixels: 1048576
+
 OmniGen2:
   _defaults:
     steps: 20
