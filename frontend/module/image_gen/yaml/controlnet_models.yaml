@@ -24,7 +24,7 @@ ControlNet:
     - Filepath: "anime-painter.safetensors"
       Series: "xinsir"
       Type: ["Anime Painter"]
-  FLUX:
+  FLUX.1:
     - Filepath: "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"
       Series: "Shakker Labs"
       Type: ["Union"]

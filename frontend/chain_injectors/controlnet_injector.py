@@ -17,6 +17,20 @@ def inject(assembler, chain_definition, chain_items):
     current_positive_connection = assembler.workflow[ksampler_id]['inputs']['positive']
     current_negative_connection = assembler.workflow[ksampler_id]['inputs']['negative']
     
+    vae_source_str = chain_definition.get('vae_source')
+    vae_connection = None
+    if vae_source_str:
+        try:
+            vae_node_name, vae_idx_str = vae_source_str.split(':')
+            if vae_node_name in assembler.node_map:
+                vae_connection = [assembler.node_map[vae_node_name], int(vae_idx_str)]
+            else:
+                print(f"Warning: VAE source node '{vae_node_name}' not found for ControlNet chain. VAE will not be connected.")
+        except ValueError:
+            print(f"Warning: Invalid 'vae_source' format '{vae_source_str}' for ControlNet chain. Expected 'node_name:index'. VAE will not be connected.")
+    else:
+        print(f"Warning: 'vae_source' not defined for ControlNet chain definition. VAE may not be connected if required by the ControlNet node.")
+
     for item_data in chain_items:
         cn_loader_id = assembler._get_unique_id()
         cn_loader_node = assembler._get_node_template_from_api("ControlNetLoader")
@@ -39,6 +53,9 @@ def inject(assembler, chain_definition, chain_items):
         apply_cn_node['inputs']['negative'] = current_negative_connection
         apply_cn_node['inputs']['control_net'] = [cn_loader_id, 0]
         apply_cn_node['inputs']['image'] = [image_loader_id, 0]
+        
+        if 'vae' in apply_cn_node['inputs'] and vae_connection:
+            apply_cn_node['inputs']['vae'] = vae_connection
         
         assembler.workflow[apply_cn_id] = apply_cn_node
 

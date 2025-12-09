@@ -5,6 +5,7 @@ from core.yaml_loader import load_and_merge_yaml, deep_merge_dicts
 _model_config = None
 _model_defaults = None
 _controlnet_models_config = None
+_diffsynth_controlnet_models_config = None
 _ipadapter_presets_config = None
 _constants_config = None
 _features_config = None
@@ -65,6 +66,13 @@ def load_controlnet_models():
         config = _load_local_yaml("controlnet_models.yaml")
         _controlnet_models_config = config.get("ControlNet", {})
     return _controlnet_models_config
+
+def load_diffsynth_controlnet_models():
+    global _diffsynth_controlnet_models_config
+    if _diffsynth_controlnet_models_config is None:
+        config = _load_local_yaml("diffsynth_controlnet_models.yaml")
+        _diffsynth_controlnet_models_config = config.get("DiffSynth_ControlNet", {})
+    return _diffsynth_controlnet_models_config
 
 def load_ipadapter_presets():
     global _ipadapter_presets_config

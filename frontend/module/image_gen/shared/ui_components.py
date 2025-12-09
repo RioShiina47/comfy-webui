@@ -220,6 +220,37 @@ def create_controlnet_ui(components, prefix):
             components[key('delete_controlnet_button')] = gr.Button("➖ Delete ControlNet", visible=False)
         components[key('controlnet_count_state')] = gr.State(1)
 
+def create_diffsynth_controlnet_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("DiffSynth ControlNet Settings", open=False) as diffsynth_controlnet_accordion:
+        components[key('diffsynth_controlnet_accordion')] = diffsynth_controlnet_accordion
+        
+        cn_rows, images, series, types, strengths, filepaths = [], [], [], [], [], []
+        components.update({
+            key('diffsynth_controlnet_rows'): cn_rows,
+            key('diffsynth_controlnet_images'): images,
+            key('diffsynth_controlnet_series'): series,
+            key('diffsynth_controlnet_types'): types,
+            key('diffsynth_controlnet_strengths'): strengths,
+            key('diffsynth_controlnet_filepaths'): filepaths
+        })
+        
+        for i in range(constants.get('MAX_CONTROLNETS', 5)):
+            with gr.Row(visible=(i < 1)) as row:
+                with gr.Column(scale=1):
+                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
+                with gr.Column(scale=2):
+                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
+                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
+                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
+                    filepaths.append(gr.State(None))
+                cn_rows.append(row)
+
+        with gr.Row():
+            components[key('add_diffsynth_controlnet_button')] = gr.Button("✚ Add DiffSynth ControlNet")
+            components[key('delete_diffsynth_controlnet_button')] = gr.Button("➖ Delete DiffSynth ControlNet", visible=False)
+        components[key('diffsynth_controlnet_count_state')] = gr.State(1)
+
 def create_ipadapter_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
     with gr.Accordion("IPAdapter Settings", open=False) as ipadapter_accordion:

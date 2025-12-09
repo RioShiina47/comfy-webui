@@ -1,30 +1,30 @@
 architecture_order:
   - "Z-Image"
-  - "FLUX"
-  - "OmniGen2"
-  - "Neta-Lumina"
-  - "SDXL"
-  - "SD3.5"
   - "HunyuanImage"
-  - "HiDream"
   - "Qwen-Image"
-  - "Chroma1"
   - "Chroma1-Radiance"
+  - "Chroma1"
+  - "OmniGen2"
+  - "Lumina"
+  - "HiDream"
+  - "FLUX.1"
+  - "SD3.5"
+  - "SDXL"
   - "SD1.5"
 
 architectures:
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"
-  "FLUX":
-    model_type: "flux"
-    controlnet_key: "FLUX"
+  "FLUX.1":
+    model_type: "flux1"
+    controlnet_key: "FLUX.1"
   "OmniGen2":
     model_type: "omnigen2"
     controlnet_key: "OmniGen2"
-  "Neta-Lumina":
-    model_type: "neta-lumina"
-    controlnet_key: "Neta-Lumina"
+  "Lumina":
+    model_type: "lumina"
+    controlnet_key: "Lumina"
   "SDXL":
     model_type: "sdxl"
     controlnet_key: "SDXL"
