@@ -7,6 +7,14 @@ Checkpoints:
           unet: "z_image_turbo_bf16.safetensors"
           vae: "ae.safetensors"
           clip: "qwen_3_4b.safetensors"
+  Ovis-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "AIDC-AI/Ovis-Image"
+        components:
+          unet: "ovis_image_bf16.safetensors"
+          vae: "ae.safetensors"
+          clip: "ovis_2.5.safetensors"
   Lumina:
     latent_type: sd3_latent
     models:

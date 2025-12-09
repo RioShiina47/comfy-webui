@@ -1,5 +1,6 @@
 architecture_order:
   - "Z-Image"
+  - "Ovis-Image"
   - "HunyuanImage"
   - "Qwen-Image"
   - "Chroma1-Radiance"
@@ -16,6 +17,9 @@ architectures:
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"
+  "Ovis-Image":
+    model_type: "ovis-image"
+    controlnet_key: "Ovis-Image"
   "FLUX.1":
     model_type: "flux1"
     controlnet_key: "FLUX.1"
