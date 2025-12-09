@@ -71,7 +71,7 @@ SD1.5:
     scheduler: "simple"
     total_pixels: 393216
 
-FLUX:
+FLUX.1:
   _defaults:
     steps: 20
     cfg: 1.0

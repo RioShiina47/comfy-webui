@@ -3,7 +3,7 @@ import os
 import shutil
 from core.config import LORA_DIR, EMBEDDING_DIR
 from .utils import get_model_type, get_model_generation_defaults, parse_generation_parameters_for_ui
-from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
+from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_diffsynth_controlnet_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
 
 constants = load_constants_config()
 
@@ -90,6 +90,10 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     controlnet_types_list = components.get(key('controlnet_types'))
     controlnet_filepaths_list = components.get(key('controlnet_filepaths'))
     controlnet_images_list = components.get(key('controlnet_images'))
+    diffsynth_controlnet_accordion = components.get(key('diffsynth_controlnet_accordion'))
+    diffsynth_controlnet_series_list = components.get(key('diffsynth_controlnet_series'))
+    diffsynth_controlnet_types_list = components.get(key('diffsynth_controlnet_types'))
+    diffsynth_controlnet_filepaths_list = components.get(key('diffsynth_controlnet_filepaths'))
     ipadapter_accordion = components.get(key('ipadapter_accordion'))
     ipadapter_presets_list = components.get(key('ipadapter_presets'))
     ipadapter_final_preset = components.get(key('ipadapter_final_preset'))
@@ -161,6 +165,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         chain_map = {
             'lora': lora_accordion,
             'controlnet': controlnet_accordion,
+            'controlnet_model_patch': diffsynth_controlnet_accordion,
             'ipadapter': ipadapter_accordion,
             'embedding': embedding_accordion,
             'style': style_accordion,
@@ -183,9 +188,9 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
 
         defaults = get_model_generation_defaults(selected_model_name, model_type, model_defaults)
         
-        cn_config = load_controlnet_models()
         arch_key = get_controlnet_key_for_model_type(model_type)
         
+        cn_config = load_controlnet_models()
         if controlnet_accordion and 'controlnet' in enabled_chains:
             controlnet_visible = arch_key in cn_config
             updates[controlnet_accordion] = gr.update(visible=controlnet_visible)
@@ -223,6 +228,44 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             if controlnet_filepaths_list:
                 for filepath_state in controlnet_filepaths_list: updates[filepath_state] = filepath
         
+        diffsynth_cn_config = load_diffsynth_controlnet_models()
+        if diffsynth_controlnet_accordion and 'controlnet_model_patch' in enabled_chains:
+            diffsynth_cn_visible = arch_key in diffsynth_cn_config
+            updates[diffsynth_controlnet_accordion] = gr.update(visible=diffsynth_cn_visible)
+
+            type_choices = []
+            if diffsynth_cn_visible:
+                all_types = [t for model in diffsynth_cn_config[arch_key] for t in model.get("Type", [])]
+                type_choices = sorted(list(set(all_types)))
+            
+            default_type = type_choices[0] if type_choices else None
+            type_update = gr.update(choices=type_choices, value=default_type)
+
+            series_choices = []
+            if diffsynth_cn_visible and default_type:
+                series_choices = sorted(list(set(
+                    model.get("Series", "Default")
+                    for model in diffsynth_cn_config[arch_key]
+                    if default_type in model.get("Type", [])
+                )))
+            
+            default_series = series_choices[0] if series_choices else None
+            series_update = gr.update(choices=series_choices, value=default_series)
+
+            filepath = "None"
+            if diffsynth_cn_visible and default_type and default_series:
+                for model in diffsynth_cn_config.get(arch_key, []):
+                    if model.get("Series") == default_series and default_type in model.get("Type", []):
+                        filepath = model.get("Filepath")
+                        break
+            
+            if diffsynth_controlnet_types_list:
+                for type_dd in diffsynth_controlnet_types_list: updates[type_dd] = type_update
+            if diffsynth_controlnet_series_list:
+                for series_dd in diffsynth_controlnet_series_list: updates[series_dd] = series_update
+            if diffsynth_controlnet_filepaths_list:
+                for filepath_state in diffsynth_controlnet_filepaths_list: updates[filepath_state] = filepath
+
         if ipadapter_accordion and 'ipadapter' in enabled_chains:
             ipadapter_visible = model_type in ["sdxl", "sd15", "sd35"]
             updates[ipadapter_accordion] = gr.update(visible=ipadapter_visible)
@@ -275,6 +318,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "w": width_num, "h": height_num, "steps": steps_slider, "cfg": cfg_slider,
         "sampler": sampler_dropdown, "scheduler": scheduler_dropdown, "lora": lora_accordion,
         "embedding": embedding_accordion, "gallery": gallery_component, "cn_accordion": controlnet_accordion,
+        "diffsynth_cn_accordion": diffsynth_controlnet_accordion,
         "ipa_accordion": ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
         "ipa_final_lora_slider": ipadapter_final_lora_strength_slider,
         "conditioning_accordion": conditioning_accordion
@@ -291,6 +335,14 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         for i, cn_series in enumerate(controlnet_series_list): on_model_change_outputs[f'cn_series_{i}'] = cn_series
     if controlnet_filepaths_list:
         for i, cn_filepath in enumerate(controlnet_filepaths_list): on_model_change_outputs[f'cn_filepath_{i}'] = cn_filepath
+
+    if diffsynth_controlnet_types_list:
+        for i, cn_type in enumerate(diffsynth_controlnet_types_list): on_model_change_outputs[f'diffsynth_cn_type_{i}'] = cn_type
+    if diffsynth_controlnet_series_list:
+        for i, cn_series in enumerate(diffsynth_controlnet_series_list): on_model_change_outputs[f'diffsynth_cn_series_{i}'] = cn_series
+    if diffsynth_controlnet_filepaths_list:
+        for i, cn_filepath in enumerate(diffsynth_controlnet_filepaths_list): on_model_change_outputs[f'diffsynth_cn_filepath_{i}'] = cn_filepath
+
     if ipadapter_presets_list:
         for i, ipa_preset in enumerate(ipadapter_presets_list): on_model_change_outputs[f'ipa_preset_{i}'] = ipa_preset
     if ipadapter_lora_strengths_list:
@@ -380,6 +432,58 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
                 show_progress=False,
                 show_api=False
             )
+    
+    def on_diffsynth_cn_type_change(selected_type, model_type):
+        cn_config = load_diffsynth_controlnet_models()
+        arch_key = get_controlnet_key_for_model_type(model_type)
+        
+        series_choices = []
+        if arch_key in cn_config and selected_type:
+            series_choices = sorted(list(set(
+                model.get("Series", "Default")
+                for model in cn_config[arch_key]
+                if selected_type in model.get("Type", [])
+            )))
+
+        default_series = series_choices[0] if series_choices else None
+        
+        filepath = "None"
+        if default_series:
+            for model in cn_config.get(arch_key, []):
+                if model.get("Series") == default_series and selected_type in model.get("Type", []):
+                    filepath = model.get("Filepath")
+                    break
+                    
+        return gr.update(choices=series_choices, value=default_series), filepath
+
+    def on_diffsynth_cn_series_change(selected_series, selected_type, model_type):
+        cn_config = load_diffsynth_controlnet_models()
+        arch_key = get_controlnet_key_for_model_type(model_type)
+        
+        filepath = "None"
+        if arch_key in cn_config and selected_series and selected_type:
+            for model in cn_config[arch_key]:
+                if model.get("Series") == selected_series and selected_type in model.get("Type", []):
+                    filepath = model.get("Filepath")
+                    break
+        return filepath
+
+    if diffsynth_controlnet_series_list and diffsynth_controlnet_types_list and diffsynth_controlnet_filepaths_list:
+        for i in range(constants.get('MAX_CONTROLNETS', 5)):
+            diffsynth_controlnet_types_list[i].change(
+                fn=on_diffsynth_cn_type_change,
+                inputs=[diffsynth_controlnet_types_list[i], model_type_state],
+                outputs=[diffsynth_controlnet_series_list[i], diffsynth_controlnet_filepaths_list[i]],
+                show_progress=False,
+                show_api=False
+            )
+            diffsynth_controlnet_series_list[i].change(
+                fn=on_diffsynth_cn_series_change,
+                inputs=[diffsynth_controlnet_series_list[i], diffsynth_controlnet_types_list[i], model_type_state],
+                outputs=[diffsynth_controlnet_filepaths_list[i]],
+                show_progress=False,
+                show_api=False
+            )
 
     if controlnet_accordion and controlnet_images_list:
         def on_accordion_expand(*images):
@@ -463,6 +567,33 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         cn_rows = components[f'{prefix}_controlnet_rows']
         cn_images = components[f'{prefix}_controlnet_images']
         cn_strengths = components[f'{prefix}_controlnet_strengths']
+
+        def add_cn_row(count):
+            count += 1
+            return (count, gr.update(visible=count < constants.get('MAX_CONTROLNETS', 5)), gr.update(visible=count > 1)) + tuple(gr.update(visible=i < count) for i in range(constants.get('MAX_CONTROLNETS', 5)))
+        
+        def delete_cn_row(count):
+            count -= 1
+            image_updates = [gr.update()] * constants.get('MAX_CONTROLNETS', 5)
+            strength_updates = [gr.update()] * constants.get('MAX_CONTROLNETS', 5)
+            image_updates[count] = None 
+            strength_updates[count] = 1.0
+            row_updates = tuple(gr.update(visible=i < count) for i in range(constants.get('MAX_CONTROLNETS', 5)))
+            return (count, gr.update(visible=True), gr.update(visible=count > 1)) + row_updates + tuple(image_updates) + tuple(strength_updates)
+
+        add_cn_outputs = [cn_count, add_cn_btn, del_cn_btn] + cn_rows
+        del_cn_outputs = [cn_count, add_cn_btn, del_cn_btn] + cn_rows + cn_images + cn_strengths
+        
+        add_cn_btn.click(fn=add_cn_row, inputs=[cn_count], outputs=add_cn_outputs, show_progress=False, show_api=False)
+        del_cn_btn.click(fn=delete_cn_row, inputs=[cn_count], outputs=del_cn_outputs, show_progress=False, show_api=False)
+
+    if f'{prefix}_diffsynth_controlnet_count_state' in components:
+        cn_count = components[f'{prefix}_diffsynth_controlnet_count_state']
+        add_cn_btn = components[f'{prefix}_add_diffsynth_controlnet_button']
+        del_cn_btn = components[f'{prefix}_delete_diffsynth_controlnet_button']
+        cn_rows = components[f'{prefix}_diffsynth_controlnet_rows']
+        cn_images = components[f'{prefix}_diffsynth_controlnet_images']
+        cn_strengths = components[f'{prefix}_diffsynth_controlnet_strengths']
 
         def add_cn_row(count):
             count += 1

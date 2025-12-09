@@ -49,6 +49,11 @@ connections:
   - from: "vae_loader:0"
     to: "vae_encode:vae"
 
+dynamic_conditioning_chains:
+  conditioning_chain:
+    ksampler_node: "ksampler"
+    clip_source: "t5_tokenizer:0"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   clip_name: "clip_loader:clip_name"

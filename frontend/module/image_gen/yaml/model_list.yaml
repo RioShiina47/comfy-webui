@@ -7,7 +7,7 @@ Checkpoints:
           unet: "z_image_turbo_bf16.safetensors"
           vae: "ae.safetensors"
           clip: "qwen_3_4b.safetensors"
-  Neta-Lumina:
+  Lumina:
     latent_type: sd3_latent
     models:
       - display_name: "duongve13112002/NetaYume-Lumina-v3.5"
@@ -57,7 +57,7 @@ Checkpoints:
       - display_name: "stabilityai/stable-diffusion-xl-base-1.0"
         path: "sd_xl_base_1.0.safetensors"
 
-  FLUX:
+  FLUX.1:
     latent_type: sd3_latent
     models:
       - display_name: "flux1-dev"

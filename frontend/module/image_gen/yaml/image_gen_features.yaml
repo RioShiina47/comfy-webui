@@ -9,9 +9,17 @@ default:
 
 z-image:
   enabled_chains:
+    - lora
+    - conditioning
+    - controlnet_model_patch
+
+lumina:
+  enabled_chains:
+    - lora
+    - embedding
     - conditioning
 
-neta-lumina:
+sd35:
   enabled_chains:
     - lora
     - controlnet
@@ -35,8 +43,9 @@ sd15:
     - embedding
     - conditioning
 
-flux:
+flux1:
   enabled_chains:
+    - lora
     - controlnet
     - style
     - conditioning
@@ -48,11 +57,13 @@ omnigen2:
 
 qwen-image:
   enabled_chains:
+    - lora
     - controlnet
     - conditioning
 
 hidream:
   enabled_chains:
+    - lora
     - conditioning
 
 hunyuanimage:
