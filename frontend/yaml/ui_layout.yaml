@@ -43,6 +43,9 @@ main_tabs_order:
       - "HunyuanVideo-1.5 I2V"
     - "HuMo":
       - "HuMo"
+    - "Kandinsky":
+      - "Kandinsky T2V"
+      - "Kandinsky I2V"
       
   - "AudioGen":
     - "ACE-Step":
