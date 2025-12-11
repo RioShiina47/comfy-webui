@@ -38,6 +38,9 @@ main_tabs_order:
       - "Animate"
     - "wan2.1":
       - "txt2video(alpha)"
+    - "HunyuanVideo-1.5":
+      - "HunyuanVideo-1.5 T2V"
+      - "HunyuanVideo-1.5 I2V"
     - "HuMo":
       - "HuMo"
       

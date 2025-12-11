@@ -1,0 +1,411 @@
+nodes:
+  i2v_unet:
+    class_type: UNETLoader
+    title: "Load 480p Diffusion Model"
+    params:
+      unet_name: "hunyuanvideo1.5_480p_i2v_step_distilled_fp8_scaled.safetensors"
+      weight_dtype: "default"
+  clip_loader:
+    class_type: DualCLIPLoader
+    title: "Load Dual CLIP"
+    params:
+      clip_name1: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      clip_name2: "byt5_small_glyphxl_fp16.safetensors"
+      type: "hunyuan_video_15"
+      device: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "hunyuanvideo15_vae_fp16.safetensors"
+  clip_vision_loader:
+    class_type: CLIPVisionLoader
+    title: "Load CLIP Vision"
+    params:
+      clip_name: "sigclip_vision_patch14_384.safetensors"
+  load_image:
+    class_type: LoadImage
+    title: "Load Start Image"
+  clip_vision_encode:
+    class_type: CLIPVisionEncode
+    title: "Encode Image with CLIP Vision"
+    params:
+      crop: "center"
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
+  i2v_preprocessor:
+    class_type: HunyuanVideo15ImageToVideo
+    title: "I2V Preprocessor"
+    params:
+      batch_size: 1
+  i2v_model_sampler:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler (480p)"
+    params:
+      shift: 7.0
+  i2v_scheduler:
+    class_type: BasicScheduler
+    title: "Scheduler (480p)"
+    params:
+      scheduler: "simple"
+      steps: 8
+      denoise: 1.0
+  i2v_noise:
+    class_type: RandomNoise
+    title: "Random Noise (480p)"
+  i2v_sampler_select:
+    class_type: KSamplerSelect
+    title: "Sampler Select (480p)"
+    params:
+      sampler_name: "euler"
+  i2v_guider:
+    class_type: CFGGuider
+    title: "CFG Guider (480p)"
+    params:
+      cfg: 1.0
+  i2v_sampler:
+    class_type: SamplerCustomAdvanced
+    title: "Advanced Sampler (480p)"
+
+  sr_unet_720p:
+    class_type: UNETLoader
+    title: "Load 720p SR Model"
+    params:
+      unet_name: "hunyuanvideo1.5_720p_sr_distilled_fp16.safetensors"
+      weight_dtype: "fp8_e4m3fn"
+  sr_cache_720p:
+    class_type: EasyCache
+    title: "Cache (720p SR)"
+    params:
+      reuse_threshold: 0.2
+      start_percent: 0.15
+      end_percent: 0.95
+      verbose: false
+  latent_upscaler_loader_720p:
+    class_type: LatentUpscaleModelLoader
+    title: "Load Latent Upscaler (720p)"
+    params:
+      model_name: "hunyuanvideo15_latent_upsampler_720p.safetensors"
+  latent_upscaler_720p:
+    class_type: HunyuanVideo15LatentUpscaleWithModel
+    title: "Latent Upscale to 720p"
+    params:
+      upscale_method: "bilinear"
+      crop: "disabled"
+  sr_preprocessor_720p:
+    class_type: HunyuanVideo15SuperResolution
+    title: "SR Preprocessor (720p)"
+    params:
+      noise_augmentation: 0.7
+  sr_model_sampler_720p:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler (720p SR)"
+    params:
+      shift: 2.0
+  sr_scheduler_720p:
+    class_type: BasicScheduler
+    title: "Scheduler (720p SR)"
+    params:
+      scheduler: "simple"
+      steps: 8
+      denoise: 1.0
+  sr_sigmas_720p:
+    class_type: SplitSigmas
+    title: "Split Sigmas (720p SR)"
+    params:
+      step: 4
+  sr_noise_720p:
+    class_type: RandomNoise
+    title: "Random Noise (720p SR)"
+  sr_disable_noise_720p:
+    class_type: DisableNoise
+    title: "Disable Noise (720p SR)"
+  sr_sampler_select_720p:
+    class_type: KSamplerSelect
+    title: "Sampler Select (720p SR)"
+    params:
+      sampler_name: "euler"
+  sr_guider_high_720p:
+    class_type: CFGGuider
+    title: "CFG Guider (720p High Noise)"
+    params:
+      cfg: 1.0
+  sr_guider_low_720p:
+    class_type: CFGGuider
+    title: "CFG Guider (720p Low Noise)"
+    params:
+      cfg: 1.0
+  sr_sampler_high_720p:
+    class_type: SamplerCustomAdvanced
+    title: "Advanced Sampler (720p High Noise)"
+  sr_sampler_low_720p:
+    class_type: SamplerCustomAdvanced
+    title: "Advanced Sampler (720p Low Noise)"
+
+  sr_unet_1080p:
+    class_type: UNETLoader
+    title: "Load 1080p SR Model"
+    params:
+      unet_name: "hunyuanvideo1.5_1080p_sr_distilled_fp16.safetensors"
+      weight_dtype: "fp8_e4m3fn"
+  sr_cache_1080p:
+    class_type: EasyCache
+    title: "Cache (1080p SR)"
+    params:
+      reuse_threshold: 0.2
+      start_percent: 0.15
+      end_percent: 0.95
+      verbose: false
+  latent_upscaler_loader_1080p:
+    class_type: LatentUpscaleModelLoader
+    title: "Load Latent Upscaler (1080p)"
+    params:
+      model_name: "hunyuanvideo15_latent_upsampler_1080p.safetensors"
+  latent_upscaler_1080p:
+    class_type: HunyuanVideo15LatentUpscaleWithModel
+    title: "Latent Upscale to 1080p"
+    params:
+      upscale_method: "bilinear"
+      crop: "disabled"
+  sr_preprocessor_1080p:
+    class_type: HunyuanVideo15SuperResolution
+    title: "SR Preprocessor (1080p)"
+    params:
+      noise_augmentation: 0.7
+  sr_model_sampler_1080p:
+    class_type: ModelSamplingSD3
+    title: "Model Sampler (1080p SR)"
+    params:
+      shift: 2.0
+  sr_scheduler_1080p:
+    class_type: BasicScheduler
+    title: "Scheduler (1080p SR)"
+    params:
+      scheduler: "simple"
+      steps: 8
+      denoise: 1.0
+  sr_sigmas_1080p:
+    class_type: SplitSigmas
+    title: "Split Sigmas (1080p SR)"
+    params:
+      step: 4
+  sr_noise_1080p:
+    class_type: RandomNoise
+    title: "Random Noise (1080p SR)"
+  sr_disable_noise_1080p:
+    class_type: DisableNoise
+    title: "Disable Noise (1080p SR)"
+  sr_sampler_select_1080p:
+    class_type: KSamplerSelect
+    title: "Sampler Select (1080p SR)"
+    params:
+      sampler_name: "euler"
+  sr_guider_high_1080p:
+    class_type: CFGGuider
+    title: "CFG Guider (1080p High Noise)"
+    params:
+      cfg: 1.0
+  sr_guider_low_1080p:
+    class_type: CFGGuider
+    title: "CFG Guider (1080p Low Noise)"
+    params:
+      cfg: 1.0
+  sr_sampler_high_1080p:
+    class_type: SamplerCustomAdvanced
+    title: "Advanced Sampler (1080p High Noise)"
+  sr_sampler_low_1080p:
+    class_type: SamplerCustomAdvanced
+    title: "Advanced Sampler (1080p Low Noise)"
+  vae_decode_tiled_1080p:
+    class_type: VAEDecodeTiled
+    title: "VAE Decode Tiled (1080p)"
+    params:
+      tile_size: 512
+      overlap: 64
+      temporal_size: 64
+      temporal_overlap: 8
+  create_video_1080p:
+    class_type: CreateVideo
+    title: "Create Video (1080p)"
+    params:
+      fps: 24
+  save_video_1080p:
+    class_type: SaveVideo
+    title: "Save Video (1080p)"
+    params:
+      format: "auto"
+      codec: "h264"
+
+connections:
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "clip_vision_loader:0"
+    to: "clip_vision_encode:clip_vision"
+  - from: "load_image:0"
+    to: "clip_vision_encode:image"
+  - from: "pos_prompt:0"
+    to: "i2v_preprocessor:positive"
+  - from: "neg_prompt:0"
+    to: "i2v_preprocessor:negative"
+  - from: "vae_loader:0"
+    to: "i2v_preprocessor:vae"
+  - from: "load_image:0"
+    to: "i2v_preprocessor:start_image"
+  - from: "clip_vision_encode:0"
+    to: "i2v_preprocessor:clip_vision_output"
+  - from: "i2v_unet:0"
+    to: "i2v_model_sampler:model"
+  - from: "i2v_unet:0"
+    to: "i2v_scheduler:model"
+  - from: "i2v_model_sampler:0"
+    to: "i2v_guider:model"
+  - from: "i2v_preprocessor:0"
+    to: "i2v_guider:positive"
+  - from: "i2v_preprocessor:1"
+    to: "i2v_guider:negative"
+  - from: "i2v_noise:0"
+    to: "i2v_sampler:noise"
+  - from: "i2v_guider:0"
+    to: "i2v_sampler:guider"
+  - from: "i2v_sampler_select:0"
+    to: "i2v_sampler:sampler"
+  - from: "i2v_scheduler:0"
+    to: "i2v_sampler:sigmas"
+  - from: "i2v_preprocessor:2"
+    to: "i2v_sampler:latent_image"
+    
+  - from: "i2v_sampler:0"
+    to: "latent_upscaler_720p:samples"
+  - from: "latent_upscaler_loader_720p:0"
+    to: "latent_upscaler_720p:model"
+  - from: "latent_upscaler_720p:0"
+    to: "sr_preprocessor_720p:latent"
+  
+  - from: "pos_prompt:0"
+    to: "sr_preprocessor_720p:positive"
+  - from: "neg_prompt:0"
+    to: "sr_preprocessor_720p:negative"
+  - from: "sr_unet_720p:0"
+    to: "sr_cache_720p:model"
+  - from: "sr_cache_720p:0"
+    to: "sr_model_sampler_720p:model"
+  - from: "sr_cache_720p:0"
+    to: "sr_scheduler_720p:model"
+  - from: "sr_cache_720p:0"
+    to: "sr_guider_low_720p:model"
+  - from: "sr_model_sampler_720p:0"
+    to: "sr_guider_high_720p:model"
+  - from: "sr_preprocessor_720p:0"
+    to: "sr_guider_high_720p:positive"
+  - from: "sr_preprocessor_720p:1"
+    to: "sr_guider_high_720p:negative"
+  - from: "pos_prompt:0"
+    to: "sr_guider_low_720p:positive"
+  - from: "neg_prompt:0"
+    to: "sr_guider_low_720p:negative"
+  - from: "sr_scheduler_720p:0"
+    to: "sr_sigmas_720p:sigmas"
+  - from: "sr_preprocessor_720p:2"
+    to: "sr_sampler_high_720p:latent_image"
+  - from: "sr_noise_720p:0"
+    to: "sr_sampler_high_720p:noise"
+  - from: "sr_guider_high_720p:0"
+    to: "sr_sampler_high_720p:guider"
+  - from: "sr_sampler_select_720p:0"
+    to: "sr_sampler_high_720p:sampler"
+  - from: "sr_sigmas_720p:0"
+    to: "sr_sampler_high_720p:sigmas"
+  - from: "sr_sampler_high_720p:0"
+    to: "sr_sampler_low_720p:latent_image"
+  - from: "sr_disable_noise_720p:0"
+    to: "sr_sampler_low_720p:noise"
+  - from: "sr_guider_low_720p:0"
+    to: "sr_sampler_low_720p:guider"
+  - from: "sr_sampler_select_720p:0"
+    to: "sr_sampler_low_720p:sampler"
+  - from: "sr_sigmas_720p:1"
+    to: "sr_sampler_low_720p:sigmas"
+
+  - from: "sr_sampler_low_720p:0"
+    to: "latent_upscaler_1080p:samples"
+  - from: "latent_upscaler_loader_1080p:0"
+    to: "latent_upscaler_1080p:model"
+  - from: "latent_upscaler_1080p:0"
+    to: "sr_preprocessor_1080p:latent"
+
+  - from: "pos_prompt:0"
+    to: "sr_preprocessor_1080p:positive"
+  - from: "neg_prompt:0"
+    to: "sr_preprocessor_1080p:negative"
+  - from: "sr_unet_1080p:0"
+    to: "sr_cache_1080p:model"
+  - from: "sr_cache_1080p:0"
+    to: "sr_model_sampler_1080p:model"
+  - from: "sr_cache_1080p:0"
+    to: "sr_scheduler_1080p:model"
+  - from: "sr_cache_1080p:0"
+    to: "sr_guider_low_1080p:model"
+  - from: "sr_model_sampler_1080p:0"
+    to: "sr_guider_high_1080p:model"
+  - from: "sr_preprocessor_1080p:0"
+    to: "sr_guider_high_1080p:positive"
+  - from: "sr_preprocessor_1080p:1"
+    to: "sr_guider_high_1080p:negative"
+  - from: "pos_prompt:0"
+    to: "sr_guider_low_1080p:positive"
+  - from: "neg_prompt:0"
+    to: "sr_guider_low_1080p:negative"
+  - from: "sr_scheduler_1080p:0"
+    to: "sr_sigmas_1080p:sigmas"
+  - from: "sr_preprocessor_1080p:2"
+    to: "sr_sampler_high_1080p:latent_image"
+  - from: "sr_noise_1080p:0"
+    to: "sr_sampler_high_1080p:noise"
+  - from: "sr_guider_high_1080p:0"
+    to: "sr_sampler_high_1080p:guider"
+  - from: "sr_sampler_select_1080p:0"
+    to: "sr_sampler_high_1080p:sampler"
+  - from: "sr_sigmas_1080p:0"
+    to: "sr_sampler_high_1080p:sigmas"
+  - from: "sr_sampler_high_1080p:0"
+    to: "sr_sampler_low_1080p:latent_image"
+  - from: "sr_disable_noise_1080p:0"
+    to: "sr_sampler_low_1080p:noise"
+  - from: "sr_guider_low_1080p:0"
+    to: "sr_sampler_low_1080p:guider"
+  - from: "sr_sampler_select_1080p:0"
+    to: "sr_sampler_low_1080p:sampler"
+  - from: "sr_sigmas_1080p:1"
+    to: "sr_sampler_low_1080p:sigmas"
+
+  - from: "sr_sampler_low_1080p:0"
+    to: "vae_decode_tiled_1080p:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode_tiled_1080p:vae"
+  - from: "vae_decode_tiled_1080p:0"
+    to: "create_video_1080p:images"
+  - from: "create_video_1080p:0"
+    to: "save_video_1080p:video"
+
+ui_map:
+  start_image: "load_image:image"
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  width: "i2v_preprocessor:width"
+  height: "i2v_preprocessor:height"
+  video_length: "i2v_preprocessor:length"
+  seed:
+    - "i2v_noise:noise_seed"
+    - "sr_noise_720p:noise_seed"
+    - "sr_noise_1080p:noise_seed"
+  filename_prefix: "save_video_1080p:filename_prefix"
+  width_720p: "latent_upscaler_720p:width"
+  height_720p: "latent_upscaler_720p:height"
+  width_1080p: "latent_upscaler_1080p:width"
+  height_1080p: "latent_upscaler_1080p:height"
