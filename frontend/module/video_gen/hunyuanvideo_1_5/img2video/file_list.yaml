@@ -1,9 +1,9 @@
 file: 
   diffusion_models: 
-    - filename: "hunyuanvideo1.5_720p_i2v_cfg_distilled_fp8_scaled.safetensors"
+    - filename: "hunyuanvideo1.5_480p_i2v_step_distilled_fp8_scaled.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/HunyuanVideo_1.5_repackaged"
-      repository_file_path: "split_files/diffusion_models/hunyuanvideo1.5_720p_i2v_cfg_distilled_fp8_scaled.safetensors"
+      repository_file_path: "split_files/diffusion_models/hunyuanvideo1.5_480p_i2v_step_distilled_fp8_scaled.safetensors"
     - filename: "hunyuanvideo1.5_720p_sr_distilled_fp16.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/HunyuanVideo_1.5_repackaged"

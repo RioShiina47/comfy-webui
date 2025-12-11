@@ -1,0 +1,20 @@
+file: 
+  diffusion_models: 
+    - filename: "kandinsky5lite_i2v_5s.safetensors"
+      source: "hf"
+      repo_id: "kandinskylab/Kandinsky-5.0-I2V-Lite-5s"
+      repository_file_path: "model/kandinsky5lite_i2v_5s.safetensors"
+  text_encoders: 
+    - filename: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"
+    - filename: "clip_l.safetensors"
+      source: "hf"
+      repo_id: "comfyanonymous/flux_text_encoders"
+      repository_file_path: "clip_l.safetensors"
+  vae: 
+    - filename: "hunyuan_video_vae_bf16.safetensors"
+      source: "hf"
+      repo_id: "Kijai/HunyuanVideo_comfy"
+      repository_file_path: "hunyuan_video_vae_bf16.safetensors"
