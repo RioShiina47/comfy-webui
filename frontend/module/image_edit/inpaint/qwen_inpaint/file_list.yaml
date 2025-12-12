@@ -15,10 +15,10 @@ file:
       repo_id: "InstantX/Qwen-Image-ControlNet-Inpainting"
       repository_file_path: "diffusion_pytorch_model.safetensors"
   loras: 
-    - filename: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+    - filename: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
       source: "hf"
       repo_id: "lightx2v/Qwen-Image-Lightning"
-      repository_file_path: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+      repository_file_path: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
   vae: 
     - filename: "qwen_image_vae.safetensors"
       source: "hf"

@@ -276,10 +276,10 @@ file:
       repo_id: "h94/IP-Adapter-FaceID"
       repository_file_path: "ip-adapter-faceid-portrait_sdxl_unnorm.bin"
   loras: 
-    - filename: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+    - filename: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
       source: "hf"
       repo_id: "lightx2v/Qwen-Image-Lightning"
-      repository_file_path: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+      repository_file_path: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
     - filename: "ip-adapter-faceid_sd15_lora.safetensors"
       source: "hf"
       repo_id: "h94/IP-Adapter-FaceID"
