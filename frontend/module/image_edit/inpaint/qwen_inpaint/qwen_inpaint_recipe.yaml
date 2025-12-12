@@ -20,7 +20,7 @@ nodes:
     class_type: LoraLoaderModelOnly
     title: "Load Qwen Lightning LoRA"
     params:
-      lora_name: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+      lora_name: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
       strength_model: 1.0
   controlnet_loader:
     class_type: ControlNetLoader
@@ -60,7 +60,7 @@ nodes:
     class_type: KSampler
     title: "KSampler"
     params:
-      steps: 8
+      steps: 4
       cfg: 1.0
       sampler_name: "euler"
       scheduler: "simple"

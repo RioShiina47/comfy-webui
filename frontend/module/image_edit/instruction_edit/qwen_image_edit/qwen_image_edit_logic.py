@@ -23,6 +23,16 @@ def process_inputs_logic(params: dict, seed_override=None):
     local_params['image_stitch_chain'] = image_filenames
     local_params['input_image'] = None
 
+    lora_filename = local_params.get('apply_lora')
+    if lora_filename and lora_filename != "None":
+        print(f"Applying LoRA: {lora_filename}")
+        local_params['lora_chain'] = [{
+            "lora_name": lora_filename,
+            "strength_model": 1.0
+        }]
+    else:
+        local_params['lora_chain'] = []
+
     seed = seed_override if seed_override is not None else int(local_params.get('seed', -1))
     local_params['seed'] = handle_seed(seed)
 
