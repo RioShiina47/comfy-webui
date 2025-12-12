@@ -48,16 +48,21 @@ def create_ui():
                     value="1:1 (Square)",
                     interactive=True
                 )
+                components['apply_lora'] = gr.Dropdown(
+                    label="Apply LoRA",
+                    choices=[
+                        ("None", "None"),
+                        ("Multiple-angles", "Qwen-Edit-2509-Multiple-angles.safetensors"),
+                        ("Fusion", "Qwen-Image-Edit-2509-Fusion.safetensors")
+                    ],
+                    value="None",
+                    interactive=True
+                )
                 components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                 components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
                 components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=400)
-
-        components['steps'] = gr.State(value=8)
-        components['sampler_name'] = gr.State(value="euler")
-        components['cfg'] = gr.State(value=1.0)
-        components['batch_size'] = gr.State(value=1)
 
         with gr.Accordion("Add More Images", open=False):
             ref_image_groups = []

@@ -95,7 +95,7 @@ Checkpoints:
           unet: "qwen_image_fp8_e4m3fn.safetensors"
           vae: "qwen_image_vae.safetensors"
           clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
-          lora: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+          lora: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
 
   HiDream:
     latent_type: sd3_latent

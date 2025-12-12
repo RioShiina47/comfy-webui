@@ -21,7 +21,7 @@ nodes:
     class_type: LoraLoaderModelOnly
     title: "LoraLoaderModelOnly"
     params:
-      lora_name: "Qwen-Image-Lightning-8steps-V2.0-bf16.safetensors"
+      lora_name: "Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors"
       strength_model: 1.0
   
   pos_prompt_encoder:
@@ -34,6 +34,8 @@ nodes:
   latent_source:
     class_type: EmptySD3LatentImage
     title: "Empty Latent"
+    params:
+      batch_size: 1
 
   model_sampler:
     class_type: ModelSamplingAuraFlow
@@ -47,9 +49,11 @@ nodes:
     class_type: KSampler
     title: "KSampler"
     params:
-      denoise: 1.0
-      scheduler: "simple"
+      steps: 4
       cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
 
   vae_decode:
     class_type: VAEDecode
@@ -97,14 +101,21 @@ dynamic_reference_latent_chains:
       positive: ["ksampler:positive"]
       negative: ["ksampler:negative"]
 
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoaderModelOnly"
+    start: "lora_loader"
+    output_map:
+      "0": "model"
+    input_map:
+      "model": "model"
+    end_input_map:
+      "model": ["model_sampler:model"]
+
 ui_map:
   positive_prompt: "pos_prompt_encoder:text"
   negative_prompt: "neg_prompt_encoder:text"
   seed: "ksampler:seed"
-  steps: "ksampler:steps"
-  cfg: "ksampler:cfg"
-  sampler_name: "ksampler:sampler_name"
   width: "latent_source:width"
   height: "latent_source:height"
-  batch_size: "latent_source:batch_size"
   filename_prefix: "save_image:filename_prefix"

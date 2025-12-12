@@ -89,7 +89,7 @@ FLUX.1:
 
 Qwen-Image:
   _defaults:
-    steps: 8
+    steps: 4
     cfg: 1.0
     sampler_name: "euler"
     scheduler: "simple"
