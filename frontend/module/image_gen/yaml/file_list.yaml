@@ -1,9 +1,9 @@
 file: 
   checkpoints: 
     # Neta-Lumina
-    - filename: "netayumeLuminaNetaLumina_v35Pretrained.safetensors"
+    - filename: "netayumeLuminaNetaLumina_v40.safetensors"
       source: "civitai"
-      model_version_id: "2298660"
+      model_version_id: "2485296"
     # SD3.5
     - filename: "sd3.5_medium_incl_clips_t5xxlfp8scaled.safetensors"
       source: "hf"

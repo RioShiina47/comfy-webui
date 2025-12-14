@@ -6,11 +6,7 @@ from PIL import Image
 from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
 from core.utils import save_temp_image, create_mask_from_layer, handle_seed
-from .shared.utils import (
-    get_model_path,
-    get_latent_type_for_model
-)
-from .shared.input_processors import (
+from core.input_processors import (
     process_lora_inputs,
     process_controlnet_inputs,
     process_diffsynth_controlnet_inputs,
@@ -18,6 +14,11 @@ from .shared.input_processors import (
     process_embedding_inputs,
     process_style_inputs,
     process_conditioning_inputs
+)
+from .shared.config_loader import load_ipadapter_presets
+from .shared.utils import (
+    get_model_path,
+    get_latent_type_for_model
 )
 from .shared.vae_utils import process_vae_override_input
 
@@ -98,25 +99,29 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     if 'clip_skip' in vals and vals['clip_skip'] is not None and model_type == 'sd15':
         vals['clip_skip'] = int(vals['clip_skip']) * -1
 
-    embedding_files = process_embedding_inputs(vals)
+    embedding_files = process_embedding_inputs(ui_values, prefix)
     embedding_prompt_text = " ".join([f"embedding:{f.replace(os.path.sep, '/')}" for f in embedding_files])
     
     if embedding_prompt_text:
         if vals.get('positive_prompt'):
-            vals['positive_prompt'] = f"{vals['positive_prompt']}, {embedding_prompt_text}"
+            vals['positive_prompt'] = f"{vals.get('positive_prompt', '')}, {embedding_prompt_text}"
         else:
             vals['positive_prompt'] = embedding_prompt_text
 
-    vals['lora_chain'] = process_lora_inputs(vals)
-    vals['controlnet_chain'] = process_controlnet_inputs(vals)
-    vals['diffsynth_controlnet_chain'] = process_diffsynth_controlnet_inputs(vals)
-    vals['ipadapter_chain'] = process_ipadapter_inputs(vals)
-    vals['style_chain'] = process_style_inputs(vals)
-    vals['conditioning_chain'] = process_conditioning_inputs(vals)
+    processed_chains = {
+        'lora_chain': process_lora_inputs(ui_values, prefix),
+        'controlnet_chain': process_controlnet_inputs(ui_values, prefix),
+        'diffsynth_controlnet_chain': process_diffsynth_controlnet_inputs(ui_values, prefix),
+        'ipadapter_chain': process_ipadapter_inputs(ui_values, prefix, load_ipadapter_presets()),
+        'style_chain': process_style_inputs(ui_values, prefix),
+        'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
+    }
+
+    final_values_for_assembler = {**vals, **processed_chains}
 
     seed = seed_override if seed_override is not None else vals.get('seed', -1)
-    vals['seed'] = handle_seed(seed)
+    final_values_for_assembler['seed'] = handle_seed(seed)
     
-    workflow = assembler.assemble(vals)
+    workflow = assembler.assemble(final_values_for_assembler)
     
     return workflow, {"extra_pnginfo": {"workflow": ""}}
