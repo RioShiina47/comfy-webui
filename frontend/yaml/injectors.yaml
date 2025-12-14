@@ -1,6 +1,8 @@
 injector_definitions:
   dynamic_lora_chains: 
     module: "chain_injectors.lora_injector"
+  dynamic_lora_model_only_chains: 
+    module: "chain_injectors.lora_model_only_injector"
   dynamic_controlnet_chains: 
     module: "chain_injectors.controlnet_injector"
   dynamic_diffsynth_controlnet_chains:
@@ -16,6 +18,7 @@ injector_definitions:
   
 injector_order:
   - dynamic_lora_chains
+  - dynamic_lora_model_only_chains
   - dynamic_diffsynth_controlnet_chains
   - dynamic_ipadapter_chains
   - dynamic_reference_latent_chains
