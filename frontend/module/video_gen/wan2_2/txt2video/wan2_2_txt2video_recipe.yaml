@@ -87,15 +87,27 @@ nodes:
     params:
       format: "mp4"
       codec: "h264"
+
+dynamic_lora_model_only_chains:
+  high_noise_loras_model_only:
+    template: LoraLoaderModelOnly
+    output_map:
+      "lora_loader_high:0": model
+    end_input_map:
+      model: "model_sampler_high:model"
+
+  low_noise_loras_model_only:
+    template: LoraLoaderModelOnly
+    output_map:
+      "lora_loader_low:0": model
+    end_input_map:
+      model: "model_sampler_low:model"
+
 connections:
   - from: "unet_loader_high:0"
     to: "lora_loader_high:model"
   - from: "unet_loader_low:0"
     to: "lora_loader_low:model"
-  - from: "lora_loader_high:0"
-    to: "model_sampler_high:model"
-  - from: "lora_loader_low:0"
-    to: "model_sampler_low:model"
   - from: "clip_loader:0"
     to: "pos_prompt:clip"
   - from: "clip_loader:0"
@@ -124,6 +136,7 @@ connections:
     to: "create_video:images"
   - from: "create_video:0"
     to: "save_video:video"
+
 ui_map:
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"

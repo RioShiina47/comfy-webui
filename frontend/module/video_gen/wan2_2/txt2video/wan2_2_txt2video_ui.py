@@ -5,7 +5,7 @@ import yaml
 import traceback
 from .wan2_2_txt2video_logic import process_inputs as process_inputs_logic
 from core.utils import create_batched_run_generation
-
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "wan2_2_txt2video_recipe.yaml",
@@ -26,6 +26,7 @@ ASPECT_RATIO_PRESETS = {
 
 def create_ui():
     components = {}
+    
     with gr.Column():
         gr.Markdown("## Wan 2.2 T2V (A14B) - Lightning")
         gr.Markdown("💡 **Tip:** Video generation uses fixed optimization settings (4 steps, CFG 1.0).")
@@ -56,6 +57,9 @@ def create_ui():
                     height=468
                 )
         
+        create_lora_ui(components, "high_noise", "High Noise LoRA Settings")
+        create_lora_ui(components, "low_noise", "Low Noise LoRA Settings")
+
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
 
     return components
@@ -64,7 +68,8 @@ def get_main_output_components(components: dict):
     return [components['output_video'], components['run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
-    pass
+    register_ui_chain_events(components, "high_noise")
+    register_ui_chain_events(components, "low_noise")
 
 def process_inputs(ui_values, seed_override=None):
     local_ui_values = ui_values.copy()
