@@ -6,6 +6,7 @@ import traceback
 from PIL import Image
 from .wan2_2_img2video_logic import process_inputs as process_inputs_logic
 from core.utils import create_batched_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "wan2_2_img2video_recipe.yaml",
@@ -62,6 +63,9 @@ def create_ui():
                     label="Result", show_label=False, interactive=False, height=378
                 )
         
+        create_lora_ui(components, "high_noise", "High Noise LoRA Settings")
+        create_lora_ui(components, "low_noise", "Low Noise LoRA Settings")
+
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
                 
     return components
@@ -70,7 +74,8 @@ def get_main_output_components(components: dict):
     return [components['output_video'], components['run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
-    pass
+    register_ui_chain_events(components, "high_noise")
+    register_ui_chain_events(components, "low_noise")
 
 def process_inputs(ui_values, seed_override=None):
     local_ui_values = ui_values.copy()

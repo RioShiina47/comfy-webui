@@ -4,6 +4,7 @@ from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
 from core.workflow_utils import get_filename_prefix
 from core.utils import save_temp_image, handle_seed
+from core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_PATH = "wan2_2_img2video_recipe.yaml"
 
@@ -20,6 +21,9 @@ def process_inputs(params, seed_override=None):
         
     local_params['video_length'] = int(local_params.get('video_length', 81))
     local_params['filename_prefix'] = get_filename_prefix()
+    
+    local_params['high_noise_loras_model_only'] = process_lora_inputs(params, 'high_noise')
+    local_params['low_noise_loras_model_only'] = process_lora_inputs(params, 'low_noise')
     
     recipe_path = WORKFLOW_RECIPE_PATH
     module_path = os.path.dirname(os.path.abspath(__file__))
