@@ -4,11 +4,13 @@ def inject(assembler, chain_definition, chain_items):
     if not chain_items:
         return
 
-    start_node_name = chain_definition['start']
-    if start_node_name not in assembler.node_map:
-        print(f"Warning: Start node '{start_node_name}' for dynamic LoRA chain not found. Skipping chain.")
-        return
-    start_node_id = assembler.node_map[start_node_name]
+    start_node_name = chain_definition.get('start')
+    start_node_id = None
+    if start_node_name:
+        if start_node_name not in assembler.node_map:
+            print(f"Warning: Start node '{start_node_name}' for dynamic LoRA chain not found. Skipping chain.")
+            return
+        start_node_id = assembler.node_map[start_node_name]
     
     output_map = chain_definition.get('output_map', {})
     current_connections = {}
@@ -21,9 +23,12 @@ def inject(assembler, chain_definition, chain_items):
             node_id = assembler.node_map[node_name]
             start_output_idx = int(idx_str)
             current_connections[type_name] = [node_id, start_output_idx]
-        else:
+        elif start_node_id:
             start_output_idx = int(key)
             current_connections[type_name] = [start_node_id, start_output_idx]
+        else:
+            print(f"Warning: LoRA chain has no 'start' node defined, and an output_map key '{key}' is not in 'node:index' format. Skipping this connection.")
+
 
     input_map = chain_definition.get('input_map', {})
     chain_output_map = chain_definition.get('template_output_map', { "0": "model", "1": "clip" })

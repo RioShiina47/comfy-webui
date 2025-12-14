@@ -39,6 +39,19 @@ connections:
   - from: "vae_loader:0"
     to: "vae_encode:vae"
 
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "unet_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["model_sampler:model"]
+      "clip": ["pos_prompt:clip", "neg_prompt:clip"]
+
 dynamic_diffsynth_controlnet_chains:
   diffsynth_controlnet_chain:
     template: "QwenImageDiffsynthControlnet"
