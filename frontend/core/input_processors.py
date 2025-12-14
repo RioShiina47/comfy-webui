@@ -1,18 +1,24 @@
 import gradio as gr
 import os
-from core.config import CIVITAI_API_KEY
-from core.download_utils import get_lora_path, get_embedding_path
-from core.utils import save_temp_image
-from .config_loader import load_ipadapter_presets
+from .config import CIVITAI_API_KEY
+from .download_utils import get_lora_path, get_embedding_path
+from .utils import save_temp_image
+from .yaml_loader import load_and_merge_yaml
 
-def process_lora_inputs(vals):
+def process_lora_inputs(all_ui_values: dict, prefix: str):
+    """
+    Processes LoRA-related UI values from a given prefix.
+    Handles file downloads for Civitai/URL sources and constructs the lora_chain list.
+    """
+    key = lambda name: f"{prefix}_{name}"
+    
     loras = []
-    lora_sources = vals.get('loras_sources', [])
+    lora_sources = all_ui_values.get(key('loras_sources'), [])
     if not lora_sources:
         return []
         
-    lora_ids = vals.get('loras_ids', [])
-    lora_scales = vals.get('loras_scales', [])
+    lora_ids = all_ui_values.get(key('loras_ids'), [])
+    lora_scales = all_ui_values.get(key('loras_scales'), [])
     
     for i in range(len(lora_sources)):
         scale = lora_scales[i] if i < len(lora_scales) else 1.0
@@ -33,13 +39,15 @@ def process_lora_inputs(vals):
                 loras.append({"lora_name": name, "strength_model": scale, "strength_clip": scale})
     return loras
 
-def process_embedding_inputs(vals):
+
+def process_embedding_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
     embeddings = []
-    embedding_sources = vals.get('embeddings_sources', [])
+    embedding_sources = all_ui_values.get(key('embeddings_sources'), [])
     if not embedding_sources:
         return []
         
-    embedding_ids = vals.get('embeddings_ids', [])
+    embedding_ids = all_ui_values.get(key('embeddings_ids'), [])
     
     for i in range(len(embedding_sources)):
         name = None
@@ -52,21 +60,23 @@ def process_embedding_inputs(vals):
             path, status_msg = get_embedding_path(src, id_val, CIVITAI_API_KEY)
             if path is None:
                 raise gr.Error(f"Embedding '{id_val}' failed to download: {status_msg}")
-                name = path
+            name = path
         
         if name:
             embeddings.append(name)
             
     return embeddings
 
-def process_controlnet_inputs(vals):
+
+def process_controlnet_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
     controlnets = []
-    cn_images = vals.get('controlnet_images', [])
+    cn_images = all_ui_values.get(key('controlnet_images'), [])
     if not cn_images:
         return []
 
-    cn_strengths = vals.get('controlnet_strengths', [])
-    cn_filepaths = vals.get('controlnet_filepaths', [])
+    cn_strengths = all_ui_values.get(key('controlnet_strengths'), [])
+    cn_filepaths = all_ui_values.get(key('controlnet_filepaths'), [])
 
     for i in range(len(cn_images)):
         image_pil = cn_images[i]
@@ -84,14 +94,16 @@ def process_controlnet_inputs(vals):
             })
     return controlnets
 
-def process_diffsynth_controlnet_inputs(vals):
+
+def process_diffsynth_controlnet_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
     controlnets = []
-    cn_images = vals.get('diffsynth_controlnet_images', [])
+    cn_images = all_ui_values.get(key('diffsynth_controlnet_images'), [])
     if not cn_images:
         return []
 
-    cn_strengths = vals.get('diffsynth_controlnet_strengths', [])
-    cn_filepaths = vals.get('diffsynth_controlnet_filepaths', [])
+    cn_strengths = all_ui_values.get(key('diffsynth_controlnet_strengths'), [])
+    cn_filepaths = all_ui_values.get(key('diffsynth_controlnet_filepaths'), [])
 
     for i in range(len(cn_images)):
         image_pil = cn_images[i]
@@ -107,17 +119,18 @@ def process_diffsynth_controlnet_inputs(vals):
             })
     return controlnets
 
-def process_ipadapter_inputs(vals):
+
+def process_ipadapter_inputs(all_ui_values: dict, prefix: str, ipadapter_presets_config: dict):
+    key = lambda name: f"{prefix}_{name}"
     ipadapters = []
-    ipa_images = vals.get('ipadapter_images', [])
+    ipa_images = all_ui_values.get(key('ipadapter_images'), [])
     if not ipa_images:
         return []
 
-    final_preset = vals.get('ipadapter_final_preset')
-    ipa_weights = vals.get('ipadapter_weights', [])
-    ipa_lora_strengths = vals.get('ipadapter_lora_strengths', [])
+    final_preset = all_ui_values.get(key('ipadapter_final_preset'))
+    ipa_weights = all_ui_values.get(key('ipadapter_weights'), [])
+    ipa_lora_strengths = all_ui_values.get(key('ipadapter_lora_strengths'), [])
     
-    ipadapter_presets_config = load_ipadapter_presets()
     faceid_presets_sd15 = ipadapter_presets_config.get("IPAdapter_FaceID_presets", {}).get("SD1.5", [])
     faceid_presets_sdxl = ipadapter_presets_config.get("IPAdapter_FaceID_presets", {}).get("SDXL", [])
     all_faceid_presets = faceid_presets_sd15 + faceid_presets_sdxl
@@ -142,10 +155,10 @@ def process_ipadapter_inputs(vals):
             ipadapters.append(item_data)
     
     if ipadapters:
-        final_weight = vals.get('ipadapter_final_weight')
-        final_embeds_scaling = vals.get('ipadapter_embeds_scaling')
-        final_combine_method = vals.get('ipadapter_combine_method')
-        model_type = vals.get('model_type_state')
+        final_weight = all_ui_values.get(key('ipadapter_final_weight'))
+        final_embeds_scaling = all_ui_values.get(key('ipadapter_embeds_scaling'))
+        final_combine_method = all_ui_values.get(key('ipadapter_combine_method'))
+        model_type = all_ui_values.get(key('model_type_state'))
         
         if final_preset and final_weight is not None and final_embeds_scaling:
             final_loader_type = 'FaceID' if final_preset in all_faceid_presets else 'Unified'
@@ -160,19 +173,21 @@ def process_ipadapter_inputs(vals):
                 'final_combine_method': final_combine_method
             }
             if final_loader_type == 'FaceID':
-                final_settings['final_lora_strength'] = vals.get('ipadapter_final_lora_strength', 0.6)
+                final_settings['final_lora_strength'] = all_ui_values.get(key('ipadapter_final_lora_strength'), 0.6)
             
             ipadapters.append(final_settings)
 
     return ipadapters
 
-def process_style_inputs(vals):
+
+def process_style_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
     styles = []
-    style_images = vals.get('style_images', [])
+    style_images = all_ui_values.get(key('style_images'), [])
     if not style_images:
         return []
         
-    style_strengths = vals.get('style_strengths', [])
+    style_strengths = all_ui_values.get(key('style_strengths'), [])
     
     for i in range(len(style_images)):
         image_pil = style_images[i]
@@ -186,17 +201,19 @@ def process_style_inputs(vals):
             })
     return styles
 
-def process_conditioning_inputs(vals):
+
+def process_conditioning_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
     conditionings = []
-    prompts = vals.get('conditioning_prompts', [])
+    prompts = all_ui_values.get(key('conditioning_prompts'), [])
     if not prompts:
         return []
 
-    widths = vals.get('conditioning_widths', [])
-    heights = vals.get('conditioning_heights', [])
-    xs = vals.get('conditioning_xs', [])
-    ys = vals.get('conditioning_ys', [])
-    strengths = vals.get('conditioning_strengths', [])
+    widths = all_ui_values.get(key('conditioning_widths'), [])
+    heights = all_ui_values.get(key('conditioning_heights'), [])
+    xs = all_ui_values.get(key('conditioning_xs'), [])
+    ys = all_ui_values.get(key('conditioning_ys'), [])
+    strengths = all_ui_values.get(key('conditioning_strengths'), [])
 
     for i in range(len(prompts)):
         prompt_text = prompts[i]

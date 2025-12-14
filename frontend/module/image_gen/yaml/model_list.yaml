@@ -18,8 +18,8 @@ Checkpoints:
   Lumina:
     latent_type: sd3_latent
     models:
-      - display_name: "duongve13112002/NetaYume-Lumina-v3.5"
-        path: "NetaYumev35_pretrained_all_in_one.safetensors"
+      - display_name: "duongve13112002/NetaYume-Lumina-v4.0"
+        path: "netayumeLuminaNetaLumina_v40.safetensors"
   OmniGen2:
     latent_type: sd3_latent
     models:

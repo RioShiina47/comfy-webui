@@ -39,7 +39,9 @@ def _load_local_yaml(filename: str):
 def load_constants_config():
     global _constants_config
     if _constants_config is None:
-        _constants_config = _load_local_yaml("constants.yaml")
+        global_constants = load_and_merge_yaml("ui_constants.yaml")
+        local_constants = _load_local_yaml("constants.yaml")
+        _constants_config = deep_merge_dicts(global_constants, local_constants)
     return _constants_config
 
 def load_architectures_config():
