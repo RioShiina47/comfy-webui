@@ -11,6 +11,8 @@ from core.input_processors import (
     process_controlnet_inputs,
     process_diffsynth_controlnet_inputs,
     process_ipadapter_inputs,
+    process_flux1_ipadapter_inputs,
+    process_sd3_ipadapter_inputs,
     process_embedding_inputs,
     process_style_inputs,
     process_conditioning_inputs
@@ -113,6 +115,8 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'controlnet_chain': process_controlnet_inputs(ui_values, prefix),
         'diffsynth_controlnet_chain': process_diffsynth_controlnet_inputs(ui_values, prefix),
         'ipadapter_chain': process_ipadapter_inputs(ui_values, prefix, load_ipadapter_presets()),
+        'flux1_ipadapter_chain': process_flux1_ipadapter_inputs(ui_values, prefix),
+        'sd3_ipadapter_chain': process_sd3_ipadapter_inputs(ui_values, prefix),
         'style_chain': process_style_inputs(ui_values, prefix),
         'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
     }
