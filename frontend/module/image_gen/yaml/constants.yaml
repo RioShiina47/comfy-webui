@@ -1,4 +1,12 @@
 RESOLUTION_MAP:
+  newbie-image:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
   ovis-image:
     "1:1 (Square)": [1024, 1024]
     "16:9 (Landscape)": [1344, 768]

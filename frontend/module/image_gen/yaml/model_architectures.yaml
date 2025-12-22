@@ -1,4 +1,5 @@
 architecture_order:
+  - "NewBie-Image"
   - "Z-Image"
   - "Ovis-Image"
   - "HunyuanImage"
@@ -14,6 +15,9 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "NewBie-Image":
+    model_type: "newbie-image"
+    controlnet_key: "NewBie-Image"
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"

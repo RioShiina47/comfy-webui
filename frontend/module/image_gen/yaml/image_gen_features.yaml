@@ -7,6 +7,12 @@ default:
     - style
     - conditioning
 
+newbie-image:
+  enabled_chains:
+    - lora
+    - embedding
+    - conditioning
+
 z-image:
   enabled_chains:
     - lora
@@ -23,9 +29,9 @@ sd35:
   enabled_chains:
     - lora
     - controlnet
-    - ipadapter
     - embedding
     - conditioning
+    - sd3_ipadapter
 
 sdxl:
   enabled_chains:
@@ -49,6 +55,7 @@ flux1:
     - controlnet
     - style
     - conditioning
+    - flux1_ipadapter
 
 omnigen2:
   enabled_chains:
