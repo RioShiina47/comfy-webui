@@ -2,11 +2,7 @@ nodes:
   unet_loader:
     class_type: UNETLoader
     title: "Load UNET"
-    params: { unet_name: "wan2.1_t2v_14B_fp8_scaled.safetensors", weight_dtype: "default" }
-  lora_loader_light:
-    class_type: LoraLoaderModelOnly
-    title: "Load LoRA Light"
-    params: { strength_model: 1.0, lora_name: "lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors" }
+    params: { unet_name: "wan2.1_t2v_14b_scaled_fp8_e4m3_lightx2v_4step_comfyui.safetensors", weight_dtype: "default" }
   lora_loader_alpha:
     class_type: LoraLoaderModelOnly
     title: "Load LoRA Alpha"
@@ -68,10 +64,16 @@ nodes:
     class_type: SaveVideo
     params: { format: "mp4", codec: "h264" }
 
+dynamic_lora_model_only_chains:
+  loras_model_only:
+    template: LoraLoaderModelOnly
+    output_map:
+      "lora_loader_alpha:0": model
+    end_input_map:
+      model: "model_sampler:model"
+
 connections:
   - from: "unet_loader:0"
-    to: "lora_loader_light:model"
-  - from: "lora_loader_light:0"
     to: "lora_loader_alpha:model"
   - from: "lora_loader_alpha:0"
     to: "model_sampler:model"

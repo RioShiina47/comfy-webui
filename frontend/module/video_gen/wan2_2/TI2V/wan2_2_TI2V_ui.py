@@ -2,6 +2,7 @@ import gradio as gr
 import traceback
 from .wan2_2_TI2V_logic import process_inputs, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "wan2_2_TI2V_recipe.yaml",
@@ -41,6 +42,8 @@ def create_ui():
                     interactive=False,
                     height=468
                 )
+        
+        create_lora_ui(components, "ti2v_lora", "LoRA Settings")
 
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
                 
@@ -50,7 +53,7 @@ def get_main_output_components(components: dict):
     return [components['output_video'], components['run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
-    pass
+    register_ui_chain_events(components, "ti2v_lora")
 
 run_generation = create_batched_run_generation(
     process_inputs,

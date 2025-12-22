@@ -1,0 +1,75 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+
+  scale_image:
+    class_type: ImageScale
+    title: "Scale Image"
+    params:
+      upscale_method: "lanczos"
+      crop: "center"
+
+  generate_tracks:
+    class_type: GenerateTracks
+    title: "Generate Tracks"
+
+  visualize_tracks:
+    class_type: WanMoveVisualizeTracks
+    title: "Visualize Tracks"
+
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+    params:
+      fps: 16
+
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params:
+      format: "auto"
+      codec: "auto"
+
+connections:
+  - from: "load_image:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "visualize_tracks:images"
+  - from: "generate_tracks:0"
+    to: "visualize_tracks:tracks"
+  - from: "visualize_tracks:0"
+    to: "create_video:images"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+dynamic_wan_move_chains:
+  wan_move_chain:
+    start_node: "generate_tracks"
+    end_node: "visualize_tracks"
+
+ui_map:
+  input_image: "load_image:image"
+  
+  aspect_ratio:
+    width: ["scale_image:width", "generate_tracks:width"]
+    height: ["scale_image:height", "generate_tracks:height"]
+
+  num_frames: "generate_tracks:num_frames"
+  start_x: "generate_tracks:start_x"
+  start_y: "generate_tracks:start_y"
+  end_x: "generate_tracks:end_x"
+  end_y: "generate_tracks:end_y"
+  bezier: "generate_tracks:bezier"
+  mid_x: "generate_tracks:mid_x"
+  mid_y: "generate_tracks:mid_y"
+  interpolation: "generate_tracks:interpolation"
+  num_tracks: "generate_tracks:num_tracks"
+  track_spread: "generate_tracks:track_spread"
+  
+  line_resolution: "visualize_tracks:line_resolution"
+  circle_size: "visualize_tracks:circle_size"
+  opacity: "visualize_tracks:opacity"
+  line_width: "visualize_tracks:line_width"
+  
+  filename_prefix: "save_video:filename_prefix"

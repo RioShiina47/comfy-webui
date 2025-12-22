@@ -1,22 +1,13 @@
 file: 
   diffusion_models: 
-    - filename: "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
+    - filename: "wan2.2_i2v_A14b_high_noise_scaled_fp8_e4m3_lightx2v_4step_comfyui_1030.safetensors"
       source: "hf"
-      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
-      repository_file_path: "split_files/diffusion_models/wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
-    - filename: "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
+      repo_id: "lightx2v/Wan2.2-Distill-Models"
+      repository_file_path: "wan2.2_i2v_A14b_high_noise_scaled_fp8_e4m3_lightx2v_4step_comfyui_1030.safetensors"
+    - filename: "wan2.2_i2v_A14b_low_noise_scaled_fp8_e4m3_lightx2v_4step_comfyui.safetensors"
       source: "hf"
-      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
-      repository_file_path: "split_files/diffusion_models/wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
-  loras: 
-    - filename: "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
-      source: "hf"
-      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
-      repository_file_path: "split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
-    - filename: "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
-      source: "hf"
-      repo_id: "Comfy-Org/Wan_2.2_ComfyUI_Repackaged"
-      repository_file_path: "split_files/loras/wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+      repo_id: "lightx2v/Wan2.2-Distill-Models"
+      repository_file_path: "wan2.2_i2v_A14b_low_noise_scaled_fp8_e4m3_lightx2v_4step_comfyui.safetensors"
   text_encoders: 
     - filename: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
       source: "hf"
