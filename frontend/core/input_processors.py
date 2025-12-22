@@ -17,7 +17,8 @@ def process_lora_inputs(all_ui_values: dict, prefix: str):
     if not lora_sources:
         return []
         
-    lora_ids = all_ui_values.get(key('loras_ids'), [])
+    lora_ids_txt = all_ui_values.get(key('loras_ids'), [])
+    lora_ids_dd = all_ui_values.get(key('loras_file_dropdowns'), [])
     lora_scales = all_ui_values.get(key('loras_scales'), [])
     
     for i in range(len(lora_sources)):
@@ -25,10 +26,18 @@ def process_lora_inputs(all_ui_values: dict, prefix: str):
         if scale is not None and scale != 0:
             name = None
             src = lora_sources[i] if i < len(lora_sources) else None
-            id_val = lora_ids[i] if i < len(lora_ids) else None
 
-            if src == "File" and id_val:
+            id_val = None
+            if src == "File":
+                id_val = lora_ids_dd[i] if i < len(lora_ids_dd) else None
+            else:
+                id_val = lora_ids_txt[i] if i < len(lora_ids_txt) else None
+
+            if src == "Upload File" and id_val:
                 name = id_val
+            elif src == "File" and id_val:
+                os_specific_subpath = id_val.replace("/", os.sep)
+                name = os.path.join("file", os_specific_subpath)
             elif src in ["Civitai", "Custom URL"] and id_val:
                 path, status_msg = get_lora_path(src, id_val, CIVITAI_API_KEY)
                 if path is None:
@@ -124,7 +133,7 @@ def process_ipadapter_inputs(all_ui_values: dict, prefix: str, ipadapter_presets
     key = lambda name: f"{prefix}_{name}"
     ipadapters = []
     ipa_images = all_ui_values.get(key('ipadapter_images'), [])
-    if not ipa_images:
+    if not ipadapters:
         return []
 
     final_preset = all_ui_values.get(key('ipadapter_final_preset'))
@@ -177,6 +186,66 @@ def process_ipadapter_inputs(all_ui_values: dict, prefix: str, ipadapter_presets
             
             ipadapters.append(final_settings)
 
+    return ipadapters
+
+
+def process_flux1_ipadapter_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    ipadapters = []
+    ipa_images = all_ui_values.get(key('flux1_ipadapter_images'), [])
+    if not ipa_images:
+        return []
+
+    ipa_weights = all_ui_values.get(key('flux1_ipadapter_weights'), [])
+    ipa_start_percents = all_ui_values.get(key('flux1_ipadapter_start_percents'), [])
+    ipa_end_percents = all_ui_values.get(key('flux1_ipadapter_end_percents'), [])
+
+    for i in range(len(ipa_images)):
+        image_pil = ipa_images[i]
+        weight = ipa_weights[i] if i < len(ipa_weights) else 0.6
+        start_percent = ipa_start_percents[i] if i < len(ipa_start_percents) else 0.0
+        end_percent = ipa_end_percents[i] if i < len(ipa_end_percents) else 0.6
+
+        if image_pil is not None and weight > 0:
+            image_filename = save_temp_image(image_pil)
+            item_data = {
+                "image": image_filename,
+                "weight": weight,
+                "start_percent": start_percent,
+                "end_percent": end_percent,
+            }
+            ipadapters.append(item_data)
+    
+    return ipadapters
+
+
+def process_sd3_ipadapter_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    ipadapters = []
+    ipa_images = all_ui_values.get(key('sd3_ipadapter_images'), [])
+    if not ipa_images:
+        return []
+
+    ipa_weights = all_ui_values.get(key('sd3_ipadapter_weights'), [])
+    ipa_start_percents = all_ui_values.get(key('sd3_ipadapter_start_percents'), [])
+    ipa_end_percents = all_ui_values.get(key('sd3_ipadapter_end_percents'), [])
+
+    for i in range(len(ipa_images)):
+        image_pil = ipa_images[i]
+        weight = ipa_weights[i] if i < len(ipa_weights) else 0.5
+        start_percent = ipa_start_percents[i] if i < len(ipa_start_percents) else 0.0
+        end_percent = ipa_end_percents[i] if i < len(ipa_end_percents) else 1.0
+
+        if image_pil is not None and weight > 0:
+            image_filename = save_temp_image(image_pil)
+            item_data = {
+                "image": image_filename,
+                "weight": weight,
+                "start_percent": start_percent,
+                "end_percent": end_percent,
+            }
+            ipadapters.append(item_data)
+    
     return ipadapters
 
 

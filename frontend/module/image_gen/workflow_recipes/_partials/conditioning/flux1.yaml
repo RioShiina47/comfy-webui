@@ -41,6 +41,10 @@ dynamic_controlnet_chains:
     ksampler_node: "ksampler"
     vae_source: "vae_loader:0"
 
+dynamic_flux1_ipadapter_chains:
+  flux1_ipadapter_chain:
+    ksampler_node: "ksampler"
+
 dynamic_style_chains:
   style_chain:
     flux_guidance_node: "flux_guidance"
