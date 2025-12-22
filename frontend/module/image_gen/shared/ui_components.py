@@ -110,6 +110,70 @@ def create_generation_parameters_ui(prefix: str):
         components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=8, step=1, value=1, interactive=True)
     return components
 
+def create_flux1_ipadapter_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    constants = load_constants_config()
+    max_ipadapters = constants.get('MAX_IPADAPTERS', 5)
+    with gr.Accordion("IPAdapter Settings (FLUX)", open=False) as flux1_ipadapter_accordion:
+        components[key('flux1_ipadapter_accordion')] = flux1_ipadapter_accordion
+        
+        ipa_rows, images, weights, start_percents, end_percents = [], [], [], [], []
+        components.update({
+            key('flux1_ipadapter_rows'): ipa_rows,
+            key('flux1_ipadapter_images'): images,
+            key('flux1_ipadapter_weights'): weights,
+            key('flux1_ipadapter_start_percents'): start_percents,
+            key('flux1_ipadapter_end_percents'): end_percents,
+        })
+        
+        for i in range(max_ipadapters):
+            with gr.Row(visible=(i < 1)) as row:
+                with gr.Column(scale=1):
+                    images.append(gr.Image(label=f"IPAdapter Image {i+1}", type="pil", sources="upload", height=256))
+                with gr.Column(scale=2):
+                    weights.append(gr.Slider(label="Weight", minimum=0.0, maximum=2.0, step=0.05, value=0.6, interactive=True))
+                    with gr.Row():
+                        start_percents.append(gr.Slider(label="Start At", minimum=0.0, maximum=1.0, step=0.01, value=0.0, interactive=True))
+                        end_percents.append(gr.Slider(label="End At", minimum=0.0, maximum=1.0, step=0.01, value=0.6, interactive=True))
+                ipa_rows.append(row)
+
+        with gr.Row():
+            components[key('add_flux1_ipadapter_button')] = gr.Button("✚ Add IPAdapter (FLUX)")
+            components[key('delete_flux1_ipadapter_button')] = gr.Button("➖ Delete IPAdapter (FLUX)", visible=False)
+        components[key('flux1_ipadapter_count_state')] = gr.State(1)
+
+def create_sd3_ipadapter_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    constants = load_constants_config()
+    max_ipadapters = constants.get('MAX_IPADAPTERS', 5)
+    with gr.Accordion("IPAdapter Settings (SD3)", open=False) as sd3_ipadapter_accordion:
+        components[key('sd3_ipadapter_accordion')] = sd3_ipadapter_accordion
+        
+        ipa_rows, images, weights, start_percents, end_percents = [], [], [], [], []
+        components.update({
+            key('sd3_ipadapter_rows'): ipa_rows,
+            key('sd3_ipadapter_images'): images,
+            key('sd3_ipadapter_weights'): weights,
+            key('sd3_ipadapter_start_percents'): start_percents,
+            key('sd3_ipadapter_end_percents'): end_percents,
+        })
+        
+        for i in range(max_ipadapters):
+            with gr.Row(visible=(i < 1)) as row:
+                with gr.Column(scale=1):
+                    images.append(gr.Image(label=f"IPAdapter Image {i+1}", type="pil", sources="upload", height=256))
+                with gr.Column(scale=2):
+                    weights.append(gr.Slider(label="Weight", minimum=0.0, maximum=2.0, step=0.05, value=0.5, interactive=True))
+                    with gr.Row():
+                        start_percents.append(gr.Slider(label="Start At", minimum=0.0, maximum=1.0, step=0.01, value=0.0, interactive=True))
+                        end_percents.append(gr.Slider(label="End At", minimum=0.0, maximum=1.0, step=0.01, value=1.0, interactive=True))
+                ipa_rows.append(row)
+
+        with gr.Row():
+            components[key('add_sd3_ipadapter_button')] = gr.Button("✚ Add IPAdapter (SD3)")
+            components[key('delete_sd3_ipadapter_button')] = gr.Button("➖ Delete IPAdapter (SD3)", visible=False)
+        components[key('sd3_ipadapter_count_state')] = gr.State(1)
+
 def create_vae_override_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
     constants = load_constants_config()
