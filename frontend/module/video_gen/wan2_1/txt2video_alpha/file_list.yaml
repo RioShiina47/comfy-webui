@@ -1,14 +1,10 @@
 file: 
   diffusion_models: 
-    - filename: "wan2.1_t2v_14B_fp8_scaled.safetensors"
+    - filename: "wan2.1_t2v_14b_scaled_fp8_e4m3_lightx2v_4step_comfyui.safetensors"
       source: "hf"
-      repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"
-      repository_file_path: "split_files/diffusion_models/wan2.1_t2v_14B_fp8_scaled.safetensors"
+      repo_id: "lightx2v/Wan2.1-Distill-Models"
+      repository_file_path: "wan2.1_t2v_14b_scaled_fp8_e4m3_lightx2v_4step_comfyui.safetensors"
   loras: 
-    - filename: "lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors"
-      source: "hf"
-      repo_id: "Kijai/WanVideo_comfy"
-      repository_file_path: "Lightx2v/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors"
     - filename: "wan_alpha_2.1_rgba_lora.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"

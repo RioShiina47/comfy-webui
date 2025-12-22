@@ -18,9 +18,9 @@ def create_ui():
         
         with gr.Row():
             with gr.Column(scale=1):
-                components['start_image'] = gr.Image(type="pil", label="Start Image")
+                components['start_image'] = gr.Image(type="pil", label="Start Image", height=294)
             with gr.Column(scale=1):
-                components['end_image'] = gr.Image(type="pil", label="End Image")
+                components['end_image'] = gr.Image(type="pil", label="End Image", height=294)
 
         with gr.Row():
             with gr.Column(scale=1):

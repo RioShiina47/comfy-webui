@@ -6,6 +6,7 @@ from PIL import Image
 
 from .qwen_image_edit_logic import process_inputs_logic
 from core.utils import create_batched_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "qwen-image-edit_recipe.yaml",
@@ -25,6 +26,7 @@ ASPECT_RATIO_PRESETS = {
 }
 
 MAX_REF_IMAGES = 8
+REQUIRED_LORA_DIRS = ["qwen-image-edit"]
 
 def create_ui():
     components = {}
@@ -48,22 +50,14 @@ def create_ui():
                     value="1:1 (Square)",
                     interactive=True
                 )
-                components['apply_lora'] = gr.Dropdown(
-                    label="Apply LoRA",
-                    choices=[
-                        ("None", "None"),
-                        ("Multiple-angles", "Qwen-Edit-2509-Multiple-angles.safetensors"),
-                        ("Fusion", "Qwen-Image-Edit-2509-Fusion.safetensors")
-                    ],
-                    value="None",
-                    interactive=True
-                )
                 components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                 components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
                 components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=400)
 
+        create_lora_ui(components, "qwen_edit", required_lora_dirs=REQUIRED_LORA_DIRS)
+        
         with gr.Accordion("Add More Images", open=False):
             ref_image_groups = []
             ref_image_inputs = []
@@ -89,6 +83,8 @@ def get_main_output_components(components: dict):
     return [components['output_gallery'], components['run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
+    register_ui_chain_events(components, "qwen_edit")
+    
     ref_count_state = components['ref_count_state']
     add_ref_btn = components['add_ref_button']
     del_ref_btn = components['delete_ref_button']

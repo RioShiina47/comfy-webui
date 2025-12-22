@@ -4,6 +4,7 @@ nodes:
     title: "Load Diffusion Model"
     params:
       unet_name: "wan2.2_ti2v_5B_fp16.safetensors"
+      weight_dtype: "default"
   clip_loader:
     class_type: CLIPLoader
     title: "Load CLIP"
@@ -54,9 +55,15 @@ nodes:
       format: "mp4"
       codec: "h264"
 
+dynamic_lora_model_only_chains:
+  loras_model_only:
+    template: LoraLoaderModelOnly
+    output_map:
+      "unet_loader:0": model
+    end_input_map:
+      model: "model_sampler:model"
+
 connections:
-  - from: "unet_loader:0"
-    to: "model_sampler:model"
   - from: "clip_loader:0"
     to: "pos_prompt:clip"
   - from: "clip_loader:0"

@@ -16,25 +16,13 @@ nodes:
     title: "Load UNET High Noise"
     params:
       weight_dtype: "default"
-      unet_name: "wan2.2_i2v_high_noise_14B_fp8_scaled.safetensors"
+      unet_name: "wan2.2_i2v_A14b_high_noise_scaled_fp8_e4m3_lightx2v_4step_comfyui_1030.safetensors"
   unet_loader_low:
     class_type: UNETLoader
     title: "Load UNET Low Noise"
     params:
       weight_dtype: "default"
-      unet_name: "wan2.2_i2v_low_noise_14B_fp8_scaled.safetensors"
-  lora_loader_high:
-    class_type: LoraLoaderModelOnly
-    title: "Load LoRA High Noise"
-    params:
-      strength_model: 1.0
-      lora_name: "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors"
-  lora_loader_low:
-    class_type: LoraLoaderModelOnly
-    title: "Load LoRA Low Noise"
-    params:
-      strength_model: 1.0
-      lora_name: "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+      unet_name: "wan2.2_i2v_A14b_low_noise_scaled_fp8_e4m3_lightx2v_4step_comfyui.safetensors"
   start_image_loader:
     class_type: LoadImage
     title: "Load Start Image"
@@ -81,7 +69,7 @@ nodes:
       sampler_name: "euler"
       scheduler: "simple"
       start_at_step: 2
-      end_at_step: 10000
+      end_at_step: 4
       return_with_leftover_noise: "disable"
   vae_decode:
     class_type: VAEDecode
@@ -95,12 +83,8 @@ nodes:
       codec: "h264"
 connections:
   - from: "unet_loader_high:0"
-    to: "lora_loader_high:model"
-  - from: "unet_loader_low:0"
-    to: "lora_loader_low:model"
-  - from: "lora_loader_high:0"
     to: "model_sampler_high:model"
-  - from: "lora_loader_low:0"
+  - from: "unet_loader_low:0"
     to: "model_sampler_low:model"
   - from: "clip_loader:0"
     to: "pos_prompt:clip"
