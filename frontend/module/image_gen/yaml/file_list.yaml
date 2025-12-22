@@ -144,6 +144,11 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # NewBie-Image
+    - filename: "NewBie-Image-Exp0.1-bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/NewBie-image-Exp0.1_repackaged"
+      repository_file_path: "split_files/diffusion_models/NewBie-Image-Exp0.1-bf16.safetensors"
     # Ovis-Image
     - filename: "ovis_image_bf16.safetensors"
       source: "hf"
@@ -308,6 +313,15 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    # NewBie-Image
+    - filename: "gemma_3_4b_it_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/NewBie-image-Exp0.1_repackaged"
+      repository_file_path: "split_files/text_encoders/gemma_3_4b_it_bf16.safetensors"
+    - filename: "jina_clip_v2_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/NewBie-image-Exp0.1_repackaged"
+      repository_file_path: "split_files/text_encoders/jina_clip_v2_bf16.safetensors"
     # Ovis-Image
     - filename: "ovis_2.5.safetensors"
       source: "hf"

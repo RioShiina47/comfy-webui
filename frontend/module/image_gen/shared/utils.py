@@ -108,7 +108,7 @@ def get_model_generation_defaults(model_display_name: str, model_type: str, defa
     if 'Default' in defaults_config:
         final_defaults.update(defaults_config['Default'])
 
-    model_type_key = next((key for key in defaults_config if key.lower() == model_type.lower()), None)
+    model_type_key = next((key for key in defaults_config if key.lower().replace(" ", "-").replace(".", "") == model_type.lower()), None)
     if model_type_key:
         model_type_config = defaults_config[model_type_key]
         if '_defaults' in model_type_config:
