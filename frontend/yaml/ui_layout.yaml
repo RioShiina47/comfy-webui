@@ -37,7 +37,10 @@ main_tabs_order:
       - "TI2V"
       - "Animate"
     - "wan2.1":
+      - "wan2.1 txt2video"
+      - "wan2.1 img2video"
       - "txt2video(alpha)"
+      - "wan2.1 wanmove"
     - "HunyuanVideo-1.5":
       - "HunyuanVideo-1.5 T2V"
       - "HunyuanVideo-1.5 I2V"

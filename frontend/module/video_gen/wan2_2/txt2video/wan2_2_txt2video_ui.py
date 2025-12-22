@@ -57,8 +57,8 @@ def create_ui():
                     height=468
                 )
         
-        create_lora_ui(components, "high_noise", "High Noise LoRA Settings")
-        create_lora_ui(components, "low_noise", "Low Noise LoRA Settings")
+        create_lora_ui(components, "high_noise", accordion_label="High Noise LoRA Settings")
+        create_lora_ui(components, "low_noise", accordion_label="Low Noise LoRA Settings")
 
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
 
