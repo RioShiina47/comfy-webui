@@ -4,7 +4,7 @@ from .sd_shared import (
     create_base_ui_components, create_generation_parameters_ui, 
     create_lora_ui, create_controlnet_ui, create_ipadapter_ui, create_embedding_ui, 
     create_style_ui, create_conditioning_ui, create_vae_override_ui,
-    create_diffsynth_controlnet_ui,
+    create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
     register_shared_events,
     create_run_generation_logic
 )
@@ -38,6 +38,8 @@ def create_ui():
         create_controlnet_ui(components, PREFIX)
         create_diffsynth_controlnet_ui(components, PREFIX)
         create_ipadapter_ui(components, PREFIX)
+        create_flux1_ipadapter_ui(components, PREFIX)
+        create_sd3_ipadapter_ui(components, PREFIX)
         create_embedding_ui(components, PREFIX)
         create_conditioning_ui(components, PREFIX)
         create_vae_override_ui(components, PREFIX)

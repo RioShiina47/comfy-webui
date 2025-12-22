@@ -13,7 +13,7 @@ def on_lora_upload(file_obj):
     if file_obj is None:
         return gr.update(), gr.update(), None
     
-    upload_subdir = "file"
+    upload_subdir = "upload_file"
     lora_upload_dir = os.path.join(LORA_DIR, upload_subdir)
     os.makedirs(lora_upload_dir, exist_ok=True)
     
@@ -23,7 +23,7 @@ def on_lora_upload(file_obj):
     
     relative_path = os.path.join(upload_subdir, basename)
     
-    return relative_path, "File", relative_path
+    return relative_path, "Upload File", relative_path
 
 def on_embedding_upload(file_obj):
     """Event handler for uploading an embedding file directly."""
@@ -41,26 +41,88 @@ def on_embedding_upload(file_obj):
     
     return relative_path, "File", relative_path
 
-def create_lora_ui(components, prefix, accordion_label="LoRA Settings"):
+def create_lora_ui(components, prefix, module_lora_dir=None, required_lora_dirs=None, accordion_label="LoRA Settings"):
     """Creates the UI for LoRA settings and adds them to the components dict."""
     key = lambda name: f"{prefix}_{name}"
     constants = get_ui_constants()
     max_loras = constants.get('MAX_LORAS', 5)
-    lora_source_choices = constants.get('LORA_SOURCE_CHOICES', ["Civitai", "Custom URL", "File"])
+
+    if required_lora_dirs and isinstance(required_lora_dirs, list):
+        for subdir in required_lora_dirs:
+            full_path = os.path.join(LORA_DIR, "file", subdir)
+            os.makedirs(full_path, exist_ok=True)
+            
+    all_lora_dirs = []
+    if required_lora_dirs:
+        all_lora_dirs.extend(required_lora_dirs)
+    if module_lora_dir and module_lora_dir not in all_lora_dirs:
+        all_lora_dirs.append(module_lora_dir)
     
+    base_source_choices = ["Civitai", "Custom URL", "Upload File"]
+    lora_source_choices = base_source_choices + ["File"] if all_lora_dirs else base_source_choices
+
+    def get_loras_from_dirs(subdirs):
+        if not subdirs:
+            return []
+        
+        all_files_with_labels = []
+        base_search_path = os.path.join(LORA_DIR, "file")
+
+        for subdir in subdirs:
+            lora_root_dir = os.path.join(base_search_path, subdir)
+            if not os.path.isdir(lora_root_dir):
+                continue
+
+            for root, _, files in os.walk(lora_root_dir):
+                for filename in files:
+                    if filename.lower().endswith(('.safetensors', '.pt', '.bin', '.ckpt')):
+                        full_path = os.path.join(root, filename)
+                        
+                        value_path = os.path.relpath(full_path, base_search_path).replace("\\", "/")
+                        display_path = os.path.relpath(full_path, lora_root_dir).replace("\\", "/")
+                        
+                        display_name = display_path if display_path != filename else filename
+                        
+                        all_files_with_labels.append((display_name, value_path))
+        
+        return sorted(all_files_with_labels, key=lambda x: x[0])
+
     with gr.Accordion(accordion_label, open=False) as lora_accordion:
         components[key('lora_accordion')] = lora_accordion
-        lora_rows, sources, ids, scales, files = [], [], [], [], []
-        components.update({key('lora_rows'): lora_rows, key('loras_sources'): sources, key('loras_ids'): ids, key('loras_scales'): scales, key('loras_files'): files})
+        lora_rows, sources, ids_txt, ids_dd, scales, files = [], [], [], [], [], []
+        components.update({
+            key('lora_rows'): lora_rows, 
+            key('loras_sources'): sources, 
+            key('loras_ids'): ids_txt, 
+            key('loras_file_dropdowns'): ids_dd,
+            key('loras_scales'): scales, 
+            key('loras_files'): files
+        })
+        
         for i in range(max_loras):
             with gr.Row(visible=(i < 1)) as row:
                 sources.append(gr.Dropdown(label=f"LoRA {i+1}", choices=lora_source_choices, value="Civitai", scale=1, interactive=True))
-                ids.append(gr.Textbox(label="ID/URL/File", placeholder="e.g., 133755", scale=2, interactive=True))
+                with gr.Column(scale=2, min_width=100):
+                    ids_txt.append(gr.Textbox(label="ID/URL/File", placeholder="e.g., 133755", interactive=True, visible=True))
+                    ids_dd.append(gr.Dropdown(label="File", choices=get_loras_from_dirs(all_lora_dirs), interactive=True, visible=False))
                 scales.append(gr.Slider(label="Weight", minimum=-1.0, maximum=2.0, step=0.05, value=1.0, scale=2, interactive=True))
-                upload_btn = gr.UploadButton("Upload", file_types=[".safetensors"], scale=1)
+                upload_btn = gr.UploadButton("Upload", file_types=[".safetensors", ".pt", ".bin", ".ckpt"], scale=1)
                 files.append(gr.State(None))
                 lora_rows.append(row)
-                upload_btn.upload(fn=on_lora_upload, inputs=[upload_btn], outputs=[ids[i], sources[i], files[i]], show_api=False)
+                upload_btn.upload(fn=on_lora_upload, inputs=[upload_btn], outputs=[ids_txt[i], sources[i], files[i]], show_api=False)
+
+        def update_lora_input_visibility(source_choice):
+            is_file_dropdown = source_choice == "File"
+            return gr.update(visible=not is_file_dropdown), gr.update(visible=is_file_dropdown)
+
+        for i in range(max_loras):
+            sources[i].change(
+                fn=update_lora_input_visibility,
+                inputs=[sources[i]],
+                outputs=[ids_txt[i], ids_dd[i]],
+                show_api=False
+            )
+
         with gr.Row():
             components[key('add_lora_button')] = gr.Button("✚ Add LoRA")
             components[key('delete_lora_button')] = gr.Button("➖ Delete LoRA", visible=False)
@@ -299,28 +361,32 @@ def register_ui_chain_events(components, prefix):
     def _delete_row_factory(count_state_key, add_btn_key, del_btn_key, rows_key, max_count, reset_keys=[]):
         def _delete_row(count, *args):
             count -= 1
-            updates = {
-                count_state_key: count,
-                add_btn_key: gr.update(visible=True),
-                del_btn_key: gr.update(visible=count > 1)
-            }
-            for i in range(max_count):
-                updates[rows_key[i]] = gr.update(visible=i < count)
-
+            
+            count_update = count
+            add_btn_update = gr.update(visible=True)
+            del_btn_update = gr.update(visible=count > 1)
+            
+            row_updates = [gr.update(visible=i < count) for i in range(max_count)]
+            
+            all_reset_updates_dict = {}
             for i, k in enumerate(reset_keys):
                 reset_list = components.get(k, [])
+                
+                for comp in reset_list:
+                    all_reset_updates_dict[comp] = gr.update()
+                
                 if count < len(reset_list):
-                    default_val = args[i] if i < len(args) else (1.0 if "scale" in k or "strength" in k else "")
-                    updates[reset_list[count]] = default_val
-
-            output_list = [updates[count_state_key], updates[add_btn_key], updates[del_btn_key]]
-            output_list.extend([updates[r] for r in rows])
+                    default_val = args[i]
+                    component_to_reset = reset_list[count]
+                    all_reset_updates_dict[component_to_reset] = gr.update(value=default_val)
+            
+            final_reset_updates = []
             for k in reset_keys:
                 reset_list = components.get(k, [])
                 for comp in reset_list:
-                    output_list.append(updates.get(comp, gr.update()))
+                    final_reset_updates.append(all_reset_updates_dict.get(comp, gr.update()))
 
-            return tuple(output_list)
+            return (count_update, add_btn_update, del_btn_update) + tuple(row_updates) + tuple(final_reset_updates)
 
         if all(k in components for k in [count_state_key, add_btn_key, del_btn_key, rows_key]):
             add_btn = components[add_btn_key]
@@ -330,12 +396,23 @@ def register_ui_chain_events(components, prefix):
             
             inputs = [count_state]
             outputs = [count_state, add_btn, del_btn] + rows
-            default_values_for_reset = []
             
             for k in reset_keys:
                 if k in components:
-                    default_val = 1.0 if "scale" in k or "strength" in k else ""
-                    default_values_for_reset.append(default_val)
+                    default_val = None
+                    if "image" in k: default_val = None
+                    elif "weight" in k:
+                        if "flux1" in k: default_val = 0.6
+                        elif "sd3" in k: default_val = 0.5
+                        else: default_val = 1.0
+                    elif "scale" in k or "strength" in k: default_val = 1.0
+                    elif "start" in k: default_val = 0.0
+                    elif "end" in k:
+                        if "sd3" in k: default_val = 1.0
+                        elif "flux1" in k: default_val = 0.6
+                        else: default_val = 1.0
+                    else: default_val = ""
+                    
                     inputs.append(gr.State(default_val))
                     outputs.extend(components[k])
 
@@ -355,6 +432,12 @@ def register_ui_chain_events(components, prefix):
     
     _add_row_factory(key('ipadapter_count_state'), key('add_ipadapter_button'), key('delete_ipadapter_button'), key('ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5))
     _delete_row_factory(key('ipadapter_count_state'), key('add_ipadapter_button'), key('delete_ipadapter_button'), key('ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5), reset_keys=[key('ipadapter_images'), key('ipadapter_weights')])
+
+    _add_row_factory(key('flux1_ipadapter_count_state'), key('add_flux1_ipadapter_button'), key('delete_flux1_ipadapter_button'), key('flux1_ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5))
+    _delete_row_factory(key('flux1_ipadapter_count_state'), key('add_flux1_ipadapter_button'), key('delete_flux1_ipadapter_button'), key('flux1_ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5), reset_keys=[key('flux1_ipadapter_images'), key('flux1_ipadapter_weights'), key('flux1_ipadapter_start_percents'), key('flux1_ipadapter_end_percents')])
+
+    _add_row_factory(key('sd3_ipadapter_count_state'), key('add_sd3_ipadapter_button'), key('delete_sd3_ipadapter_button'), key('sd3_ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5))
+    _delete_row_factory(key('sd3_ipadapter_count_state'), key('add_sd3_ipadapter_button'), key('delete_sd3_ipadapter_button'), key('sd3_ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5), reset_keys=[key('sd3_ipadapter_images'), key('sd3_ipadapter_weights'), key('sd3_ipadapter_start_percents'), key('sd3_ipadapter_end_percents')])
 
     _add_row_factory(key('style_count_state'), key('add_style_button'), key('delete_style_button'), key('style_rows'), constants.get('MAX_STYLES', 5))
     _delete_row_factory(key('style_count_state'), key('add_style_button'), key('delete_style_button'), key('style_rows'), constants.get('MAX_STYLES', 5), reset_keys=[key('style_images'), key('style_strengths')])
