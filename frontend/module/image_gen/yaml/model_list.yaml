@@ -1,4 +1,13 @@
 Checkpoints:
+  NewBie-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "NewBie-AI/NewBie-image-Exp0.1"
+        components:
+          unet: "NewBie-Image-Exp0.1-bf16.safetensors"
+          vae: "ae.safetensors"
+          clip1: "gemma_3_4b_it_bf16.safetensors"
+          clip2: "jina_clip_v2_bf16.safetensors"
   Z-Image:
     latent_type: sd3_latent
     models:

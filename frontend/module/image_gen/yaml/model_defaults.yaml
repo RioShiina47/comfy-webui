@@ -7,6 +7,13 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+NewBie-Image:
+  _defaults:
+    steps: 28
+    cfg: 4.5
+    sampler_name: "res_multistep"
+    scheduler: "linear_quadratic"
+
 Z-Image:
   _defaults:
     steps: 9
@@ -58,7 +65,7 @@ Chroma1-Radiance:
 SD3.5:
   _defaults:
     steps: 20
-    cfg: 4.01
+    cfg: 4.0
     sampler_name: "euler"
     scheduler: "sgm_uniform"
     total_pixels: 1048576

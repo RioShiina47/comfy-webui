@@ -66,6 +66,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     diffsynth_controlnet_types_list = components.get(key('diffsynth_controlnet_types'))
     diffsynth_controlnet_filepaths_list = components.get(key('diffsynth_controlnet_filepaths'))
     ipadapter_accordion = components.get(key('ipadapter_accordion'))
+    flux1_ipadapter_accordion = components.get(key('flux1_ipadapter_accordion'))
+    sd3_ipadapter_accordion = components.get(key('sd3_ipadapter_accordion'))
     ipadapter_presets_list = components.get(key('ipadapter_presets'))
     ipadapter_final_preset = components.get(key('ipadapter_final_preset'))
     ipadapter_lora_strengths_list = components.get(key('ipadapter_lora_strengths'))
@@ -138,6 +140,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'controlnet': controlnet_accordion,
             'controlnet_model_patch': diffsynth_controlnet_accordion,
             'ipadapter': ipadapter_accordion,
+            'flux1_ipadapter': flux1_ipadapter_accordion,
+            'sd3_ipadapter': sd3_ipadapter_accordion,
             'embedding': embedding_accordion,
             'style': style_accordion,
             'conditioning': conditioning_accordion
@@ -173,31 +177,16 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             
             default_type = type_choices[0] if type_choices else None
             type_update = gr.update(choices=type_choices, value=default_type)
-
-            series_choices = []
-            if controlnet_visible and default_type:
-                series_choices = sorted(list(set(
-                    model.get("Series", "Default")
-                    for model in cn_config[arch_key]
-                    if default_type in model.get("Type", [])
-                )))
-            
-            default_series = series_choices[0] if series_choices else None
-            series_update = gr.update(choices=series_choices, value=default_series)
-
-            filepath = "None"
-            if controlnet_visible and default_type and default_series:
-                for model in cn_config.get(arch_key, []):
-                    if model.get("Series") == default_series and default_type in model.get("Type", []):
-                        filepath = model.get("Filepath")
-                        break
             
             if controlnet_types_list:
-                for type_dd in controlnet_types_list: updates[type_dd] = type_update
+                for type_dd in controlnet_types_list:
+                    updates[type_dd] = type_update
             if controlnet_series_list:
-                for series_dd in controlnet_series_list: updates[series_dd] = series_update
+                for series_dd in controlnet_series_list:
+                    updates[series_dd] = gr.update(choices=[], value=None)
             if controlnet_filepaths_list:
-                for filepath_state in controlnet_filepaths_list: updates[filepath_state] = filepath
+                for filepath_state in controlnet_filepaths_list:
+                    updates[filepath_state] = "None"
         
         diffsynth_cn_config = load_diffsynth_controlnet_models()
         if diffsynth_controlnet_accordion and 'controlnet_model_patch' in enabled_chains:
@@ -211,31 +200,16 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             
             default_type = type_choices[0] if type_choices else None
             type_update = gr.update(choices=type_choices, value=default_type)
-
-            series_choices = []
-            if diffsynth_cn_visible and default_type:
-                series_choices = sorted(list(set(
-                    model.get("Series", "Default")
-                    for model in diffsynth_cn_config[arch_key]
-                    if default_type in model.get("Type", [])
-                )))
-            
-            default_series = series_choices[0] if series_choices else None
-            series_update = gr.update(choices=series_choices, value=default_series)
-
-            filepath = "None"
-            if diffsynth_cn_visible and default_type and default_series:
-                for model in diffsynth_cn_config.get(arch_key, []):
-                    if model.get("Series") == default_series and default_type in model.get("Type", []):
-                        filepath = model.get("Filepath")
-                        break
             
             if diffsynth_controlnet_types_list:
-                for type_dd in diffsynth_controlnet_types_list: updates[type_dd] = type_update
+                for type_dd in diffsynth_controlnet_types_list:
+                    updates[type_dd] = type_update
             if diffsynth_controlnet_series_list:
-                for series_dd in diffsynth_controlnet_series_list: updates[series_dd] = series_update
+                for series_dd in diffsynth_controlnet_series_list:
+                    updates[series_dd] = gr.update(choices=[], value=None)
             if diffsynth_controlnet_filepaths_list:
-                for filepath_state in diffsynth_controlnet_filepaths_list: updates[filepath_state] = filepath
+                for filepath_state in diffsynth_controlnet_filepaths_list:
+                    updates[filepath_state] = "None"
 
         if ipadapter_accordion and 'ipadapter' in enabled_chains:
             ipadapter_visible = model_type in ["sdxl", "sd15", "sd35"]
@@ -290,7 +264,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "sampler": sampler_dropdown, "scheduler": scheduler_dropdown, "lora": lora_accordion,
         "embedding": embedding_accordion, "gallery": gallery_component, "cn_accordion": controlnet_accordion,
         "diffsynth_cn_accordion": diffsynth_controlnet_accordion,
-        "ipa_accordion": ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
+        "ipa_accordion": ipadapter_accordion, "flux1_ipa_accordion": flux1_ipadapter_accordion, "sd3_ipa_accordion": sd3_ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
         "ipa_final_lora_slider": ipadapter_final_lora_strength_slider,
         "conditioning_accordion": conditioning_accordion
     }
