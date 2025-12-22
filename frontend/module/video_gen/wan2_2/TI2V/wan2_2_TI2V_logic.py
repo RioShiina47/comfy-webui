@@ -2,6 +2,7 @@ import os
 from core.workflow_assembler import WorkflowAssembler
 from core.workflow_utils import get_filename_prefix
 from core.utils import handle_seed
+from core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_PATH = "wan2_2_TI2V_recipe.yaml"
 
@@ -28,6 +29,8 @@ def process_inputs(ui_values, seed_override=None):
 
     local_ui_values['video_length'] = int(local_ui_values.get('video_length', 121))
     local_ui_values['filename_prefix'] = get_filename_prefix()
+
+    local_ui_values['loras_model_only'] = process_lora_inputs(ui_values, 'ti2v_lora')
 
     recipe_path = WORKFLOW_RECIPE_PATH
     module_path = os.path.dirname(os.path.abspath(__file__))

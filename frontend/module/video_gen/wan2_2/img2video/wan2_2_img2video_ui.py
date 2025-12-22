@@ -36,7 +36,7 @@ def create_ui():
                 components['start_image'] = gr.Image(type="pil", label="Input Image", height=294)
             
             with gr.Column(scale=2):
-                components['positive_prompt'] = gr.Textbox(label="Prompt", lines=4, placeholder="Describe the motion or change you want to see...")
+                components['positive_prompt'] = gr.Textbox(label="Prompt (Motion Description)", lines=4, placeholder="Describe the motion or change you want to see...")
                 components['negative_prompt'] = gr.Textbox(label="Negative Prompt", lines=4)
 
         with gr.Row():
@@ -63,8 +63,8 @@ def create_ui():
                     label="Result", show_label=False, interactive=False, height=378
                 )
         
-        create_lora_ui(components, "high_noise", "High Noise LoRA Settings")
-        create_lora_ui(components, "low_noise", "Low Noise LoRA Settings")
+        create_lora_ui(components, "high_noise", accordion_label="High Noise LoRA Settings")
+        create_lora_ui(components, "low_noise", accordion_label="Low Noise LoRA Settings")
 
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
                 
