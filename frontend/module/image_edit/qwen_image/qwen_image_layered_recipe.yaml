@@ -1,0 +1,149 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Qwen Layered UNET"
+    params:
+      unet_name: "qwen_image_layered_fp8mixed.safetensors"
+      weight_dtype: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load Qwen Layered VAE"
+    params:
+      vae_name: "qwen_image_layered_vae.safetensors"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load Qwen CLIP"
+    params:
+      clip_name: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      type: "qwen_image"
+      device: "default"
+  
+  load_image:
+    class_type: LoadImage
+    title: "Load Input Image"
+  
+  scale_image:
+    class_type: ImageScaleToMaxDimension
+    title: "Scale Input Image"
+    params:
+      upscale_method: "lanczos"
+      largest_size: 640
+      
+  get_image_size:
+    class_type: GetImageSize
+    title: "Get Image Size"
+    
+  vae_encode:
+    class_type: VAEEncode
+    title: "VAE Encode Input Image"
+    
+  pos_prompt_encoder:
+    class_type: CLIPTextEncode
+    title: "Encode Positive Prompt"
+  neg_prompt_encoder:
+    class_type: CLIPTextEncode
+    title: "Encode Negative Prompt"
+
+  reference_latent_pos:
+    class_type: ReferenceLatent
+    title: "Reference Latent (Positive)"
+  reference_latent_neg:
+    class_type: ReferenceLatent
+    title: "Reference Latent (Negative)"
+    
+  empty_latent:
+    class_type: EmptyQwenImageLayeredLatentImage
+    title: "Empty Layered Latent"
+    params:
+      batch_size: 1
+
+  model_sampler:
+    class_type: ModelSamplingAuraFlow
+    title: "Model Sampler (AuraFlow)"
+    params:
+      shift: 1.0
+
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
+      
+  latent_cutter:
+    class_type: LatentCutToBatch
+    title: "Latent Cut To Batch"
+    params:
+      dim: "t"
+      slice_size: 1
+      
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+    
+  save_image:
+    class_type: SaveImage
+    title: "Save Image Layers"
+
+connections:
+  - from: "load_image:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "get_image_size:image"
+  - from: "scale_image:0"
+    to: "vae_encode:pixels"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+  - from: "clip_loader:0"
+    to: "pos_prompt_encoder:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt_encoder:clip"
+  
+  - from: "pos_prompt_encoder:0"
+    to: "reference_latent_pos:conditioning"
+  - from: "vae_encode:0"
+    to: "reference_latent_pos:latent"
+    
+  - from: "neg_prompt_encoder:0"
+    to: "reference_latent_neg:conditioning"
+  - from: "vae_encode:0"
+    to: "reference_latent_neg:latent"
+    
+  - from: "get_image_size:0"
+    to: "empty_latent:width"
+  - from: "get_image_size:1"
+    to: "empty_latent:height"
+    
+  - from: "unet_loader:0"
+    to: "model_sampler:model"
+  - from: "model_sampler:0"
+    to: "ksampler:model"
+
+  - from: "reference_latent_pos:0"
+    to: "ksampler:positive"
+  - from: "reference_latent_neg:0"
+    to: "ksampler:negative"
+  - from: "empty_latent:0"
+    to: "ksampler:latent_image"
+    
+  - from: "ksampler:0"
+    to: "latent_cutter:samples"
+  - from: "latent_cutter:0"
+    to: "vae_decode:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  
+  - from: "vae_decode:0"
+    to: "save_image:images"
+
+ui_map:
+  input_image: "load_image:image"
+  positive_prompt: "pos_prompt_encoder:text"
+  negative_prompt: "neg_prompt_encoder:text"
+  layers: "empty_latent:layers"
+  steps: "ksampler:steps"
+  cfg: "ksampler:cfg"
+  seed: "ksampler:seed"
+  filename_prefix: "save_image:filename_prefix"

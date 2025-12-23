@@ -24,6 +24,8 @@ main_tabs_order:
       - "FLUX-Fill-Dev Outpaint"
       - "Qwen-Image Outpaint"
       - "Flux.1-Dev-OneReward Outpaint"
+    - "Layered":
+      - "Qwen-Image Layered"
 
   - "VideoGen":
     - "wan2.2":
