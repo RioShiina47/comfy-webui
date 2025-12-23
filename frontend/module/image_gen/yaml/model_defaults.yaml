@@ -9,10 +9,12 @@ Default:
 
 NewBie-Image:
   _defaults:
-    steps: 28
-    cfg: 4.5
+    steps: 20
+    cfg: 5.5
     sampler_name: "res_multistep"
-    scheduler: "linear_quadratic"
+    scheduler: "simple"
+    positive_prompt: "You are an assistant designed to generate high-quality anime images with the highest degree of image-text alignment based on xml format textual prompts. <Prompt Start>"
+    negative_prompt: "You are an assistant designed to generate low-quality images based on textual prompts. <Prompt Start>"
 
 Z-Image:
   _defaults:
