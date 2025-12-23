@@ -1,0 +1,16 @@
+file: 
+  diffusion_models: 
+    - filename: "qwen_image_layered_fp8mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image-Layered_ComfyUI"
+      repository_file_path: "split_files/diffusion_models/qwen_image_layered_fp8mixed.safetensors"
+  text_encoders: 
+    - filename: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"
+  vae: 
+    - filename: "qwen_image_layered_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image-Layered_ComfyUI"
+      repository_file_path: "split_files/vae/qwen_image_layered_vae.safetensors"
