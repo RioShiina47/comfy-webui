@@ -74,6 +74,7 @@ main_tabs_order:
     - "Tagger":
       - "WD14 Tagger"
       - "CLIP Interrogator"
+      - "NewBie XML Generator"
     - "Media Info"
     - "Fill":
       - "Inpaint"
