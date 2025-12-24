@@ -1,0 +1,42 @@
+nodes:
+  general_tags_builder:
+    class_type: NewBieGeneralTagsBuilder
+
+  xml_assembler:
+    class_type: NewBieXMLPromptAssembler
+  
+  save_text:
+    class_type: "easy saveText"
+    params:
+      file_extension: "txt"
+      overwrite: true
+
+connections:
+  - from: "general_tags_builder:0"
+    to: "xml_assembler:general_tags"
+  - from: "xml_assembler:0"
+    to: "save_text:text"
+
+dynamic_character_chains:
+  character_chain:
+    target_node: "xml_assembler"
+
+ui_map:
+  caption: "xml_assembler:caption"
+  style_prefix: "xml_assembler:style_prefix"
+  
+  count: "general_tags_builder:count"
+  body_type: "general_tags_builder:body_type"
+  artists: "general_tags_builder:artists"
+  style: "general_tags_builder:style"
+  background: "general_tags_builder:background"
+  environment: "general_tags_builder:environment"
+  perspective: "general_tags_builder:perspective"
+  atmosphere: "general_tags_builder:atmosphere"
+  lighting: "general_tags_builder:lighting"
+  quality: "general_tags_builder:quality"
+  objects: "general_tags_builder:objects"
+  extra_tags: "general_tags_builder:extra_tags"
+  
+  output_file_path: "save_text:output_file_path"
+  filename_prefix: "save_text:file_name"
