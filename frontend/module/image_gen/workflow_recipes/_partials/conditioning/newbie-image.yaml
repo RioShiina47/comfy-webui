@@ -40,9 +40,9 @@ connections:
   - from: "vae_loader:0"
     to: "vae_encode:vae"
 
-dynamic_lora_chains:
+dynamic_newbie_lora_chains:
   lora_chain:
-    template: "LoraLoader"
+    template: "NewBieLoraLoader"
     output_map:
       "unet_loader:0": "model"
       "clip_loader:0": "clip"
