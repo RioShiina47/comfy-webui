@@ -35,7 +35,14 @@ def process_inputs_logic(params: dict, seed_override=None):
 
     local_params['filename_prefix'] = get_filename_prefix()
 
-    recipe_path = "qwen-image-edit_recipe.yaml"
+    model_selection = local_params.get('model_version', 'Qwen-Image-Edit-2511')
+    if model_selection == 'Qwen-Image-Edit-2511':
+        recipe_path = "qwen-image-edit_2511_recipe.yaml"
+    elif model_selection == 'Qwen-Image-Edit-2509':
+        recipe_path = "qwen-image-edit_2509_recipe.yaml"
+    else:
+        recipe_path = "qwen-image-edit_recipe.yaml"
+
     module_path = os.path.dirname(os.path.abspath(__file__))
     assembler = WorkflowAssembler(recipe_path, base_path=module_path)
     final_workflow = assembler.assemble(local_params)

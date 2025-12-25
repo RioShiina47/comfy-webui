@@ -111,6 +111,7 @@ def ImageEdit(
         'width': width,
         'height': height,
         'seed': -1,
+        'model_version': 'Qwen-Image-Edit-2511',
         'input_image': input_image_pil,
         'ref_count_state': len(reference_pils),
         'ref_image_inputs': reference_pils,
