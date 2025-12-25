@@ -3,7 +3,7 @@ nodes:
     class_type: UNETLoader
     title: "Load Diffusion Model"
     params:
-      unet_name: "qwen_image_edit_fp8_e4m3fn.safetensors"
+      unet_name: "qwen_image_edit_2511_fp8_e4m3fn_scaled_lightning_comfyui.safetensors"
       weight_dtype: "default"
   clip_loader:
     class_type: CLIPLoader
@@ -17,12 +17,6 @@ nodes:
     title: "Load VAE"
     params:
       vae_name: "qwen_image_vae.safetensors"
-  lora_loader:
-    class_type: LoraLoaderModelOnly
-    title: "LoraLoaderModelOnly"
-    params:
-      lora_name: "Qwen-Image-Edit-Lightning-4steps-V1.0-bf16.safetensors"
-      strength_model: 1.0
   
   pos_prompt_encoder:
     class_type: CLIPTextEncode
@@ -65,8 +59,6 @@ nodes:
 
 connections:
   - from: "unet_loader:0"
-    to: "lora_loader:model"
-  - from: "lora_loader:0"
     to: "model_sampler:model"
   - from: "model_sampler:0"
     to: "cfg_norm:model"
@@ -104,7 +96,7 @@ dynamic_reference_latent_chains:
 dynamic_lora_chains:
   lora_chain:
     template: "LoraLoaderModelOnly"
-    start: "lora_loader"
+    start: "unet_loader"
     output_map:
       "0": "model"
     input_map:

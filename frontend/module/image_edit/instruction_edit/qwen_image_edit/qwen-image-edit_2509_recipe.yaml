@@ -3,7 +3,7 @@ nodes:
     class_type: UNETLoader
     title: "Load Diffusion Model"
     params:
-      unet_name: "qwen_image_edit_fp8_e4m3fn.safetensors"
+      unet_name: "qwen_image_edit_2509_fp8_e4m3fn.safetensors"
       weight_dtype: "default"
   clip_loader:
     class_type: CLIPLoader
@@ -21,7 +21,7 @@ nodes:
     class_type: LoraLoaderModelOnly
     title: "LoraLoaderModelOnly"
     params:
-      lora_name: "Qwen-Image-Edit-Lightning-4steps-V1.0-bf16.safetensors"
+      lora_name: "Qwen-Image-Edit-2509-Lightning-4steps-V1.0-bf16.safetensors"
       strength_model: 1.0
   
   pos_prompt_encoder:

@@ -9,7 +9,6 @@ from core.utils import create_batched_run_generation
 from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
-    "workflow_recipe": "qwen-image-edit_recipe.yaml",
     "main_tab": "ImageEdit",
     "sub_tab": "Qwen-Image-Edit",
     "run_button_text": "🎨 Edit Qwen Image"
@@ -44,17 +43,27 @@ def create_ui():
 
         with gr.Row():
             with gr.Column(scale=1):
-                components['aspect_ratio'] = gr.Dropdown(
-                    label="Aspect Ratio",
-                    choices=list(ASPECT_RATIO_PRESETS.keys()),
-                    value="1:1 (Square)",
-                    interactive=True
+                with gr.Row():
+                    components['model_version'] = gr.Dropdown(
+                        label="Model",
+                        choices=["Qwen-Image-Edit-2511", "Qwen-Image-Edit-2509", "Qwen-Image-Edit"],
+                        value="Qwen-Image-Edit-2511",
+                        interactive=True
                 )
-                components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
-                components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
+                with gr.Row():
+                    components['aspect_ratio'] = gr.Dropdown(
+                        label="Aspect Ratio",
+                        choices=list(ASPECT_RATIO_PRESETS.keys()),
+                        value="1:1 (Square)",
+                        interactive=True
+                )
+                with gr.Row():
+                    components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
+                with gr.Row():
+                    components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
-                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=400)
+                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=393)
 
         create_lora_ui(components, "qwen_edit", required_lora_dirs=REQUIRED_LORA_DIRS)
         
