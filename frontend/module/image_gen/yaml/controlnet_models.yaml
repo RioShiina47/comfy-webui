@@ -1,4 +1,14 @@
 ControlNet:
+  SD3.5:
+    - Filepath: "sd3.5_large_controlnet_blur.safetensors"
+      Series: "StabilityAI"
+      Type: ["Blur"]
+    - Filepath: "sd3.5_large_controlnet_canny.safetensors"
+      Series: "StabilityAI"
+      Type: ["Canny"]
+    - Filepath: "sd3.5_large_controlnet_depth.safetensors"
+      Series: "StabilityAI"
+      Type: ["Depth"]
   SDXL:
     - Filepath: "controlnet-union-sdxl-1.0_promax.safetensors"
       Series: "xinsir Union"
@@ -26,12 +36,21 @@ ControlNet:
       Type: ["Anime Painter"]
   FLUX.1:
     - Filepath: "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"
-      Series: "Shakker Labs"
-      Type: ["Union"]
+      Series: "Shakker Labs Union Pro"
+      Type: ["Canny", "Tile", "Depth", "Blur", "Pose", "Gray", "Low Quality"]
+    - Filepath: "flux-canny-controlnet-v3.safetensors"
+      Series: "XLabs-AI"
+      Type: ["Canny"]
+    - Filepath: "flux-depth-controlnet-v3.safetensors"
+      Series: "XLabs-AI"
+      Type: ["Depth (Midas)"]
+    - Filepath: "flux-hed-controlnet-v3.safetensors"
+      Series: "XLabs-AI"
+      Type: ["HED"]
   Qwen-Image:
     - Filepath: "Qwen-Image-InstantX-ControlNet-Union.safetensors"
-      Series: "InstantX"
-      Type: ["Union"]
+      Series: "InstantX Union"
+      Type: ["Canny", "Soft Edge", "Depth", "Pose"]
   SD1.5:
     - Filepath: "control_v11p_sd15_canny_fp16.safetensors"
       Series: "Standard"

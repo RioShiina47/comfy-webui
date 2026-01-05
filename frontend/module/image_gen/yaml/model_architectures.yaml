@@ -1,9 +1,9 @@
 architecture_order:
-  - "NewBie-Image"
   - "Z-Image"
+  - "Qwen-Image"
+  - "NewBie-Image"
   - "Ovis-Image"
   - "HunyuanImage"
-  - "Qwen-Image"
   - "Chroma1-Radiance"
   - "Chroma1"
   - "OmniGen2"
@@ -15,12 +15,15 @@ architecture_order:
   - "SD1.5"
 
 architectures:
-  "NewBie-Image":
-    model_type: "newbie-image"
-    controlnet_key: "NewBie-Image"
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"
+  "Qwen-Image":
+    model_type: "qwen-image"
+    controlnet_key: "Qwen-Image"
+  "NewBie-Image":
+    model_type: "newbie-image"
+    controlnet_key: "NewBie-Image"
   "Ovis-Image":
     model_type: "ovis-image"
     controlnet_key: "Ovis-Image"
@@ -45,9 +48,6 @@ architectures:
   "HiDream":
     model_type: "hidream"
     controlnet_key: "HiDream"
-  "Qwen-Image":
-    model_type: "qwen-image"
-    controlnet_key: "Qwen-Image"
   "Chroma1":
     model_type: "chroma1"
     controlnet_key: "Chroma1"
