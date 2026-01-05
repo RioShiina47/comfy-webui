@@ -2,7 +2,7 @@ import gradio as gr
 import traceback
 import math
 
-from .flux2_dev_logic import process_inputs as process_inputs_logic, MAX_REF_IMAGES
+from .flux2_dev_logic import process_inputs, MAX_REF_IMAGES, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
 
 UI_INFO = {
@@ -11,32 +11,6 @@ UI_INFO = {
     "sub_tab": "FLUX.2-dev",
     "run_button_text": "🎨 Generate with FLUX.2"
 }
-
-ASPECT_RATIO_PRESETS = {
-    "1:1 (Square)": (1024, 1024), 
-    "3:2 (Photography)": (1248, 832),
-    "2:3 (Photography Portrait)": (832, 1248),
-    "16:9 (Landscape)": (1344, 768), 
-    "9:16 (Portrait)": (768, 1344),
-    "4:3 (Classic)": (1152, 896), 
-    "3:4 (Classic Portrait)": (896, 1152),
-}
-
-def update_resolution(ratio_key, megapixels_str):
-    base_w, base_h = ASPECT_RATIO_PRESETS.get(ratio_key, (1024, 1024))
-    
-    mp_map = {"1MP": 1.0, "2MP": 2.0, "4MP": 4.0}
-    mp_multiplier = mp_map.get(megapixels_str, 1.0)
-    
-    target_pixels = mp_multiplier * 1024 * 1024
-    
-    current_pixels = base_w * base_h
-    scale_factor = math.sqrt(target_pixels / current_pixels)
-    
-    new_width = int(round((base_w * scale_factor) / 8) * 8)
-    new_height = int(round((base_h * scale_factor) / 8) * 8)
-    
-    return new_width, new_height
 
 def create_ui():
     components = {}
@@ -49,28 +23,27 @@ def create_ui():
         
         with gr.Row():
             with gr.Column(scale=1):
-                components['aspect_ratio'] = gr.Dropdown(
-                    label="Aspect Ratio",
-                    choices=list(ASPECT_RATIO_PRESETS.keys()),
-                    value="1:1 (Square)",
-                    interactive=True
-                )
-                components['megapixels'] = gr.Radio(
-                    label="Megapixels",
-                    choices=["1MP", "2MP", "4MP"],
-                    value="1MP",
-                    interactive=True
-                )
-                components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
-                components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
+                with gr.Row():
+                    components['aspect_ratio'] = gr.Dropdown(
+                        label="Aspect Ratio",
+                        choices=list(ASPECT_RATIO_PRESETS.keys()),
+                        value="1:1 (Square)",
+                        interactive=True
+                    )
+                with gr.Row():
+                    components['megapixels'] = gr.Radio(
+                        label="Megapixels",
+                        choices=["1MP", "2MP", "4MP"],
+                        value="1MP",
+                        interactive=True
+                    )
+                with gr.Row():
+                    components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
+                with gr.Row():
+                    components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
-                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=400)
-
-        components['steps'] = gr.State(value=20)
-        components['guidance'] = gr.State(value=4.0)
-        components['batch_size'] = gr.State(value=1)
-        components['sampler_name'] = gr.State(value="euler")
+                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=388)
 
         with gr.Accordion("Reference Images (Optional)", open=False):
             ref_image_groups = []
@@ -120,41 +93,6 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
 
     add_ref_btn.click(fn=add_ref_row, inputs=[ref_count_state], outputs=add_ref_outputs, show_progress=False, show_api=False)
     del_ref_btn.click(fn=delete_ref_row, inputs=[ref_count_state], outputs=del_ref_outputs, show_progress=False, show_api=False)
-    
-    aspect_ratio_dropdown = components['aspect_ratio']
-    megapixels_radio = components['megapixels']
-    
-    width_state = gr.State()
-    height_state = gr.State()
-    components['width'] = width_state
-    components['height'] = height_state
-    
-    resolution_inputs = [aspect_ratio_dropdown, megapixels_radio]
-    resolution_outputs = [width_state, height_state]
-
-    aspect_ratio_dropdown.change(
-        fn=update_resolution,
-        inputs=resolution_inputs,
-        outputs=resolution_outputs,
-        show_progress=False,
-        show_api=False
-    )
-    megapixels_radio.change(
-        fn=update_resolution,
-        inputs=resolution_inputs,
-        outputs=resolution_outputs,
-        show_progress=False,
-        show_api=False
-    )
-
-def process_inputs(ui_values, seed_override=None):
-    local_ui_values = ui_values.copy()
-    selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
-    megapixels_str = local_ui_values.get('megapixels', '1MP')
-    width, height = update_resolution(selected_ratio, megapixels_str)
-    local_ui_values['width'] = width
-    local_ui_values['height'] = height
-    return process_inputs_logic(local_ui_values, seed_override)
 
 run_generation = create_batched_run_generation(
     process_inputs,
