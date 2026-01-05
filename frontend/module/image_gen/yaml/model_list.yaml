@@ -99,6 +99,12 @@ Checkpoints:
   Qwen-Image:
     latent_type: sd3_latent
     models:
+      - display_name: "QwenLM/Qwen-Image-2512"
+        components:
+          unet: "qwen_image_2512_fp8_e4m3fn.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+          lora: "Qwen-Image-2512-Lightning-4steps-V1.0-bf16.safetensors"
       - display_name: "QwenLM/Qwen-Image"
         components:
           unet: "qwen_image_fp8_e4m3fn.safetensors"
