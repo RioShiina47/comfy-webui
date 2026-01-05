@@ -1,0 +1,21 @@
+file: 
+  diffusion_models: 
+    - filename: "z_image_turbo_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/z_image_turbo"
+      repository_file_path: "split_files/diffusion_models/z_image_turbo_bf16.safetensors"
+  text_encoders: 
+    - filename: "qwen_3_4b.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/z_image_turbo"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b.safetensors"
+  model_patches: 
+    - filename: "Z-Image-Turbo-Fun-Controlnet-Union-2.1-8steps.safetensors"
+      source: "hf"
+      repo_id: "alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union-2.1"
+      repository_file_path: "Z-Image-Turbo-Fun-Controlnet-Union-2.1-8steps.safetensors"
+  vae: 
+    - filename: "ae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
+      repository_file_path: "split_files/vae/ae.safetensors"

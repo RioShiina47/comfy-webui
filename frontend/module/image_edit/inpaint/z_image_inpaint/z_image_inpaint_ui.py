@@ -1,24 +1,22 @@
 import gradio as gr
 import traceback
 
-from .qwen_inpaint_logic import process_inputs
+from .z_image_inpaint_logic import process_inputs
 from core.utils import create_simple_run_generation
-from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = { 
-    "workflow_recipe": "qwen_inpaint_recipe.yaml",
     "main_tab": "ImageEdit", 
-    "sub_tab": "Qwen-Image Inpaint",
-    "run_button_text": "🎨 Inpaint with Qwen" 
+    "sub_tab": "Z-Image Inpaint",
+    "run_button_text": "🎨 Inpaint with Z-Image" 
 }
-PREFIX = "qwen_inpaint"
+PREFIX = "z_image_inpaint"
 
 def create_ui():
     components = {}
     key = lambda name: f"{PREFIX}_{name}"
     
     with gr.Column():
-        gr.Markdown("## Qwen-Image Inpainting")
+        gr.Markdown("## Z-Image Inpainting")
         gr.Markdown("💡 **Tip:** Upload an image, draw a mask over the area you want to replace, and describe what you want to fill it with.")
         
         with gr.Row():
@@ -38,31 +36,21 @@ def create_ui():
             
             with gr.Column(scale=2) as params_column:
                 components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=6, placeholder="Describe what to fill the masked area with...", interactive=True)
-                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=6, value=" ", interactive=True)
+                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=6, interactive=True)
             components[key('params_column')] = params_column
         
         with gr.Row() as seed_gallery_row:
             with gr.Column(scale=1):
-                with gr.Row():
-                    components[key('model_version')] = gr.Dropdown(
-                        label="Model",
-                        choices=["Qwen-Image-2512", "Qwen-Image"],
-                        value="Qwen-Image",
-                        interactive=True
-                    )
-                with gr.Row():
-                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True)
+                components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True)
             with gr.Column(scale=1):
                 components[key('output_gallery')] = gr.Gallery(
                     label="Result", show_label=False, object_fit="contain", height=392
                 )
         components[key('seed_gallery_row')] = seed_gallery_row
-
-        create_lora_ui(components, PREFIX)
         
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
         components[key('run_button')] = components['run_button']
-
+    
     return components
 
 def get_main_output_components(components: dict):
@@ -70,9 +58,9 @@ def get_main_output_components(components: dict):
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     key = lambda name: f"{PREFIX}_{name}"
-    register_ui_chain_events(components, PREFIX)
 
     view_mode_radio = components[key('view_mode')]
+    editor_column = components[key('editor_column')]
     params_column = components[key('params_column')]
     run_button = components[key('run_button')]
     image_editor = components[key('input_image_dict')]

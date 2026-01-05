@@ -3,7 +3,6 @@ nodes:
     class_type: UNETLoader
     title: "Load Qwen UNET"
     params:
-      unet_name: "qwen_image_fp8_e4m3fn.safetensors"
       weight_dtype: "default"
   vae_loader:
     class_type: VAELoader
@@ -16,11 +15,11 @@ nodes:
     params:
       clip_name: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
       type: "qwen_image"
+      device: "default"
   lora_loader:
     class_type: LoraLoaderModelOnly
     title: "Load Qwen Lightning LoRA"
     params:
-      lora_name: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
       strength_model: 1.0
   controlnet_loader:
     class_type: ControlNetLoader
@@ -124,7 +123,22 @@ connections:
   - from: "vae_decode:0"
     to: "save_image:images"
 
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "lora_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["model_sampler:model"]
+      "clip": ["pos_prompt_encoder:clip", "neg_prompt_encoder:clip"]
+
 ui_map:
+  unet_name: "unet_loader:unet_name"
+  lora_name: "lora_loader:lora_name"
   input_image: "load_image:image"
   
   left: "pad_for_outpaint:left"
