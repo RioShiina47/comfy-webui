@@ -1,5 +1,8 @@
 DiffSynth_ControlNet:
   Z-Image:
-    - Filepath: "Z-Image-Turbo-Fun-Controlnet-Union.safetensors"
-      Series: "alibaba-pai Controlnet Union"
+    - Filepath: "Z-Image-Turbo-Fun-Controlnet-Union-2.1-8steps.safetensors"
+      Series: "alibaba-pai Controlnet Union 2.1 8steps"
       Type: ["Pose", "Canny", "HED", "Depth", "MLSD"]
+    - Filepath: "Z-Image-Turbo-Fun-Controlnet-Tile-2.1-8steps.safetensors"
+      Series: "alibaba-pai Controlnet Union 2.1 8steps"
+      Type: ["Tile"]
