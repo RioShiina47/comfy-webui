@@ -103,14 +103,16 @@ dynamic_reference_latent_chains:
 
 dynamic_lora_chains:
   lora_chain:
-    template: "LoraLoaderModelOnly"
-    start: "lora_loader"
+    template: "LoraLoader"
     output_map:
-      "0": "model"
+      "lora_loader:0": "model"
+      "clip_loader:0": "clip"
     input_map:
       "model": "model"
+      "clip": "clip"
     end_input_map:
       "model": ["model_sampler:model"]
+      "clip": ["pos_prompt_encoder:clip", "neg_prompt_encoder:clip"]
 
 ui_map:
   positive_prompt: "pos_prompt_encoder:text"

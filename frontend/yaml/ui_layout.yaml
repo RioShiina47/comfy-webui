@@ -8,21 +8,23 @@ main_tabs_order:
 
   - "ImageEdit":
     - "Instruction Edit":
-      - "ChronoEdit"
       - "Qwen-Image-Edit"
+      - "ChronoEdit"
       - "Flux-Kontext-Dev"
       - "OmniGen2-Image_Edit"
-    - "Reference Edit":
-      - "ByteDance USO"
     - "Instruction & Reference Edit":
       - "FLUX.2-dev"
+    - "Reference Edit":
+      - "ByteDance USO"
     - "Inpaint":
-      - "FLUX-Fill-Dev Inpaint"
+      - "Z-Image Inpaint"
       - "Qwen-Image Inpaint"
+      - "FLUX-Fill-Dev Inpaint"
       - "Flux.1-Dev-OneReward Inpaint"
     - "Outpaint":
-      - "FLUX-Fill-Dev Outpaint"
+      - "Z-Image Outpaint"
       - "Qwen-Image Outpaint"
+      - "FLUX-Fill-Dev Outpaint"
       - "Flux.1-Dev-OneReward Outpaint"
     - "Layered":
       - "Qwen-Image Layered"
