@@ -33,6 +33,8 @@ nodes:
   flux_guidance:
     class_type: FluxGuidance
     title: "FluxGuidance"
+    params:
+      guidance: 30
 
   inpaint_conditioner:
     class_type: InpaintModelConditioning
@@ -51,6 +53,10 @@ nodes:
     title: "KSampler"
     params:
       denoise: 1.0
+      steps: 20
+      cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "normal"
 
   vae_decode:
     class_type: VAEDecode
@@ -101,28 +107,20 @@ connections:
   - from: "vae_decode:0"
     to: "save_image:images"
 
-dynamic_lora_chains:
+dynamic_lora_model_only_chains:
   lora_chain:
     template: "LoraLoaderModelOnly"
-    start: "unet_loader"
     output_map:
-      "0": "model"
-    input_map:
-      "model": "model"
+      "unet_loader:0": "model"
     end_input_map:
-      "model": ["differential_diffusion:model"]
+      model: ["differential_diffusion:model"]
 
 ui_map:
   input_image: "load_composite_image:image"
   
   positive_prompt: "pos_prompt_encoder:text"
   negative_prompt: "neg_prompt_encoder:text"
-  guidance: "flux_guidance:guidance"
   
   seed: "ksampler:seed"
-  steps: "ksampler:steps"
-  cfg: "ksampler:cfg"
-  sampler_name: "ksampler:sampler_name"
-  scheduler: "ksampler:scheduler"
   
   filename_prefix: "save_image:filename_prefix"

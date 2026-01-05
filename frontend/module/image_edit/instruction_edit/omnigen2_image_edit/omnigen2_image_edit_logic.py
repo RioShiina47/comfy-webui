@@ -6,6 +6,16 @@ from core.utils import save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "omnigen2-image-edit_recipe.yaml"
 
+ASPECT_RATIO_PRESETS = {
+    "1:1 (Square)": (1024, 1024), 
+    "16:9 (Landscape)": (1344, 768), 
+    "9:16 (Portrait)": (768, 1344),
+    "4:3 (Classic)": (1152, 896), 
+    "3:4 (Classic Portrait)": (896, 1152),
+    "3:2 (Photography)": (1216, 832),
+    "2:3 (Photography Portrait)": (832, 1216)
+}
+
 def process_inputs(ui_values, seed_override=None):
     local_ui_values = ui_values.copy()
     
@@ -24,6 +34,11 @@ def process_inputs(ui_values, seed_override=None):
     image_filenames = [save_temp_image(img) for i, img in enumerate(all_images)]
     local_ui_values['image_stitch_chain'] = image_filenames
     local_ui_values['input_image'] = None
+
+    selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
+    width, height = ASPECT_RATIO_PRESETS.get(selected_ratio, (1024, 1024))
+    local_ui_values['width'] = width
+    local_ui_values['height'] = height
 
     seed = seed_override if seed_override is not None else local_ui_values.get('seed', -1)
     local_ui_values['seed'] = handle_seed(seed)

@@ -34,10 +34,14 @@ nodes:
     title: "Basic Scheduler"
     params:
       denoise: 1.0
+      steps: 20
+      scheduler: "simple"
       
   sampler_selector:
     class_type: KSamplerSelect
     title: "KSamplerSelect"
+    params:
+      sampler_name: "euler"
     
   noise_generator:
     class_type: RandomNoise
@@ -49,6 +53,7 @@ nodes:
     params:
       cfg_cond2_negative: 2.0
       style: "regular"
+      cfg_conds: 5.0
       
   sampler:
     class_type: SamplerCustomAdvanced
@@ -112,11 +117,7 @@ ui_map:
   negative_prompt: "neg_prompt:text"
   
   seed: "noise_generator:noise_seed"
-  steps: "scheduler:steps"
-  scheduler: "scheduler:scheduler"
-  sampler_name: "sampler_selector:sampler_name"
-  cfg: "guider:cfg_conds"
-
+  
   width: "latent_source:width"
   height: "latent_source:height"
   batch_size: "latent_source:batch_size"
