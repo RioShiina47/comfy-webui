@@ -5,6 +5,16 @@ from core.workflow_utils import get_filename_prefix
 from core.utils import save_temp_image, handle_seed
 from core.input_processors import process_lora_inputs
 
+ASPECT_RATIO_PRESETS = {
+    "1:1 (Square)": (1328, 1328), 
+    "16:9 (Landscape)": (1664, 928), 
+    "9:16 (Portrait)": (928, 1664),
+    "4:3 (Classic)": (1472, 1104), 
+    "3:4 (Classic Portrait)": (1104, 1472),
+    "3:2 (Photography)": (1536, 1024),
+    "2:3 (Photography Portrait)": (1024, 1536)
+}
+
 def process_inputs_logic(params: dict, seed_override=None):
     local_params = params.copy()
     
@@ -48,3 +58,13 @@ def process_inputs_logic(params: dict, seed_override=None):
     final_workflow = assembler.assemble(local_params)
     
     return final_workflow, None
+
+def process_inputs(ui_values, seed_override=None):
+    local_ui_values = ui_values.copy()
+    
+    selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
+    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
+    local_ui_values['width'] = width
+    local_ui_values['height'] = height
+    
+    return process_inputs_logic(local_ui_values, seed_override)

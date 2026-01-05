@@ -1,24 +1,22 @@
 import gradio as gr
 import traceback
 
-from .qwen_outpaint_logic import process_inputs
+from .z_image_outpaint_logic import process_inputs
 from core.utils import create_simple_run_generation
-from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = { 
-    "workflow_recipe": "qwen_outpaint_recipe.yaml",
     "main_tab": "ImageEdit", 
-    "sub_tab": "Qwen-Image Outpaint",
-    "run_button_text": "🎨 Outpaint with Qwen" 
+    "sub_tab": "Z-Image Outpaint",
+    "run_button_text": "🎨 Outpaint with Z-Image" 
 }
-PREFIX = "qwen_outpaint"
+PREFIX = "z_image_outpaint"
 
 def create_ui():
     components = {}
     key = lambda name: f"{PREFIX}_{name}"
     
     with gr.Column():
-        gr.Markdown("## Qwen-Image Outpainting")
+        gr.Markdown("## Z-Image Outpainting")
         gr.Markdown("💡 **Tip:** Upload an image, use the sliders to define the area to expand, and describe the content for the new area.")
         
         with gr.Row():
@@ -26,16 +24,10 @@ def create_ui():
                 components[key('input_image')] = gr.Image(type="pil", label="Input Image", height=255)
             with gr.Column(scale=2):
                 components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=3, placeholder="Describe the content for the expanded areas...", interactive=True)
-                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=3, value=" ", interactive=True)
+                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=3, interactive=True)
 
         with gr.Row():
             with gr.Column(scale=1):
-                components[key('model_version')] = gr.Dropdown(
-                    label="Model",
-                    choices=["Qwen-Image-2512", "Qwen-Image"],
-                    value="Qwen-Image",
-                    interactive=True
-                )
                 with gr.Row():
                     components[key('left')] = gr.Slider(label="Pad Left", minimum=0, maximum=512, step=8, value=0)
                     components[key('top')] = gr.Slider(label="Pad Top", minimum=0, maximum=512, step=8, value=0)
@@ -43,17 +35,15 @@ def create_ui():
                     components[key('right')] = gr.Slider(label="Pad Right", minimum=0, maximum=512, step=8, value=256)
                     components[key('bottom')] = gr.Slider(label="Pad Bottom", minimum=0, maximum=512, step=8, value=0)
                 
-                components[key('feathering')] = gr.Slider(label="Feathering", minimum=0, maximum=100, step=1, value=10, interactive=True)
+                components[key('feathering')] = gr.Slider(label="Feathering", minimum=0, maximum=100, step=1, value=40, interactive=True)
                 
                 with gr.Row():
                     components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True)
 
             with gr.Column(scale=1):
                 components[key('output_gallery')] = gr.Gallery(
-                    label="Result", show_label=False, object_fit="contain", height=468
+                    label="Result", show_label=False, object_fit="contain", height=362
                 )
-        
-        create_lora_ui(components, PREFIX)
         
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
         components[key('run_button')] = components['run_button']
@@ -64,7 +54,7 @@ def get_main_output_components(components: dict):
     return [components[f'{PREFIX}_output_gallery'], components[f'{PREFIX}_run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
-    register_ui_chain_events(components, PREFIX)
+    pass
 
 run_generation = create_simple_run_generation(
     process_inputs,
