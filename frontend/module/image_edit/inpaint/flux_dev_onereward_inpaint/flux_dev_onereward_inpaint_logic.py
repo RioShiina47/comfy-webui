@@ -8,6 +8,7 @@ from core.utils import create_mask_from_layer, save_temp_image, handle_seed
 from core.workflow_utils import get_filename_prefix
 
 WORKFLOW_RECIPE_PATH = "flux_dev_onereward_inpaint_recipe.yaml"
+PREFIX = "flux_dev_onereward"
 
 def process_inputs(ui_values, seed_override=None):
     vals = {k.replace(f'{PREFIX}_', ''): v for k, v in ui_values.items() if isinstance(k, str) and k.startswith(PREFIX)}

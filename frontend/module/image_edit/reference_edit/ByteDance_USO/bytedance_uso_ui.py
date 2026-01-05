@@ -1,8 +1,9 @@
 import gradio as gr
 import traceback
 
-from .bytedance_uso_logic import process_inputs
+from .bytedance_uso_logic import process_inputs, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "bytedance_uso_recipe.yaml",
@@ -13,16 +14,6 @@ UI_INFO = {
 PREFIX = "uso"
 MAX_CONTENT_REFERENCES = 5
 MAX_STYLE_REFERENCES = 5
-
-ASPECT_RATIO_PRESETS = {
-    "1:1 (Square)": (1024, 1024),
-    "16:9 (Landscape)": (1344, 768),
-    "9:16 (Portrait)": (768, 1344),
-    "4:3 (Classic)": (1152, 896),
-    "3:4 (Classic Portrait)": (896, 1152),
-    "3:2 (Photography)": (1216, 832),
-    "2:3 (Photography Portrait)": (832, 1216)
-}
 
 def create_ui():
     components = {}
@@ -39,28 +30,24 @@ def create_ui():
         with gr.Row():
             with gr.Column(scale=1):
                 default_ratio = list(ASPECT_RATIO_PRESETS.keys())[0]
-                w, h = ASPECT_RATIO_PRESETS[default_ratio]
-                
-                components[key('aspect_ratio')] = gr.Dropdown(
-                    label="Aspect Ratio", 
-                    choices=list(ASPECT_RATIO_PRESETS.keys()), 
-                    value=default_ratio,
-                    interactive=True
-                )
-                components[key('width')] = gr.State(value=w)
-                components[key('height')] = gr.State(value=h)
-
-                components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
-                components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=4, step=1, value=1)
-                components[key('batch_count')] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
-
-                components[key('steps')] = gr.State(20)
-                components[key('cfg')] = gr.State(1.0)
-                components[key('sampler_name')] = gr.State("euler")
-                components[key('scheduler')] = gr.State("simple")
+                with gr.Row():
+                    components[key('aspect_ratio')] = gr.Dropdown(
+                        label="Aspect Ratio", 
+                        choices=list(ASPECT_RATIO_PRESETS.keys()), 
+                        value=default_ratio,
+                        interactive=True
+                    )
+                with gr.Row():
+                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
+                with gr.Row():
+                    components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=4, step=1, value=1)
+                with gr.Row():
+                    components[key('batch_count')] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
             
             with gr.Column(scale=1):
-                components[key('output_gallery')] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=323)
+                components[key('output_gallery')] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=377)
+
+        create_lora_ui(components, PREFIX)
 
         with gr.Accordion("Content Reference Settings", open=False) as ref_accordion:
             components[key('reference_accordion')] = ref_accordion
@@ -108,23 +95,8 @@ def get_main_output_components(components: dict):
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
     key = lambda name: f"{PREFIX}_{name}"
+    register_ui_chain_events(components, PREFIX)
 
-    aspect_ratio_dropdown = components[key('aspect_ratio')]
-    width_state = components[key('width')]
-    height_state = components[key('height')]
-
-    def on_aspect_ratio_change(ratio_key):
-        w, h = ASPECT_RATIO_PRESETS.get(ratio_key, (1024, 1024))
-        return w, h
-
-    aspect_ratio_dropdown.change(
-        fn=on_aspect_ratio_change,
-        inputs=[aspect_ratio_dropdown],
-        outputs=[width_state, height_state],
-        show_progress=False,
-        show_api=False
-    )
-    
     ref_count = components[key('reference_count_state')]
     add_ref_btn = components[key('add_reference_button')]
     del_ref_btn = components[key('delete_reference_button')]

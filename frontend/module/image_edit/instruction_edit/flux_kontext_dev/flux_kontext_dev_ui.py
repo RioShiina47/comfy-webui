@@ -1,8 +1,9 @@
 import gradio as gr
 import traceback
 
-from .flux_kontext_dev_logic import process_inputs as process_inputs_logic
+from .flux_kontext_dev_logic import process_inputs, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "flux-kontext-dev_recipe.yaml",
@@ -11,52 +12,45 @@ UI_INFO = {
     "run_button_text": "🎨 Edit with Kontext"
 }
 
-ASPECT_RATIO_PRESETS = {
-    "1:1 (Square)": (1024, 1024), 
-    "16:9 (Landscape)": (1344, 768), 
-    "9:16 (Portrait)": (768, 1344),
-    "4:3 (Classic)": (1152, 896), 
-    "3:4 (Classic Portrait)": (896, 1152),
-    "3:2 (Photography)": (1216, 832),
-    "2:3 (Photography Portrait)": (832, 1216)
-}
-
 MAX_REF_IMAGES = 8
+PREFIX = "flux_kontext_dev"
 
 def create_ui():
     components = {}
+    key = lambda name: f"{PREFIX}_{name}"
+
     with gr.Column():
         gr.Markdown("## Flux-Kontext-Dev Image Editing")
         gr.Markdown("💡 **Tip:** Upload an image and provide a text instruction. Add more images for richer context.")
         
         with gr.Row():
             with gr.Column(scale=1):
-                components['input_image'] = gr.Image(type="pil", label="Input Image", sources=["upload"], height=255)
+                components[key('input_image')] = gr.Image(type="pil", label="Input Image", height=255)
             
             with gr.Column(scale=2):
-                components['positive_prompt'] = gr.Textbox(label="Edit Instruction", lines=3, placeholder="e.g., Make it a rainy day.")
-                components['negative_prompt'] = gr.Textbox(label="Negative Prompt", lines=3)
+                components[key('positive_prompt')] = gr.Textbox(label="Edit Instruction", lines=3, placeholder="e.g., Make it a rainy day.")
+                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=3)
 
         with gr.Row():
             with gr.Column(scale=1):
-                components['aspect_ratio'] = gr.Dropdown(
-                    label="Aspect Ratio",
-                    choices=list(ASPECT_RATIO_PRESETS.keys()),
-                    value="1:1 (Square)",
-                    interactive=True
+                with gr.Row():
+                    components[key('aspect_ratio')] = gr.Dropdown(
+                        label="Aspect Ratio",
+                        choices=list(ASPECT_RATIO_PRESETS.keys()),
+                        value="1:1 (Square)",
+                        interactive=True
                 )
-                components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
-                components['batch_size'] = gr.Slider(label="Batch Size", minimum=1, maximum=4, step=1, value=1)
-                components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
+                with gr.Row():
+                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
+                with gr.Row():
+                    components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=4, step=1, value=1)
+                with gr.Row():
+                    components[key('batch_count')] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
-                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=400)
+                components[key('output_gallery')] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=377)
 
-        components['guidance'] = gr.State(value=2.5)
-        components['cfg'] = gr.State(value=1.0)
-        components['steps'] = gr.State(value=20)
-        components['sampler_name'] = gr.State(value="euler")
-        components['scheduler'] = gr.State(value="simple")
+        create_lora_ui(components, PREFIX)
 
         with gr.Accordion("Add More Images", open=False):
             ref_image_groups = []
@@ -67,27 +61,32 @@ def create_ui():
                         img_comp = gr.Image(type="pil", label=f"Reference Image {i+1}", sources=["upload"], height=150)
                         ref_image_groups.append(img_col)
                         ref_image_inputs.append(img_comp)
-            components['ref_image_groups'] = ref_image_groups
-            components['ref_image_inputs'] = ref_image_inputs
+            components[key('ref_image_groups')] = ref_image_groups
+            components[key('ref_image_inputs')] = ref_image_inputs
             
             with gr.Row():
-                components['add_ref_button'] = gr.Button("✚ Add Reference")
-                components['delete_ref_button'] = gr.Button("➖ Delete Reference", visible=False)
-            components['ref_count_state'] = gr.State(0)
+                components[key('add_ref_button')] = gr.Button("✚ Add Reference")
+                components[key('delete_ref_button')] = gr.Button("➖ Delete Reference", visible=False)
+            components[key('ref_count_state')] = gr.State(0)
 
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
+        components[key('run_button')] = components['run_button']
                 
     return components
 
 def get_main_output_components(components: dict):
-    return [components['output_gallery'], components['run_button']]
+    key = lambda name: f"{PREFIX}_{name}"
+    return [components[key('output_gallery')], components[key('run_button')]]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
-    ref_count_state = components['ref_count_state']
-    add_ref_btn = components['add_ref_button']
-    del_ref_btn = components['delete_ref_button']
-    ref_image_groups = components['ref_image_groups']
-    ref_image_inputs = components['ref_image_inputs']
+    key = lambda name: f"{PREFIX}_{name}"
+    register_ui_chain_events(components, PREFIX)
+    
+    ref_count_state = components[key('ref_count_state')]
+    add_ref_btn = components[key('add_ref_button')]
+    del_ref_btn = components[key('delete_ref_button')]
+    ref_image_groups = components[key('ref_image_groups')]
+    ref_image_inputs = components[key('ref_image_inputs')]
 
     def add_ref_row(count):
         count += 1
@@ -119,14 +118,6 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
         show_progress=False,
         show_api=False
     )
-
-def process_inputs(ui_values, seed_override=None):
-    local_ui_values = ui_values.copy()
-    selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
-    local_ui_values['width'] = width
-    local_ui_values['height'] = height
-    return process_inputs_logic(local_ui_values, seed_override)
 
 run_generation = create_batched_run_generation(
     process_inputs,
