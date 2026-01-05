@@ -3,6 +3,7 @@ import traceback
 
 from .qwen_outpaint_logic import process_inputs
 from core.utils import create_simple_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = { 
     "workflow_recipe": "qwen_outpaint_recipe.yaml",
@@ -18,7 +19,7 @@ def create_ui():
     
     with gr.Column():
         gr.Markdown("## Qwen-Image Outpainting")
-        gr.Markdown("💡 **Tip:** Upload an image, use the sliders to define the area to expand, and describe the content for the new areas.")
+        gr.Markdown("💡 **Tip:** Upload an image, use the sliders to define the area to expand, and describe the content for the new area.")
         
         with gr.Row():
             with gr.Column(scale=1):
@@ -29,12 +30,18 @@ def create_ui():
 
         with gr.Row():
             with gr.Column(scale=1):
+                components[key('model_version')] = gr.Dropdown(
+                    label="Model",
+                    choices=["Qwen-Image-2512", "Qwen-Image"],
+                    value="Qwen-Image",
+                    interactive=True
+                )
                 with gr.Row():
-                    components[key('left')] = gr.Slider(label="Pad Left", minimum=0, maximum=512, step=64, value=0)
-                    components[key('top')] = gr.Slider(label="Pad Top", minimum=0, maximum=512, step=64, value=0)
+                    components[key('left')] = gr.Slider(label="Pad Left", minimum=0, maximum=512, step=8, value=0)
+                    components[key('top')] = gr.Slider(label="Pad Top", minimum=0, maximum=512, step=8, value=0)
                 with gr.Row():
-                    components[key('right')] = gr.Slider(label="Pad Right", minimum=0, maximum=512, step=64, value=256)
-                    components[key('bottom')] = gr.Slider(label="Pad Bottom", minimum=0, maximum=512, step=64, value=0)
+                    components[key('right')] = gr.Slider(label="Pad Right", minimum=0, maximum=512, step=8, value=256)
+                    components[key('bottom')] = gr.Slider(label="Pad Bottom", minimum=0, maximum=512, step=8, value=0)
                 
                 components[key('feathering')] = gr.Slider(label="Feathering", minimum=0, maximum=100, step=1, value=10, interactive=True)
                 
@@ -46,6 +53,8 @@ def create_ui():
                     label="Result", show_label=False, object_fit="contain", height=468
                 )
         
+        create_lora_ui(components, PREFIX)
+        
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
         components[key('run_button')] = components['run_button']
     
@@ -55,7 +64,7 @@ def get_main_output_components(components: dict):
     return [components[f'{PREFIX}_output_gallery'], components[f'{PREFIX}_run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
-    pass
+    register_ui_chain_events(components, PREFIX)
 
 run_generation = create_simple_run_generation(
     process_inputs,

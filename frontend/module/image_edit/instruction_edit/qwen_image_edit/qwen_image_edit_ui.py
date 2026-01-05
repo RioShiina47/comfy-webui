@@ -4,7 +4,7 @@ import os
 import traceback
 from PIL import Image
 
-from .qwen_image_edit_logic import process_inputs_logic
+from .qwen_image_edit_logic import process_inputs, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
 from core.shared_ui import create_lora_ui, register_ui_chain_events
 
@@ -12,16 +12,6 @@ UI_INFO = {
     "main_tab": "ImageEdit",
     "sub_tab": "Qwen-Image-Edit",
     "run_button_text": "🎨 Edit Qwen Image"
-}
-
-ASPECT_RATIO_PRESETS = {
-    "1:1 (Square)": (1328, 1328), 
-    "16:9 (Landscape)": (1664, 928), 
-    "9:16 (Portrait)": (928, 1664),
-    "4:3 (Classic)": (1472, 1104), 
-    "3:4 (Classic Portrait)": (1104, 1472),
-    "3:2 (Photography)": (1536, 1024),
-    "2:3 (Photography Portrait)": (1024, 1536)
 }
 
 MAX_REF_IMAGES = 8
@@ -35,10 +25,10 @@ def create_ui():
         
         with gr.Row():
             with gr.Column(scale=1):
-                components['input_image'] = gr.Image(type="pil", label="Input Image", sources=["upload"], height=255)
+                components['input_image'] = gr.Image(type="pil", label="Input Image", height=255)
             
             with gr.Column(scale=2):
-                components['positive_prompt'] = gr.Textbox(label="Edit Instruction", lines=3, placeholder="e.g., Make the cat wear a wizard hat.")
+                components['positive_prompt'] = gr.Textbox(label="Edit Instruction", lines=3, placeholder="e.g., Make it a rainy day.")
                 components['negative_prompt'] = gr.Textbox(label="Negative Prompt", lines=3)
 
         with gr.Row():
@@ -130,16 +120,6 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
         show_progress=False,
         show_api=False
     )
-
-def process_inputs(ui_values, seed_override=None):
-    local_ui_values = ui_values.copy()
-    
-    selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
-    local_ui_values['width'] = width
-    local_ui_values['height'] = height
-    
-    return process_inputs_logic(local_ui_values, seed_override)
 
 run_generation = create_batched_run_generation(
     process_inputs,
