@@ -17,7 +17,7 @@ def create_ui():
     
     with gr.Column():
         gr.Markdown("## FLUX.1-Dev-OneReward (Inpainting)")
-        gr.Markdown("💡 **Tip:** Upload an image, draw a mask over the area you want to replace, and describe what you want to fill it with. Enable 'Remove Object Mode' for object removal tasks.")
+        gr.Markdown("💡 **Tip:** Upload an image, draw a mask over the area you want to replace, and describe what you want to fill it with.")
         
         with gr.Row():
             with gr.Column(scale=1) as editor_column:
@@ -30,33 +30,29 @@ def create_ui():
                 components[key('input_image_dict')] = gr.ImageEditor(
                     type="pil", 
                     label="Input Image & Mask",
-                    height=460
+                    height=272
                 )
             components[key('editor_column')] = editor_column
             
-            with gr.Column(scale=1) as params_column:
-                components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=4, placeholder="Describe what to fill the masked area with...", interactive=True)
-                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=4, value="", interactive=True)
-                
+            with gr.Column(scale=2) as params_column:
+                components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=6, placeholder="Describe what to fill the masked area with...", interactive=True)
+                components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=6, value="", interactive=True)
+            components[key('params_column')] = params_column
+        
+        with gr.Row() as seed_gallery_row:
+            with gr.Column(scale=1):
                 with gr.Row():
                     components[key('remove_object_mode')] = gr.Checkbox(label="Remove Object Mode", value=False, info="Enables a specific LoRA for object removal.")
-                
                 with gr.Row():
-                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True, scale=1)
-                    components[key('guidance')] = gr.Slider(label="Guidance", minimum=1, maximum=50, step=1, value=30, interactive=True)
-                
+                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True)
+            with gr.Column(scale=1):
                 components[key('output_gallery')] = gr.Gallery(
-                    label="Result", show_label=False, object_fit="contain", height=240
+                    label="Result", show_label=False, object_fit="contain", height=392
                 )
-            components[key('params_column')] = params_column
+        components[key('seed_gallery_row')] = seed_gallery_row
         
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
         components[key('run_button')] = components['run_button']
-
-    components[key('steps')] = gr.State(20)
-    components[key('cfg')] = gr.State(1.0)
-    components[key('sampler_name')] = gr.State("euler")
-    components[key('scheduler')] = gr.State("normal")
     
     return components
 
@@ -71,20 +67,22 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
     params_column = components[key('params_column')]
     run_button = components[key('run_button')]
     image_editor = components[key('input_image_dict')]
+    seed_gallery_row = components[key('seed_gallery_row')]
 
     def toggle_fullscreen_view(view_mode):
         is_fullscreen = (view_mode == "Fullscreen View")
         other_elements_visible = not is_fullscreen
-        editor_height = 800 if is_fullscreen else 460
+        editor_height = 800 if is_fullscreen else 272
         
         updates = {
             params_column: gr.update(visible=other_elements_visible),
             run_button: gr.update(visible=other_elements_visible),
-            image_editor: gr.update(height=editor_height)
+            image_editor: gr.update(height=editor_height),
+            seed_gallery_row: gr.update(visible=other_elements_visible)
         }
         return updates
 
-    output_components_for_toggle = [params_column, run_button, image_editor]
+    output_components_for_toggle = [params_column, run_button, image_editor, seed_gallery_row]
     
     view_mode_radio.change(
         fn=toggle_fullscreen_view,

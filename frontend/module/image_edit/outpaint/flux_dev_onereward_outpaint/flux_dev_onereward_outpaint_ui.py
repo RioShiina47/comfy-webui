@@ -23,36 +23,30 @@ def create_ui():
             with gr.Column(scale=1):
                 components[key('input_image')] = gr.Image(type="pil", label="Input Image", height=255)
             with gr.Column(scale=2):
-                components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=3, placeholder="Describe the content of the expanded area...", interactive=True)
+                components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=3, placeholder="Describe the content for the expanded areas...", interactive=True)
                 components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=3, value="", interactive=True)
 
         with gr.Row():
             with gr.Column(scale=1):
                 with gr.Row():
-                    components[key('left')] = gr.Slider(label="Expand Left", minimum=0, maximum=512, step=64, value=0)
-                    components[key('top')] = gr.Slider(label="Expand Up", minimum=0, maximum=512, step=64, value=0)
+                    components[key('left')] = gr.Slider(label="Pad Left", minimum=0, maximum=512, step=8, value=0)
+                    components[key('top')] = gr.Slider(label="Pad Top", minimum=0, maximum=512, step=8, value=0)
                 with gr.Row():
-                    components[key('right')] = gr.Slider(label="Expand Right", minimum=0, maximum=512, step=64, value=256)
-                    components[key('bottom')] = gr.Slider(label="Expand Down", minimum=0, maximum=512, step=64, value=0)
+                    components[key('right')] = gr.Slider(label="Pad Right", minimum=0, maximum=512, step=8, value=256)
+                    components[key('bottom')] = gr.Slider(label="Pad Bottom", minimum=0, maximum=512, step=8, value=0)
                 
-                components[key('feathering')] = gr.Slider(label="Feathering", minimum=0, maximum=100, step=1, value=0, interactive=True)
+                components[key('feathering')] = gr.Slider(label="Feathering", minimum=0, maximum=100, step=1, value=10, interactive=True)
                 
                 with gr.Row():
                     components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True)
-                    components[key('guidance')] = gr.Slider(label="Guidance", minimum=1, maximum=50, step=1, value=30, interactive=True)
 
             with gr.Column(scale=1):
                 components[key('output_gallery')] = gr.Gallery(
-                    label="Result", show_label=False, object_fit="contain", height=468
+                    label="Result", show_label=False, object_fit="contain", height=362
                 )
         
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
         components[key('run_button')] = components['run_button']
-
-    components[key('steps')] = gr.State(20)
-    components[key('cfg')] = gr.State(1.0)
-    components[key('sampler_name')] = gr.State("euler")
-    components[key('scheduler')] = gr.State("normal")
     
     return components
 

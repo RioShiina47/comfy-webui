@@ -55,6 +55,8 @@ nodes:
     params: {}
 
 connections:
+  - from: "unet_loader:0"
+    to: "ksampler:model"
   - from: "vae_loader:0"
     to: "vae_decode:vae"
   
@@ -66,8 +68,6 @@ connections:
   - from: "pos_prompt_encoder:0"
     to: "flux_guidance:conditioning"
     
-  - from: "unet_loader:0"
-    to: "ksampler:model"
   - from: "flux_guidance:0"
     to: "ksampler:positive"
   - from: "neg_prompt_encoder:0"
@@ -80,6 +80,14 @@ connections:
   - from: "vae_decode:0"
     to: "save_image:images"
 
+dynamic_lora_model_only_chains:
+  lora_chain:
+    template: "LoraLoaderModelOnly"
+    output_map:
+      "unet_loader:0": "model"
+    end_input_map:
+      model: ["ksampler:model"]
+
 dynamic_reference_latent_chains:
   image_stitch_chain:
     vae_node: "vae_loader"
@@ -91,6 +99,7 @@ ui_map:
   negative_prompt: "neg_prompt_encoder:text"
   
   seed: "ksampler:seed"
+
   width: "latent_source:width"
   height: "latent_source:height"
   batch_size: "latent_source:batch_size"

@@ -1,7 +1,7 @@
 import gradio as gr
 import traceback
 
-from .omnigen2_image_edit_logic import process_inputs as process_inputs_logic
+from .omnigen2_image_edit_logic import process_inputs, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
 
 UI_INFO = {
@@ -9,16 +9,6 @@ UI_INFO = {
     "main_tab": "ImageEdit",
     "sub_tab": "OmniGen2-Image_Edit",
     "run_button_text": "🎨 Edit with OmniGen2"
-}
-
-ASPECT_RATIO_PRESETS = {
-    "1:1 (Square)": (1024, 1024), 
-    "16:9 (Landscape)": (1344, 768), 
-    "9:16 (Portrait)": (768, 1344),
-    "4:3 (Classic)": (1152, 896), 
-    "3:4 (Classic Portrait)": (896, 1152),
-    "3:2 (Photography)": (1216, 832),
-    "2:3 (Photography Portrait)": (832, 1216)
 }
 
 MAX_REF_IMAGES = 8
@@ -31,31 +21,30 @@ def create_ui():
         
         with gr.Row():
             with gr.Column(scale=1):
-                components['input_image'] = gr.Image(type="pil", label="Input Image", sources=["upload"], height=255)
+                components['input_image'] = gr.Image(type="pil", label="Input Image", height=255)
             
             with gr.Column(scale=2):
                 components['positive_prompt'] = gr.Textbox(label="Edit Instruction", lines=3, placeholder="e.g., Make it a rainy day.")
-                components['negative_prompt'] = gr.Textbox(label="Negative Prompt", lines=3, value="deformed, blurry, over saturation, bad anatomy, disfigured, poorly drawn face, mutation, mutated, extra_limb, ugly, poorly drawn hands, fused fingers, messy drawing, broken legs censor, censored, censor_bar")
+                components['negative_prompt'] = gr.Textbox(label="Negative Prompt", lines=3)
 
         with gr.Row():
             with gr.Column(scale=1):
-                components['aspect_ratio'] = gr.Dropdown(
-                    label="Aspect Ratio",
-                    choices=list(ASPECT_RATIO_PRESETS.keys()),
-                    value="1:1 (Square)",
-                    interactive=True
-                )
-                components['steps'] = gr.Slider(label="Steps", minimum=1, maximum=50, step=1, value=20, interactive=True)
-                components['cfg'] = gr.Slider(label="CFG Scale", minimum=1.0, maximum=15.0, step=0.5, value=5.0, interactive=True)
-                components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
-                components['batch_size'] = gr.Slider(label="Batch Size", minimum=1, maximum=4, step=1, value=1)
-                components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
+                with gr.Row():
+                    components['aspect_ratio'] = gr.Dropdown(
+                        label="Aspect Ratio",
+                        choices=list(ASPECT_RATIO_PRESETS.keys()),
+                        value="1:1 (Square)",
+                        interactive=True
+                    )
+                with gr.Row():
+                    components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
+                with gr.Row():
+                    components['batch_size'] = gr.Slider(label="Batch Size", minimum=1, maximum=4, step=1, value=1)
+                with gr.Row():
+                    components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
-                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=400)
-
-        components['sampler_name'] = gr.State(value="euler")
-        components['scheduler'] = gr.State(value="simple")
+                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=377)
 
         with gr.Accordion("Add More Images", open=False):
             ref_image_groups = []
@@ -105,14 +94,6 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
 
     add_ref_btn.click(fn=add_ref_row, inputs=[ref_count_state], outputs=add_ref_outputs, show_progress=False, show_api=False)
     del_ref_btn.click(fn=delete_ref_row, inputs=[ref_count_state], outputs=del_ref_outputs, show_progress=False, show_api=False)
-
-def process_inputs(ui_values, seed_override=None):
-    local_ui_values = ui_values.copy()
-    selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
-    local_ui_values['width'] = width
-    local_ui_values['height'] = height
-    return process_inputs_logic(local_ui_values, seed_override)
 
 run_generation = create_batched_run_generation(
     process_inputs,
