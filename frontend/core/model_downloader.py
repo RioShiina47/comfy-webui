@@ -45,7 +45,6 @@ def _download_with_hf(file_info, destination_path):
             repo_id=file_info['repo_id'],
             filename=file_info['repository_file_path'],
             cache_dir=HF_CACHE_PATH,
-            local_dir_use_symlinks=False,
             token=HUGGINGFACE_TOKEN
         )
         shutil.move(cached_path, destination_path)
