@@ -19,6 +19,7 @@ civitai_api_key: ""
 huggingface_token: ""
 
 server_port: 7888
+gradio_server_name: "127.0.0.1"
 enable_login: false
 login_credentials:
   - username: 
