@@ -135,3 +135,9 @@ ui_map:
   video_length: "flfv_preprocessor:length"
   seed: "ksampler_high:noise_seed"
   filename_prefix: "save_video:filename_prefix"
+
+dynamic_easycache_chains:
+  use_easy_cache:
+    ksampler_node:
+      - "ksampler_high"
+      - "ksampler_low"

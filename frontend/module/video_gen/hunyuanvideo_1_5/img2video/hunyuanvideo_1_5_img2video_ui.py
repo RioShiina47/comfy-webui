@@ -34,28 +34,29 @@ def create_ui():
                         value=RESOLUTION_CHOICES[0],
                         interactive=True
                     )
+                with gr.Row():
                     components['aspect_ratio'] = gr.Dropdown(
                         label="Aspect Ratio",
                         choices=ASPECT_RATIO_CHOICES,
                         value=ASPECT_RATIO_CHOICES[0],
                         interactive=True
                     )
-                
                 with gr.Row():
                     components['video_length'] = gr.Slider(label="Video Length (frames)", minimum=8, maximum=121, step=1, value=121)
-                
-                with gr.Row():
                     components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
-
                 with gr.Row():
                     components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
+                    components['use_easy_cache'] = gr.Checkbox(label="Use EasyCache", value=True)
 
             with gr.Column(scale=1):
-                components['output_video'] = gr.Video(
+                components['output_video'] = gr.Gallery(
                     label="Result", 
                     show_label=False,
                     interactive=False,
-                    height=380
+                    height=395,
+                    object_fit="contain",
+                    columns=2,
+                    preview=True
                 )
         
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
@@ -70,5 +71,5 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
 
 run_generation = create_batched_run_generation(
     process_inputs,
-    lambda status, files: (status, files[-1] if files else None)
+    lambda status, files: (status, files)
 )

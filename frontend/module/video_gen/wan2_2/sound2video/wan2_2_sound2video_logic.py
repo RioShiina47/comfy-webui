@@ -9,11 +9,24 @@ from core.utils import handle_seed, save_temp_image, save_temp_audio
 WORKFLOW_RECIPE_PATH = "wan2_2_sound2video_recipe.yaml"
 
 ASPECT_RATIO_PRESETS = {
-    "16:9 (Landscape)": (1280, 720), "9:16 (Portrait)": (720, 1280),
-    "1:1 (Square)": (960, 960), "4:3 (Classic TV)": (1088, 816),
-    "3:4 (Classic Portrait)": (816, 1088),
-    "3:2 (Photography)": (1152, 768),
-    "2:3 (Photography Portrait)": (768, 1152),
+    "720p": {
+        "16:9 (Landscape)": (1280, 720),
+        "9:16 (Portrait)": (720, 1280),
+        "1:1 (Square)": (960, 960),
+        "4:3 (Classic TV)": (1088, 816),
+        "3:4 (Classic Portrait)": (816, 1088),
+        "3:2 (Photography)": (1152, 768),
+        "2:3 (Photography Portrait)": (768, 1152),
+    },
+    "480p": {
+        "16:9 (Landscape)": (848, 480),
+        "9:16 (Portrait)": (480, 848),
+        "1:1 (Square)": (640, 640),
+        "4:3 (Classic TV)": (640, 480),
+        "3:4 (Classic Portrait)": (480, 640),
+        "3:2 (Photography)": (720, 480),
+        "2:3 (Photography Portrait)": (480, 720),
+    }
 }
 CHUNK_LENGTH = 77
 FPS = 16
@@ -28,8 +41,9 @@ def process_inputs(ui_values, seed_override=None):
     local_ui_values['ref_image'] = save_temp_image(ref_image_pil)
     local_ui_values['audio_file'] = save_temp_audio(original_audio_path)
     
+    resolution = local_ui_values.get('resolution', '720p')
     selected_ratio = local_ui_values.get('aspect_ratio')
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
+    width, height = ASPECT_RATIO_PRESETS[resolution][selected_ratio]
     local_ui_values['width'] = width
     local_ui_values['height'] = height
     

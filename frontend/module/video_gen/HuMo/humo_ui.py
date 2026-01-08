@@ -40,11 +40,14 @@ def create_ui():
                     components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
 
             with gr.Column(scale=1):
-                components['output_video'] = gr.Video(
+                components['output_video'] = gr.Gallery(
                     label="Result", 
                     show_label=False, 
                     interactive=False, 
-                    height=468
+                    height=468,
+                    object_fit="contain",
+                    columns=2,
+                    preview=True
                 )
 
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
