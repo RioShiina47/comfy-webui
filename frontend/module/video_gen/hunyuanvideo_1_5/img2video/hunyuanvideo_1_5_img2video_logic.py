@@ -59,6 +59,9 @@ def process_inputs(ui_values, seed_override=None):
     local_ui_values['video_length'] = int(local_ui_values.get('video_length', 121))
     local_ui_values['filename_prefix'] = f"video/{get_filename_prefix()}"
 
+    if local_ui_values.get('use_easy_cache', False):
+        local_ui_values['use_easy_cache'] = [{}]
+
     module_path = os.path.dirname(os.path.abspath(__file__))
     assembler = WorkflowAssembler(recipe_path, base_path=module_path)
     final_workflow = assembler.assemble(local_ui_values)

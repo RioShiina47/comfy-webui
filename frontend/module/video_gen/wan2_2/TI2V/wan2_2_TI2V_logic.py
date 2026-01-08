@@ -1,26 +1,46 @@
 import os
 from core.workflow_assembler import WorkflowAssembler
 from core.workflow_utils import get_filename_prefix
-from core.utils import handle_seed
+from core.utils import handle_seed, save_temp_image
 from core.input_processors import process_lora_inputs
 
-WORKFLOW_RECIPE_PATH = "wan2_2_TI2V_recipe.yaml"
+WORKFLOW_RECIPE_T2V = "wan2_2_TI2V_t2v_recipe.yaml"
+WORKFLOW_RECIPE_I2V = "wan2_2_TI2V_i2v_recipe.yaml"
 
-ASPECT_RATIO_PRESETS = {
-    "16:9 (Landscape)": (1280, 720),
-    "9:16 (Portrait)": (720, 1280),
-    "1:1 (Square)": (960, 960),
-    "4:3 (Classic TV)": (1088, 816),
-    "3:4 (Classic Portrait)": (816, 1088),
-    "3:2 (Photography)": (1152, 768),
-    "2:3 (Photography Portrait)": (768, 1152),
+RESOLUTION_PRESETS = {
+    "720p": {
+        "16:9 (Landscape)": (1280, 720),
+        "9:16 (Portrait)": (720, 1280),
+        "1:1 (Square)": (960, 960),
+        "4:3 (Classic TV)": (1088, 816),
+        "3:4 (Classic Portrait)": (816, 1088),
+        "3:2 (Photography)": (1152, 768),
+        "2:3 (Photography Portrait)": (768, 1152),
+    },
+    "480p": {
+        "16:9 (Landscape)": (848, 480),
+        "9:16 (Portrait)": (480, 848),
+        "1:1 (Square)": (640, 640),
+        "4:3 (Classic TV)": (640, 480),
+        "3:4 (Classic Portrait)": (480, 640),
+        "3:2 (Photography)": (720, 480),
+        "2:3 (Photography Portrait)": (480, 720),
+    }
 }
 
 def process_inputs(ui_values, seed_override=None):
     local_ui_values = ui_values.copy()
+    start_image_pil = local_ui_values.get('start_image')
+
+    if start_image_pil:
+        recipe_path = WORKFLOW_RECIPE_I2V
+        local_ui_values['start_image'] = save_temp_image(start_image_pil)
+    else:
+        recipe_path = WORKFLOW_RECIPE_T2V
     
+    resolution = local_ui_values.get('resolution', '720p')
     selected_ratio = local_ui_values.get('aspect_ratio', "16:9 (Landscape)") 
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
+    width, height = RESOLUTION_PRESETS[resolution][selected_ratio]
     local_ui_values['width'] = width
     local_ui_values['height'] = height
     
@@ -30,9 +50,11 @@ def process_inputs(ui_values, seed_override=None):
     local_ui_values['video_length'] = int(local_ui_values.get('video_length', 121))
     local_ui_values['filename_prefix'] = get_filename_prefix()
 
+    if local_ui_values.get('use_easy_cache', False):
+        local_ui_values['use_easy_cache'] = [{}]
+
     local_ui_values['loras_model_only'] = process_lora_inputs(ui_values, 'ti2v_lora')
 
-    recipe_path = WORKFLOW_RECIPE_PATH
     module_path = os.path.dirname(os.path.abspath(__file__))
     assembler = WorkflowAssembler(recipe_path, base_path=module_path)
     final_workflow = assembler.assemble(local_ui_values)

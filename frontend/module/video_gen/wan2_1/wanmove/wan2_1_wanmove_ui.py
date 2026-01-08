@@ -1,5 +1,5 @@
 import gradio as gr
-from .wan2_1_wanmove_logic import process_inputs as process_inputs_logic
+from .wan2_1_wanmove_logic import process_inputs as process_inputs_logic, RESOLUTION_PRESETS
 from core.utils import create_simple_run_generation, create_batched_run_generation
 from core.shared_ui import create_lora_ui, register_ui_chain_events
 
@@ -10,27 +10,6 @@ UI_INFO = {
 }
 
 MAX_TRACK_SEGMENTS = 5
-
-RESOLUTION_PRESETS = {
-    "720p": {
-        "16:9 (Landscape)": (1280, 720),
-        "9:16 (Portrait)": (720, 1280),
-        "1:1 (Square)": (960, 960),
-        "4:3 (Classic TV)": (1088, 816),
-        "3:4 (Classic Portrait)": (816, 1088),
-        "3:2 (Photography)": (1152, 768),
-        "2:3 (Photography Portrait)": (768, 1152),
-    },
-    "480p": {
-        "16:9 (Landscape)": (848, 480),
-        "9:16 (Portrait)": (480, 848),
-        "1:1 (Square)": (640, 640),
-        "4:3 (Classic TV)": (640, 480),
-        "3:4 (Classic Portrait)": (480, 640),
-        "3:2 (Photography)": (720, 480),
-        "2:3 (Photography Portrait)": (480, 720),
-    }
-}
 
 def create_ui():
     components = {}
@@ -63,16 +42,21 @@ def create_ui():
                         value="16:9 (Landscape)",
                         interactive=True
                     )
-                components['num_frames'] = gr.Slider(label="Video Length (frames)", minimum=8, maximum=81, step=1, value=81)
+                with gr.Row():
+                    components['num_frames'] = gr.Slider(label="Video Length (frames)", minimum=8, maximum=81, step=1, value=81)
+                    components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                 
                 with gr.Group(visible=False) as gen_video_only_settings:
                     with gr.Row():
-                        components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                         components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
+                        components['use_easy_cache'] = gr.Checkbox(label="Use EasyCache", value=True)
                 components['gen_video_only_settings'] = gen_video_only_settings
 
             with gr.Column(scale=1):
-                components['output_video'] = gr.Video(label="Result", show_label=False, interactive=False, height=381)
+                components['output_video'] = gr.Gallery(
+                    label="Result", show_label=False, interactive=False, height=401,
+                    object_fit="contain", columns=2, preview=True
+                )
 
         with gr.Accordion("Tracks Settings", open=False):
             components['track_segment_count'] = gr.State(1)
@@ -201,23 +185,17 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
     )
 
 def process_inputs(ui_values, seed_override=None):
-    local_ui_values = ui_values.copy()
-    resolution = local_ui_values.get('resolution', '720p')
-    selected_ratio = local_ui_values.get('aspect_ratio', "16:9 (Landscape)") 
-    width, height = RESOLUTION_PRESETS[resolution][selected_ratio]
-    local_ui_values['width'] = width
-    local_ui_values['height'] = height
-    return process_inputs_logic(local_ui_values, seed_override)
+    return process_inputs_logic(ui_values, seed_override)
 
 def run_generation(ui_values):
     mode = ui_values.get('mode', 'Preview Tracks')
     if mode == 'Generate Video':
         return create_batched_run_generation(
             process_inputs,
-            lambda status, files: (status, files[-1] if files else None)
+            lambda status, files: (status, files)
         )(ui_values)
     else:
         return create_simple_run_generation(
             process_inputs,
-            lambda status, files: (status, files[-1] if files else None)
+            lambda status, files: (status, files)
         )(ui_values)

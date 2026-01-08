@@ -41,16 +41,17 @@ def create_ui():
                     )
                 with gr.Row():
                     components['video_length'] = gr.Slider(label="Video Length (frames)", minimum=8, maximum=81, step=1, value=81)
-                with gr.Row():
                     components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
+                with gr.Row():
                     components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
+                    components['use_easy_cache'] = gr.Checkbox(label="Use EasyCache", value=True)
             
             with gr.Column(scale=1):
                 components['output_gallery'] = gr.Gallery(
                     label="Result (RGB Video and Alpha Mask)",
                     show_label=True,
                     object_fit="contain",
-                    height=387,
+                    height=390,
                     columns=2,
                     preview=True
                 )

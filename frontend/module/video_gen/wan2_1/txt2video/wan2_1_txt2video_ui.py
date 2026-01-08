@@ -49,11 +49,14 @@ def create_ui():
                     components['use_easy_cache'] = gr.Checkbox(label="Use EasyCache", value=True)
 
             with gr.Column(scale=1):
-                components['output_video'] = gr.Video(
+                components['output_video'] = gr.Gallery(
                     label="Result", 
                     show_label=False,
                     interactive=False,
-                    height=387
+                    height=390,
+                    object_fit="contain",
+                    columns=2,
+                    preview=True
                 )
 
         create_lora_ui(components, "wan2_1_txt2video_lora", accordion_label="LoRA Settings")
@@ -70,5 +73,5 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
 
 run_generation = create_batched_run_generation(
     process_inputs,
-    lambda status, files: (status, files[-1] if files else None)
+    lambda status, files: (status, files)
 )
