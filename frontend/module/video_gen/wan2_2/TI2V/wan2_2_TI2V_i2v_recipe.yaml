@@ -17,6 +17,15 @@ nodes:
     title: "Load VAE"
     params:
       vae_name: "wan2.2_vae.safetensors"
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+  scale_image:
+    class_type: ImageScaleToTotalPixels
+    title: "Scale Image"
+    params:
+      upscale_method: "nearest-exact"
+      megapixels: 1.0
   pos_prompt:
     class_type: CLIPTextEncode
     title: "CLIP Text Encode (Positive Prompt)"
@@ -63,7 +72,13 @@ dynamic_lora_model_only_chains:
     end_input_map:
       model: "model_sampler:model"
 
+dynamic_easycache_chains:
+  use_easy_cache:
+    ksampler_node: "ksampler"
+
 connections:
+  - from: "unet_loader:0"
+    to: "model_sampler:model"
   - from: "clip_loader:0"
     to: "pos_prompt:clip"
   - from: "clip_loader:0"
@@ -72,6 +87,10 @@ connections:
     to: "latent_gen:vae"
   - from: "vae_loader:0"
     to: "vae_decode:vae"
+  - from: "load_image:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "latent_gen:start_image"
   - from: "model_sampler:0"
     to: "ksampler:model"
   - from: "pos_prompt:0"
@@ -88,6 +107,7 @@ connections:
     to: "save_video:video"
 
 ui_map:
+  start_image: "load_image:image"
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
   aspect_ratio:

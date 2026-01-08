@@ -10,14 +10,26 @@ WORKFLOW_RECIPE_CHAR_REPLACEMENT = "wan2_2_animate_char_replacement_recipe.yaml"
 WORKFLOW_RECIPE_POSE_TRANSFER = "wan2_2_animate_pose_transfer_recipe.yaml"
 
 ASPECT_RATIO_PRESETS = {
-    "Auto (from video)": None,
-    "16:9 (Landscape)": (1280, 720),
-    "9:16 (Portrait)": (720, 1280),
-    "1:1 (Square)": (960, 960),
-    "4:3 (Classic TV)": (1088, 816),
-    "3:4 (Classic Portrait)": (816, 1088),
-    "3:2 (Photography)": (1152, 768),
-    "2:3 (Photography Portrait)": (768, 1152),
+    "720p": {
+        "Auto (from video)": None,
+        "16:9 (Landscape)": (1280, 720),
+        "9:16 (Portrait)": (720, 1280),
+        "1:1 (Square)": (960, 960),
+        "4:3 (Classic TV)": (1088, 816),
+        "3:4 (Classic Portrait)": (816, 1088),
+        "3:2 (Photography)": (1152, 768),
+        "2:3 (Photography Portrait)": (768, 1152),
+    },
+    "480p": {
+        "Auto (from video)": None,
+        "16:9 (Landscape)": (848, 480),
+        "9:16 (Portrait)": (480, 848),
+        "1:1 (Square)": (640, 640),
+        "4:3 (Classic TV)": (640, 480),
+        "3:4 (Classic Portrait)": (480, 640),
+        "3:2 (Photography)": (720, 480),
+        "2:3 (Photography Portrait)": (480, 720),
+    }
 }
 PREVIEW_LENGTH = 77
 
@@ -38,12 +50,13 @@ def process_inputs(ui_values, seed_override=None):
         raise ValueError("Could not determine video length from duration and FPS.")
     
     selected_ratio_key = local_ui_values.get('aspect_ratio')
+    resolution_key = local_ui_values.get('resolution', '720p')
     if selected_ratio_key == "Auto (from video)":
         width, height = metadata['width'], metadata['height']
         if width == 0 or height == 0:
             raise ValueError("Could not auto-detect video dimensions. Please select a specific aspect ratio.")
     else:
-        width, height = ASPECT_RATIO_PRESETS[selected_ratio_key]
+        width, height = ASPECT_RATIO_PRESETS.get(resolution_key, {}).get(selected_ratio_key, (1280, 720))
     
     local_ui_values['width'] = width
     local_ui_values['height'] = height

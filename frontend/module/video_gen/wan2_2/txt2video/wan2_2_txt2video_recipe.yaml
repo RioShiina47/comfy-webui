@@ -103,11 +103,21 @@ dynamic_lora_model_only_chains:
     end_input_map:
       model: "model_sampler_low:model"
 
+dynamic_easycache_chains:
+  use_easy_cache:
+    ksampler_node:
+      - "ksampler_high"
+      - "ksampler_low"
+
 connections:
   - from: "unet_loader_high:0"
     to: "lora_loader_high:model"
   - from: "unet_loader_low:0"
     to: "lora_loader_low:model"
+  - from: "lora_loader_high:0"
+    to: "model_sampler_high:model"
+  - from: "lora_loader_low:0"
+    to: "model_sampler_low:model"
   - from: "clip_loader:0"
     to: "pos_prompt:clip"
   - from: "clip_loader:0"

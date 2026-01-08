@@ -44,14 +44,16 @@ def create_ui():
                 
                 with gr.Row():
                     components['video_length'] = gr.Slider(label="Video Length (frames)", minimum=8, maximum=81, step=1, value=81)
+                    components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                 
                 with gr.Row():
-                    components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                     components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
+                    components['use_easy_cache'] = gr.Checkbox(label="Use EasyCache", value=True)
 
             with gr.Column(scale=1):
-                components['output_video'] = gr.Video(
-                    label="Result", show_label=False, interactive=False, height=387
+                components['output_video'] = gr.Gallery(
+                    label="Result", show_label=False, interactive=False, height=390,
+                    object_fit="contain", columns=2, preview=True
                 )
         
         create_lora_ui(components, "wan2_1_img2video_lora", accordion_label="LoRA Settings")
@@ -68,5 +70,5 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
 
 run_generation = create_batched_run_generation(
     process_inputs,
-    lambda status, files: (status, files[-1] if files else None)
+    lambda status, files: (status, files)
 )

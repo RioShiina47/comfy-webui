@@ -240,6 +240,12 @@ nodes:
       format: "auto"
       codec: "h264"
 
+dynamic_easycache_chains:
+  use_easy_cache:
+    ksampler_node:
+      - "i2v_model_sampler"
+      - "i2v_scheduler"
+
 connections:
   - from: "clip_loader:0"
     to: "pos_prompt:clip"

@@ -1,21 +1,11 @@
 import gradio as gr
-from .Kandinsky_img2video_logic import process_inputs as process_inputs_logic
+from .Kandinsky_img2video_logic import process_inputs as process_inputs_logic, ASPECT_RATIO_PRESETS
 from core.utils import create_batched_run_generation
 
 UI_INFO = {
     "main_tab": "VideoGen",
     "sub_tab": "Kandinsky I2V",
     "run_button_text": "🎬 Generate Kandinsky Video from Image"
-}
-
-ASPECT_RATIO_PRESETS = {
-    "16:9 (Widescreen)": (896, 512),
-    "3:2 (Landscape)": (768, 512),
-    "4:3 (Classic TV)": (768, 576),
-    "1:1 (Square)": (640, 640),
-    "9:16 (Vertical)": (512, 896),
-    "2:3 (Portrait)": (512, 768),
-    "3:4 (Classic Portrait)": (576, 736),
 }
 
 def create_ui():
@@ -55,11 +45,14 @@ def create_ui():
                     components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=10, step=1, value=1)
 
             with gr.Column(scale=1):
-                components['output_video'] = gr.Video(
+                components['output_video'] = gr.Gallery(
                     label="Result", 
                     show_label=False,
                     interactive=False,
-                    height=390
+                    height=390,
+                    object_fit="contain",
+                    columns=2,
+                    preview=True
                 )
         
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
@@ -73,16 +66,9 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
     pass
 
 def process_inputs(ui_values, seed_override=None):
-    local_ui_values = ui_values.copy()
-    
-    selected_ratio = local_ui_values.get('aspect_ratio', "16:9 (Widescreen)") 
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
-    local_ui_values['width'] = width
-    local_ui_values['height'] = height
-    
-    return process_inputs_logic(local_ui_values, seed_override)
+    return process_inputs_logic(ui_values, seed_override)
 
 run_generation = create_batched_run_generation(
     process_inputs,
-    lambda status, files: (status, files[-1] if files else None)
+    lambda status, files: (status, files)
 )
