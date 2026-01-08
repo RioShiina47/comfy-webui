@@ -9,13 +9,24 @@ from core.utils import handle_seed, save_temp_image, save_temp_video
 WORKFLOW_RECIPE_PATH = "wan2_2_fun_control_recipe.yaml"
 
 ASPECT_RATIO_PRESETS = {
-    "16:9 (Landscape)": (1280, 720),
-    "9:16 (Portrait)": (720, 1280),
-    "1:1 (Square)": (960, 960),
-    "4:3 (Classic TV)": (1088, 816),
-    "3:4 (Classic Portrait)": (816, 1088),
-    "3:2 (Photography)": (1152, 768),
-    "2:3 (Photography Portrait)": (768, 1152),
+    "720p": {
+        "16:9 (Landscape)": (1280, 720),
+        "9:16 (Portrait)": (720, 1280),
+        "1:1 (Square)": (960, 960),
+        "4:3 (Classic TV)": (1088, 816),
+        "3:4 (Classic Portrait)": (816, 1088),
+        "3:2 (Photography)": (1152, 768),
+        "2:3 (Photography Portrait)": (768, 1152),
+    },
+    "480p": {
+        "16:9 (Landscape)": (848, 480),
+        "9:16 (Portrait)": (480, 848),
+        "1:1 (Square)": (640, 640),
+        "4:3 (Classic TV)": (640, 480),
+        "3:4 (Classic Portrait)": (480, 640),
+        "3:2 (Photography)": (720, 480),
+        "2:3 (Photography Portrait)": (480, 720),
+    }
 }
 
 def process_inputs(ui_values, seed_override=None):
@@ -26,12 +37,14 @@ def process_inputs(ui_values, seed_override=None):
     if ref_image_pil is None: raise ValueError("Reference image is required.")
     if control_video_path is None: raise ValueError("Control video is required.")
 
+    resolution = local_ui_values.get('resolution', '720p')
+    selected_ratio = local_ui_values.get('aspect_ratio')
+    
     metadata = get_media_metadata(control_video_path, is_video=True)
     width, height = metadata['width'], metadata['height']
     if width == 0 or height == 0:
-        selected_ratio = local_ui_values.get('aspect_ratio')
-        width, height = ASPECT_RATIO_PRESETS[selected_ratio]
-        print("Warning: Could not auto-detect video dimensions. Falling back to selected aspect ratio.")
+        width, height = ASPECT_RATIO_PRESETS[resolution][selected_ratio]
+        print(f"Warning: Could not auto-detect video dimensions. Falling back to selected preset: {resolution} {selected_ratio} ({width}x{height}).")
 
     local_ui_values['width'] = width
     local_ui_values['height'] = height

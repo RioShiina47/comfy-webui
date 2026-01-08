@@ -1,21 +1,31 @@
 import os
+from PIL import Image
 from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
-from core.media_utils import get_media_metadata
-from core.comfy_api import run_workflow_and_get_output
 from core.workflow_utils import get_filename_prefix
 from core.utils import save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "wan2_2_FLFV_recipe.yaml"
 
 ASPECT_RATIO_PRESETS = {
-    "16:9 (Landscape)": (1280, 720),
-    "9:16 (Portrait)": (720, 1280),
-    "1:1 (Square)": (960, 960),
-    "4:3 (Classic TV)": (1088, 816),
-    "3:4 (Classic Portrait)": (816, 1088),
-    "3:2 (Photography)": (1152, 768),
-    "2:3 (Photography Portrait)": (768, 1152),
+    "720p": {
+        "16:9 (Landscape)": (1280, 720),
+        "9:16 (Portrait)": (720, 1280),
+        "1:1 (Square)": (960, 960),
+        "4:3 (Classic TV)": (1088, 816),
+        "3:4 (Classic Portrait)": (816, 1088),
+        "3:2 (Photography)": (1152, 768),
+        "2:3 (Photography Portrait)": (768, 1152),
+    },
+    "480p": {
+        "16:9 (Landscape)": (848, 480),
+        "9:16 (Portrait)": (480, 848),
+        "1:1 (Square)": (640, 640),
+        "4:3 (Classic TV)": (640, 480),
+        "3:4 (Classic Portrait)": (480, 640),
+        "3:2 (Photography)": (720, 480),
+        "2:3 (Photography Portrait)": (480, 720),
+    }
 }
 
 def process_inputs(ui_values, seed_override=None):
@@ -25,8 +35,9 @@ def process_inputs(ui_values, seed_override=None):
     if start_image_pil is None: raise ValueError("Start image is required.")
     if end_image_pil is None: raise ValueError("End image is required.")
     
+    resolution = local_ui_values.get('resolution', '720p')
     selected_ratio = local_ui_values.get('aspect_ratio')
-    width, height = ASPECT_RATIO_PRESETS[selected_ratio]
+    width, height = ASPECT_RATIO_PRESETS[resolution][selected_ratio]
 
     local_ui_values['width'] = width
     local_ui_values['height'] = height

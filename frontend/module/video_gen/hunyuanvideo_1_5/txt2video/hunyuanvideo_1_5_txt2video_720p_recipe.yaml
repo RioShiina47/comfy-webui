@@ -158,6 +158,12 @@ nodes:
       format: "auto"
       codec: "h264"
 
+dynamic_easycache_chains:
+  use_easy_cache:
+    ksampler_node:
+      - "t2v_model_sampler"
+      - "t2v_scheduler"
+
 connections:
   - from: "t2v_unet:0"
     to: "t2v_lora:model"

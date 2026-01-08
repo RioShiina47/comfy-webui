@@ -43,11 +43,11 @@ def process_inputs(ui_values, seed_override=None):
     resolution = local_ui_values.get('resolution', '720p')
     selected_ratio = local_ui_values.get('aspect_ratio', "16:9 (Landscape)")
     
-    width, height = RESOLUTION_PRESETS[resolution][selected_ratio]
+    width, height = RESOLUTION_PRESETS.get(resolution, {}).get(selected_ratio, (1280, 720))
     local_ui_values['width'] = width
     local_ui_values['height'] = height
     
-    local_ui_values['unet_name'] = MODEL_MAPPING[resolution]
+    local_ui_values['unet_name'] = MODEL_MAPPING.get(resolution, MODEL_MAPPING["720p"])
     
     seed = seed_override if seed_override is not None else int(local_ui_values.get('seed', -1))
     local_ui_values['seed'] = handle_seed(seed)

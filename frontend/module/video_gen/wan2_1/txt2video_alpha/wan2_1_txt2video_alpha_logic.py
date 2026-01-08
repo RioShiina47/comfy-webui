@@ -31,7 +31,7 @@ def process_inputs(ui_values, seed_override=None):
     
     resolution = local_ui_values.get('resolution', '720p')
     selected_ratio = local_ui_values.get('aspect_ratio', "16:9 (Landscape)") 
-    width, height = RESOLUTION_PRESETS[resolution][selected_ratio]
+    width, height = RESOLUTION_PRESETS.get(resolution, {}).get(selected_ratio, (1280, 720))
     local_ui_values['width'] = width
     local_ui_values['height'] = height
     

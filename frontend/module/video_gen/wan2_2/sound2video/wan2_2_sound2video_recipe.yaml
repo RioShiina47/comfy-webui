@@ -126,6 +126,10 @@ dynamic_wan_s2v_chains:
     start_node: "ksampler_first_chunk"
     end_node: "vae_decode"
 
+dynamic_easycache_chains:
+  use_easy_cache:
+    ksampler_node: "ksampler_first_chunk"
+
 ui_map:
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
