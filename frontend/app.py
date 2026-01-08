@@ -120,7 +120,7 @@ def main():
     ui_tree, ui_modules = discover_ui_modules(ui_include_list)
     layout_config = load_ui_layout()
     
-    with gr.Blocks(js=js_shortcut_code) as demo:
+    with gr.Blocks(js=js_shortcut_code, title="Comfy web UI") as demo:
         gr.Markdown("# Comfy web UI")
         
         all_components, module_component_map, modules_with_handlers = build_gradio_ui(
