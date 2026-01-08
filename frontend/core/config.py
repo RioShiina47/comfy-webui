@@ -80,7 +80,7 @@ CIVITAI_API_KEY = os.getenv("CIVITAI_API_KEY", config.get("civitai_api_key", "")
 HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN", config.get("huggingface_token", ""))
 
 SERVER_PORT = int(os.getenv("SERVER_PORT", config.get("server_port", 7888)))
-GRADIO_SERVER_NAME = os.getenv("GRADIO_SERVER_NAME", "127.0.0.1")
+GRADIO_SERVER_NAME = os.getenv("GRADIO_SERVER_NAME", config.get("gradio_server_name", "127.0.0.1"))
 
 ENABLE_LOGIN = config.get("enable_login", False)
 LOGIN_CREDENTIALS = config.get("login_credentials", [])
