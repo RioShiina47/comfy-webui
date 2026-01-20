@@ -3,7 +3,7 @@ from core import node_info_manager
 from core.shared_ui import (
     create_lora_ui, create_embedding_ui, create_controlnet_ui, 
     create_diffsynth_controlnet_ui, create_ipadapter_ui, 
-    create_style_ui, create_conditioning_ui
+    create_style_ui, create_conditioning_ui, create_reference_latent_ui
 )
 from .config_loader import load_constants_config, load_model_config, load_architectures_config
 from .vae_utils import on_vae_upload

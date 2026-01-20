@@ -75,6 +75,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     embedding_accordion = components.get(key('embedding_accordion'))
     style_accordion = components.get(key('style_accordion'))
     conditioning_accordion = components.get(key('conditioning_accordion'))
+    reference_latent_accordion = components.get(key('reference_latent_accordion'))
 
 
     def on_architecture_filter_change(arch_filter):
@@ -144,7 +145,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'sd3_ipadapter': sd3_ipadapter_accordion,
             'embedding': embedding_accordion,
             'style': style_accordion,
-            'conditioning': conditioning_accordion
+            'conditioning': conditioning_accordion,
+            'reference_latent': reference_latent_accordion
         }
 
         for chain_key, accordion_component in chain_map.items():
@@ -266,7 +268,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "diffsynth_cn_accordion": diffsynth_controlnet_accordion,
         "ipa_accordion": ipadapter_accordion, "flux1_ipa_accordion": flux1_ipadapter_accordion, "sd3_ipa_accordion": sd3_ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
         "ipa_final_lora_slider": ipadapter_final_lora_strength_slider,
-        "conditioning_accordion": conditioning_accordion
+        "conditioning_accordion": conditioning_accordion,
+        "reference_latent_accordion": reference_latent_accordion
     }
     
     positive_prompt_textbox = components.get(key('positive_prompt'))
