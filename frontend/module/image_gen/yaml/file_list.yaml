@@ -184,10 +184,10 @@ file:
       repo_id: "Comfy-Org/Ovis-Image"
       repository_file_path: "split_files/diffusion_models/ovis_image_bf16.safetensors"
     # Z-Image
-    - filename: "z_image_turbo_bf16.safetensors"
+    - filename: "z_image_turbo_nvfp4.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"
-      repository_file_path: "split_files/diffusion_models/z_image_turbo_bf16.safetensors"
+      repository_file_path: "split_files/diffusion_models/z_image_turbo_nvfp4.safetensors"
     # Qwen-Image
     - filename: "qwen_image_2512_fp8_e4m3fn.safetensors"
       source: "hf"
@@ -385,10 +385,10 @@ file:
       repo_id: "Comfy-Org/Ovis-Image"
       repository_file_path: "split_files/text_encoders/ovis_2.5.safetensors"
     # Z-Image
-    - filename: "qwen_3_4b.safetensors"
+    - filename: "qwen_3_4b_fp4_mixed.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"
-      repository_file_path: "split_files/text_encoders/qwen_3_4b.safetensors"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b_fp4_mixed.safetensors"
     - filename: "clip_l.safetensors"
       source: "hf"
       repo_id: "comfyanonymous/flux_text_encoders"
