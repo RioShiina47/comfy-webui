@@ -1,0 +1,48 @@
+file: 
+  text_encoders: 
+    # FLUX.2-klein-4B & base
+    - filename: "qwen_3_4b_fp4_flux2.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/vae-text-encorder-for-flux-klein-4b"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b_fp4_flux2.safetensors"
+    # FLUX.2-klein-9B & base
+    - filename: "qwen_3_8b_fp4mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/vae-text-encorder-for-flux-klein-9b"
+      repository_file_path: "split_files/text_encoders/qwen_3_8b_fp4mixed.safetensors"
+    # FLUX.2-dev
+    - filename: "mistral_3_small_flux2_fp4_mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux2-dev"
+      repository_file_path: "split_files/text_encoders/mistral_3_small_flux2_fp4_mixed.safetensors"
+  diffusion_models: 
+    # FLUX.2-klein-4B
+    - filename: "flux-2-klein-4b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-4b-nvfp4"
+      repository_file_path: "flux-2-klein-4b-nvfp4.safetensors"
+    # FLUX.2-klein-9B
+    - filename: "flux-2-klein-9b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-9b-nvfp4"
+      repository_file_path: "flux-2-klein-9b-nvfp4.safetensors"
+    # FLUX.2-klein-base-4B
+    - filename: "flux-2-klein-base-4b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-base-4b-nvfp4"
+      repository_file_path: "flux-2-klein-base-4b-nvfp4.safetensors"
+    # FLUX.2-klein-base-9B
+    - filename: "flux-2-klein-base-9b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-base-9b-nvfp4"
+      repository_file_path: "flux-2-klein-base-9b-nvfp4.safetensors"
+    # FLUX.2-dev
+    - filename: "flux2-dev-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-dev-NVFP4"
+      repository_file_path: "flux2-dev-nvfp4.safetensors"
+  vae: 
+    - filename: "flux2-vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux2-dev"
+      repository_file_path: "split_files/vae/flux2-vae.safetensors"

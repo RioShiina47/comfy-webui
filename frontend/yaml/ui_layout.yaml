@@ -7,13 +7,13 @@ main_tabs_order:
     - "Hires. fix"
 
   - "ImageEdit":
+    - "Instruction & Reference Edit":
+      - "FLUX.2"
     - "Instruction Edit":
       - "Qwen-Image-Edit"
       - "ChronoEdit"
       - "Flux-Kontext-Dev"
       - "OmniGen2-Image_Edit"
-    - "Instruction & Reference Edit":
-      - "FLUX.2-dev"
     - "Reference Edit":
       - "ByteDance USO"
     - "Inpaint":
