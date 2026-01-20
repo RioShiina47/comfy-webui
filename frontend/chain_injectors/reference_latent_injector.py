@@ -97,8 +97,17 @@ def inject(assembler, chain_definition, chain_items):
             print(f"Warning: Could not find a valid positive injection point for ReferenceLatent chain. Skipping.")
             return
 
-    original_pos_conditioning = assembler.workflow[pos_target_node_id]['inputs'][pos_target_input_name]
-    current_pos_conditioning = original_pos_conditioning
+    current_pos_conditioning = assembler.workflow[pos_target_node_id]['inputs'][pos_target_input_name]
+
+    neg_target_node_id = ksampler_id
+    neg_target_input_name = 'negative'
+    if 'negative' not in assembler.workflow[neg_target_node_id]['inputs']:
+        print(f"Warning: KSampler node '{ksampler_name}' has no 'negative' input. Skipping negative ReferenceLatent chain.")
+        neg_target_node_id = None
+    
+    current_neg_conditioning = None
+    if neg_target_node_id:
+        current_neg_conditioning = assembler.workflow[neg_target_node_id]['inputs'][neg_target_input_name]
 
     for i, img_filename in enumerate(chain_items):
         load_id = assembler._get_unique_id()
@@ -121,15 +130,28 @@ def inject(assembler, chain_definition, chain_items):
         vae_encode_node['inputs']['vae'] = [vae_node_id, 0]
         vae_encode_node['_meta']['title'] = f"VAE Encode Reference {i+1}"
         assembler.workflow[vae_encode_id] = vae_encode_node
+        
+        latent_conn = [vae_encode_id, 0]
 
         pos_ref_latent_id = assembler._get_unique_id()
         pos_ref_latent_node = assembler._get_node_template_from_api("ReferenceLatent")
         pos_ref_latent_node['inputs']['conditioning'] = current_pos_conditioning
-        pos_ref_latent_node['inputs']['latent'] = [vae_encode_id, 0]
+        pos_ref_latent_node['inputs']['latent'] = latent_conn
         pos_ref_latent_node['_meta']['title'] = f"Positive ReferenceLatent {i+1}"
         assembler.workflow[pos_ref_latent_id] = pos_ref_latent_node
         current_pos_conditioning = [pos_ref_latent_id, 0]
 
+        if neg_target_node_id:
+            neg_ref_latent_id = assembler._get_unique_id()
+            neg_ref_latent_node = assembler._get_node_template_from_api("ReferenceLatent")
+            neg_ref_latent_node['inputs']['conditioning'] = current_neg_conditioning
+            neg_ref_latent_node['inputs']['latent'] = latent_conn
+            neg_ref_latent_node['_meta']['title'] = f"Negative ReferenceLatent {i+1}"
+            assembler.workflow[neg_ref_latent_id] = neg_ref_latent_node
+            current_neg_conditioning = [neg_ref_latent_id, 0]
+
     assembler.workflow[pos_target_node_id]['inputs'][pos_target_input_name] = current_pos_conditioning
+    if neg_target_node_id:
+        assembler.workflow[neg_target_node_id]['inputs'][neg_target_input_name] = current_neg_conditioning
     
-    print(f"ReferenceLatent injector applied. Re-routed positive input '{pos_target_input_name}' through {len(chain_items)} reference images.")
+    print(f"ReferenceLatent injector applied. Re-routed inputs through {len(chain_items)} reference images.")
