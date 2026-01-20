@@ -1,0 +1,29 @@
+FLUX.2-klein-4B:
+  unet_name: flux-2-klein-4b-nvfp4.safetensors
+  clip_name: qwen_3_4b_fp4_flux2.safetensors
+  steps: 4
+  cfg: 1.0
+
+FLUX.2-klein-9B:
+  unet_name: flux-2-klein-9b-nvfp4.safetensors
+  clip_name: qwen_3_8b_fp4mixed.safetensors
+  steps: 4
+  cfg: 1.0
+
+FLUX.2-klein-base-4B:
+  unet_name: flux-2-klein-base-4b-nvfp4.safetensors
+  clip_name: qwen_3_4b_fp4_flux2.safetensors
+  steps: 20
+  cfg: 4.0
+
+FLUX.2-klein-base-9B:
+  unet_name: flux-2-klein-base-9b-nvfp4.safetensors
+  clip_name: qwen_3_8b_fp4mixed.safetensors
+  steps: 20
+  cfg: 4.0
+
+FLUX.2-dev:
+  unet_name: flux2-dev-nvfp4.safetensors
+  clip_name: mistral_3_small_flux2_fp4_mixed.safetensors
+  steps: 20
+  cfg: 4.0
