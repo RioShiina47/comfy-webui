@@ -63,6 +63,14 @@ RESOLUTION_MAP:
     "3:4 (Classic Portrait)": [512, 683]
     "3:2 (Landscape)": [768, 512]
     "2:3 (Portrait)": [512, 768]
+  flux2:
+    "1:1 (Square)": [1024, 1024]
+    "16:9 (Landscape)": [1344, 768]
+    "9:16 (Portrait)": [768, 1344]
+    "4:3 (Classic)": [1152, 896]
+    "3:4 (Classic Portrait)": [896, 1152]
+    "3:2 (Photography)": [1216, 832]
+    "2:3 (Photography Portrait)": [832, 1216]
   flux1:
     "1:1 (Square)": [1024, 1024]
     "16:9 (Landscape)": [1344, 768]
