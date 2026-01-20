@@ -336,6 +336,30 @@ def create_conditioning_ui(components, prefix):
             components[key('delete_conditioning_button')] = gr.Button("➖ Delete Conditioning Area", visible=False)
         components[key('conditioning_count_state')] = gr.State(1)
 
+def create_reference_latent_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    constants = get_ui_constants()
+    max_refs = constants.get('MAX_REFERENCE_LATENTS', 10)
+    with gr.Accordion("Reference Edit Settings", open=False) as ref_accordion:
+        components[key('reference_latent_accordion')] = ref_accordion
+        gr.Markdown("💡 **Tip:** For multimodal models (like FLUX.2), this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an **Image Edit**, while adding multiple images performs an **Image Combine**.")
+        
+        ref_image_groups = []
+        ref_image_inputs = []
+        with gr.Row():
+            for i in range(max_refs):
+                with gr.Column(visible=False, min_width=160) as img_col:
+                    img_comp = gr.Image(type="pil", label=f"Ref. {i+1}", sources=["upload"], height=150)
+                    ref_image_groups.append(img_col)
+                    ref_image_inputs.append(img_comp)
+        
+        components[key('reference_latent_rows')] = ref_image_groups
+        components[key('reference_latent_images')] = ref_image_inputs
+
+        with gr.Row():
+            components[key('add_reference_latent_button')] = gr.Button("✚ Add Reference Image")
+            components[key('delete_reference_latent_button')] = gr.Button("➖ Delete Reference Image", visible=False)
+        components[key('reference_latent_count_state')] = gr.State(0)
 
 def register_ui_chain_events(components, prefix):
     """
@@ -442,6 +466,9 @@ def register_ui_chain_events(components, prefix):
     _add_row_factory(key('style_count_state'), key('add_style_button'), key('delete_style_button'), key('style_rows'), constants.get('MAX_STYLES', 5))
     _delete_row_factory(key('style_count_state'), key('add_style_button'), key('delete_style_button'), key('style_rows'), constants.get('MAX_STYLES', 5), reset_keys=[key('style_images'), key('style_strengths')])
     
+    _add_row_factory(key('reference_latent_count_state'), key('add_reference_latent_button'), key('delete_reference_latent_button'), key('reference_latent_rows'), constants.get('MAX_REFERENCE_LATENTS', 10))
+    _delete_row_factory(key('reference_latent_count_state'), key('add_reference_latent_button'), key('delete_reference_latent_button'), key('reference_latent_rows'), constants.get('MAX_REFERENCE_LATENTS', 10), reset_keys=[key('reference_latent_images')])
+
     if all(k in components for k in [key('conditioning_count_state'), key('add_conditioning_button'), key('delete_conditioning_button'), key('conditioning_rows')]):
         add_cond_btn = components[key('add_conditioning_button')]
         del_cond_btn = components[key('delete_conditioning_button')]
