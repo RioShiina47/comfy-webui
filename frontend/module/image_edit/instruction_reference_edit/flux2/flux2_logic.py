@@ -4,9 +4,15 @@ from core.workflow_assembler import WorkflowAssembler
 from core.config import COMFYUI_INPUT_PATH
 from core.workflow_utils import get_filename_prefix
 from core.utils import save_temp_image, handle_seed
+from core.input_processors import process_lora_inputs
+from core.yaml_loader import load_and_merge_yaml_from_module
 
-WORKFLOW_RECIPE_PATH = "flux2_dev_recipe.yaml"
+WORKFLOW_RECIPE_PATH = "flux2_recipe.yaml"
 MAX_REF_IMAGES = 10
+PREFIX = "flux2_ref_edit"
+
+module_path = os.path.dirname(os.path.abspath(__file__))
+MODEL_CONFIG = load_and_merge_yaml_from_module(module_path, "model_config.yaml")
 
 ASPECT_RATIO_PRESETS = {
     "1:1 (Square)": (1024, 1024), 
@@ -39,6 +45,10 @@ def process_inputs(ui_values, seed_override=None):
     
     if not local_ui_values.get('positive_prompt'):
         raise ValueError("Prompt is required.")
+        
+    input_img = local_ui_values.get('input_image')
+    if input_img is None:
+        raise ValueError("Please upload an Input Image.")
 
     selected_ratio = local_ui_values.get('aspect_ratio', "1:1 (Square)")
     megapixels_str = local_ui_values.get('megapixels', '1MP')
@@ -46,7 +56,7 @@ def process_inputs(ui_values, seed_override=None):
     local_ui_values['width'] = width
     local_ui_values['height'] = height
 
-    all_images = []
+    all_images = [input_img]
     if local_ui_values.get('ref_image_inputs') and isinstance(local_ui_values['ref_image_inputs'], list):
         for img in local_ui_values['ref_image_inputs']:
             if img is not None:
@@ -54,16 +64,27 @@ def process_inputs(ui_values, seed_override=None):
     
     if all_images:
         image_filenames = [save_temp_image(img) for i, img in enumerate(all_images)]
-        local_ui_values['reference_chain'] = image_filenames
+        local_ui_values['reference_latent_chain'] = image_filenames
     else:
-        local_ui_values['reference_chain'] = []
+        local_ui_values['reference_latent_chain'] = []
+
+    local_ui_values['lora_chain'] = process_lora_inputs(local_ui_values, prefix=PREFIX)
+
+    model_selection = local_ui_values.get('model', 'FLUX.2-dev')
+    model_params = MODEL_CONFIG.get(model_selection)
+
+    if not model_params:
+        default_model = 'FLUX.2-klein-4B'
+        print(f"Warning: Model configuration for '{model_selection}' not found. Falling back to '{default_model}'.")
+        model_params = MODEL_CONFIG.get(default_model, {})
+
+    local_ui_values.update(model_params)
 
     seed = seed_override if seed_override is not None else local_ui_values.get('seed', -1)
     local_ui_values['seed'] = handle_seed(seed)
         
     local_ui_values['filename_prefix'] = get_filename_prefix()
 
-    module_path = os.path.dirname(os.path.abspath(__file__))
     assembler = WorkflowAssembler(WORKFLOW_RECIPE_PATH, base_path=module_path)
     final_workflow = assembler.assemble(local_ui_values)
     

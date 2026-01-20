@@ -2,27 +2,41 @@ import gradio as gr
 import traceback
 import math
 
-from .flux2_dev_logic import process_inputs, MAX_REF_IMAGES, ASPECT_RATIO_PRESETS
+from .flux2_logic import process_inputs, MAX_REF_IMAGES, ASPECT_RATIO_PRESETS, PREFIX, MODEL_CONFIG
 from core.utils import create_batched_run_generation
+from core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
-    "workflow_recipe": "flux2_dev_recipe.yaml",
+    "workflow_recipe": "flux2_recipe.yaml",
     "main_tab": "ImageEdit",
-    "sub_tab": "FLUX.2-dev",
+    "sub_tab": "FLUX.2",
     "run_button_text": "🎨 Generate with FLUX.2"
 }
+
+MAX_REF_IMAGES = 9
 
 def create_ui():
     components = {}
     with gr.Column():
-        gr.Markdown("## FLUX.2-dev Text-to-Image Generation")
-        gr.Markdown("💡 **Tip:** Provide a prompt to generate an image. Optionally, add reference images to guide the generation.")
-        
-        with gr.Row():
-            components['positive_prompt'] = gr.Textbox(label="Prompt", lines=3, placeholder="e.g., A photo of a cat wearing a wizard hat.")
+        gr.Markdown("## FLUX.2 Image Editing")
+        gr.Markdown("💡 **Tip:** Upload an image and provide a text instruction to edit it. You can add more reference images to provide context for the edit.")
         
         with gr.Row():
             with gr.Column(scale=1):
+                components['input_image'] = gr.Image(type="pil", label="Input Image", height=255)
+            with gr.Column(scale=2):
+                components['positive_prompt'] = gr.Textbox(label="Edit Instruction", lines=3, placeholder="e.g., Make it a rainy day.")
+                components['negative_prompt'] = gr.Textbox(label="Negative Prompt", lines=3)
+        
+        with gr.Row():
+            with gr.Column(scale=1):
+                with gr.Row():
+                    components['model'] = gr.Dropdown(
+                        label="Model",
+                        choices=list(MODEL_CONFIG.keys()),
+                        value="FLUX.2-klein-4B",
+                        interactive=True
+                    )
                 with gr.Row():
                     components['aspect_ratio'] = gr.Dropdown(
                         label="Aspect Ratio",
@@ -40,12 +54,15 @@ def create_ui():
                 with gr.Row():
                     components['seed'] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0)
                 with gr.Row():
+                    components['batch_size'] = gr.Slider(label="Batch Size", minimum=1, maximum=8, step=1, value=1)
                     components['batch_count'] = gr.Slider(label="Batch Count", minimum=1, maximum=20, step=1, value=1)
             
             with gr.Column(scale=1):
-                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=388)
+                components['output_gallery'] = gr.Gallery(label="Result", show_label=False, object_fit="contain", height=493)
 
-        with gr.Accordion("Reference Images (Optional)", open=False):
+        create_lora_ui(components, PREFIX)
+
+        with gr.Accordion("Add More Images", open=False):
             ref_image_groups = []
             ref_image_inputs = []
             with gr.Row():
@@ -70,6 +87,8 @@ def get_main_output_components(components: dict):
     return [components['output_gallery'], components['run_button']]
 
 def create_event_handlers(components: dict, all_components: dict, demo: gr.Blocks):
+    register_ui_chain_events(components, PREFIX)
+
     ref_count_state = components['ref_count_state']
     add_ref_btn = components['add_ref_button']
     del_ref_btn = components['delete_ref_button']

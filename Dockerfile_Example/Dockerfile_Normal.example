@@ -51,10 +51,6 @@ RUN git clone https://github.com/cubiq/ComfyUI_IPAdapter_plus.git custom_nodes/C
 RUN git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git custom_nodes/comfyui_controlnet_aux
 RUN pip install ${PIP_FLAGS} -r ./custom_nodes/comfyui_controlnet_aux/requirements.txt
 
-# ComfyUI-GGUF
-RUN git clone https://github.com/city96/ComfyUI-GGUF.git custom_nodes/ComfyUI-GGUF
-RUN pip install ${PIP_FLAGS} -r ./custom_nodes/ComfyUI-GGUF/requirements.txt
-
 # --- Custom node installation end ---
 
 
