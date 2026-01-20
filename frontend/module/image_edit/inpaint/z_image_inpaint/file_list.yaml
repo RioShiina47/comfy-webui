@@ -1,14 +1,14 @@
 file: 
   diffusion_models: 
-    - filename: "z_image_turbo_bf16.safetensors"
+    - filename: "z_image_turbo_nvfp4.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"
-      repository_file_path: "split_files/diffusion_models/z_image_turbo_bf16.safetensors"
+      repository_file_path: "split_files/diffusion_models/z_image_turbo_nvfp4.safetensors"
   text_encoders: 
-    - filename: "qwen_3_4b.safetensors"
+    - filename: "qwen_3_4b_fp4_mixed.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"
-      repository_file_path: "split_files/text_encoders/qwen_3_4b.safetensors"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b_fp4_mixed.safetensors"
   model_patches: 
     - filename: "Z-Image-Turbo-Fun-Controlnet-Union-2.1-8steps.safetensors"
       source: "hf"
