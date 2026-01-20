@@ -1,0 +1,11 @@
+nodes:
+  latent_source:
+    class_type: "EmptyFlux2LatentImage"
+    title: "Empty Flux 2 Latent"
+
+connections: []
+
+ui_map:
+  width: "latent_source:width"
+  height: "latent_source:height"
+  batch_size: "latent_source:batch_size"

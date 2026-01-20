@@ -49,6 +49,12 @@ sd15:
     - embedding
     - conditioning
 
+flux2:
+  enabled_chains:
+    - lora
+    - conditioning
+    - reference_latent
+
 flux1:
   enabled_chains:
     - lora

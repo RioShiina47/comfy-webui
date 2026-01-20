@@ -1,4 +1,32 @@
 Checkpoints:
+  FLUX.2:
+    latent_type: flux2_latent
+    models:
+      - display_name: "black-forest-labs/FLUX.2-klein-4B"
+        components:
+          unet: "flux-2-klein-4b-nvfp4.safetensors"
+          clip: "qwen_3_4b_fp4_flux2.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "black-forest-labs/FLUX.2-klein-9B"
+        components:
+          unet: "flux-2-klein-9b-nvfp4.safetensors"
+          clip: "qwen_3_8b_fp4mixed.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "black-forest-labs/FLUX.2-klein-base-4B"
+        components:
+          unet: "flux-2-klein-base-4b-nvfp4.safetensors"
+          clip: "qwen_3_4b_fp4_flux2.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "black-forest-labs/FLUX.2-klein-base-9B"
+        components:
+          unet: "flux-2-klein-base-9b-nvfp4.safetensors"
+          clip: "qwen_3_8b_fp4mixed.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "black-forest-labs/FLUX.2-dev"
+        components:
+          unet: "flux2-dev-nvfp4.safetensors"
+          clip: "mistral_3_small_flux2_fp4_mixed.safetensors"
+          vae: "flux2-vae.safetensors"
   NewBie-Image:
     latent_type: sd3_latent
     models:

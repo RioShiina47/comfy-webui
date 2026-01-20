@@ -15,7 +15,8 @@ from core.input_processors import (
     process_sd3_ipadapter_inputs,
     process_embedding_inputs,
     process_style_inputs,
-    process_conditioning_inputs
+    process_conditioning_inputs,
+    process_reference_latent_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -119,6 +120,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'sd3_ipadapter_chain': process_sd3_ipadapter_inputs(ui_values, prefix),
         'style_chain': process_style_inputs(ui_values, prefix),
         'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
+        'reference_latent_chain': process_reference_latent_inputs(ui_values, prefix),
     }
 
     final_values_for_assembler = {**vals, **processed_chains}

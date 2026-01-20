@@ -173,6 +173,31 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # FLUX.2-klein-4B
+    - filename: "flux-2-klein-4b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-4b-nvfp4"
+      repository_file_path: "flux-2-klein-4b-nvfp4.safetensors"
+    # FLUX.2-klein-9B
+    - filename: "flux-2-klein-9b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-9b-nvfp4"
+      repository_file_path: "flux-2-klein-9b-nvfp4.safetensors"
+    # FLUX.2-klein-base-4B
+    - filename: "flux-2-klein-base-4b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-base-4b-nvfp4"
+      repository_file_path: "flux-2-klein-base-4b-nvfp4.safetensors"
+    # FLUX.2-klein-base-9B
+    - filename: "flux-2-klein-base-9b-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-base-9b-nvfp4"
+      repository_file_path: "flux-2-klein-base-9b-nvfp4.safetensors"
+    # FLUX.2-dev
+    - filename: "flux2-dev-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-dev-NVFP4"
+      repository_file_path: "flux2-dev-nvfp4.safetensors"
     # NewBie-Image
     - filename: "NewBie-Image-Exp0.1-bf16.safetensors"
       source: "hf"
@@ -370,6 +395,21 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    # FLUX.2-klein-4B & base
+    - filename: "qwen_3_4b_fp4_flux2.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/vae-text-encorder-for-flux-klein-4b"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b_fp4_flux2.safetensors"
+    # FLUX.2-klein-9B & base
+    - filename: "qwen_3_8b_fp4mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/vae-text-encorder-for-flux-klein-9b"
+      repository_file_path: "split_files/text_encoders/qwen_3_8b_fp4mixed.safetensors"
+    # FLUX.2-dev
+    - filename: "mistral_3_small_flux2_fp4_mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux2-dev"
+      repository_file_path: "split_files/text_encoders/mistral_3_small_flux2_fp4_mixed.safetensors"
     # NewBie-Image
     - filename: "gemma_3_4b_it_bf16.safetensors"
       source: "hf"
@@ -438,3 +478,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
       repository_file_path: "split_files/vae/ae.safetensors"
+    - filename: "flux2-vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/flux2-dev"
+      repository_file_path: "split_files/vae/flux2-vae.safetensors"

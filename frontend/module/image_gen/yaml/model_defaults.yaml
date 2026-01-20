@@ -88,6 +88,20 @@ SD1.5:
     scheduler: "simple"
     total_pixels: 393216
 
+FLUX.2:
+  _defaults:
+    steps: 20
+    cfg: 4.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    total_pixels: 1048576
+  "black-forest-labs/FLUX.2-klein-4B":
+    steps: 4
+    cfg: 1.0
+  "black-forest-labs/FLUX.2-klein-9B":
+    steps: 4
+    cfg: 1.0
+
 FLUX.1:
   _defaults:
     steps: 20
