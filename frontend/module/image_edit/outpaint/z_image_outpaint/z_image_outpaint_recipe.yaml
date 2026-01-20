@@ -3,7 +3,7 @@ nodes:
     class_type: UNETLoader
     title: "Load Diffusion Model"
     params:
-      unet_name: "z_image_turbo_bf16.safetensors"
+      unet_name: "z_image_turbo_nvfp4.safetensors"
       weight_dtype: "default"
   vae_loader:
     class_type: VAELoader
@@ -14,7 +14,7 @@ nodes:
     class_type: CLIPLoader
     title: "Load CLIP"
     params:
-      clip_name: "qwen_3_4b.safetensors"
+      clip_name: "qwen_3_4b_fp4_mixed.safetensors"
       type: "lumina2"
       device: "default"
   controlnet_patch_loader:
