@@ -296,3 +296,17 @@ def process_conditioning_inputs(all_ui_values: dict, prefix: str):
                 "strength": strengths[i] if i < len(strengths) else 1.0,
             })
     return conditionings
+
+def process_reference_latent_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    references = []
+    ref_images = all_ui_values.get(key('reference_latent_images'), [])
+    if not ref_images:
+        return []
+    
+    for image_pil in ref_images:
+        if image_pil is not None:
+            image_filename = save_temp_image(image_pil)
+            references.append(image_filename)
+            
+    return references
