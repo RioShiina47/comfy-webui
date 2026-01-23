@@ -1,0 +1,11 @@
+file: 
+  checkpoints: 
+    - filename: "ltx-2-19b-dev-fp4.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2"
+      repository_file_path: "ltx-2-19b-dev-fp4.safetensors"
+  text_encoders: 
+    - filename: "qwen_3_4b_fp4_mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ltx-2"
+      repository_file_path: "split_files/text_encoders/qwen_3_4b_fp4_mixed.safetensors"
