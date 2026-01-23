@@ -30,6 +30,9 @@ main_tabs_order:
       - "Qwen-Image Layered"
 
   - "VideoGen":
+    - "LTX-2":
+      - "LTX-2 TI2V"
+      - "LTX-2 Control"
     - "wan2.2":
       - "txt2video"
       - "img2video"
