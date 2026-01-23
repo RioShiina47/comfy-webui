@@ -1,0 +1,184 @@
+nodes:
+  checkpoint_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+    params:
+      ckpt_name: "ltx-2-19b-dev-fp4.safetensors"
+
+  text_encoder_loader:
+    class_type: LTXAVTextEncoderLoader
+    title: "Load Text Encoder"
+    params:
+      text_encoder: "gemma_3_12B_it_fp4_mixed.safetensors"
+      ckpt_name: "ltx-2-19b-dev-fp4.safetensors"
+      device: "default"
+
+  audio_vae_loader:
+    class_type: LTXVAudioVAELoader
+    title: "Load Audio VAE"
+    params:
+      ckpt_name: "ltx-2-19b-dev-fp4.safetensors"
+
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "Positive Prompt"
+  
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "Negative Prompt"
+
+  conditioning:
+    class_type: LTXVConditioning
+    title: "LTXV Conditioning"
+    params: 
+      frame_rate: 24
+
+  latent_video_gen:
+    class_type: EmptyLTXVLatentVideo
+    title: "Empty Video Latent"
+    params: { batch_size: 1 }
+
+  latent_audio_gen:
+    class_type: LTXVEmptyLatentAudio
+    title: "Empty Audio Latent"
+    params: 
+      batch_size: 1
+      frame_rate: 24
+
+  latent_combiner:
+    class_type: LTXVConcatAVLatent
+    title: "Combine A/V Latents"
+
+  scheduler:
+    class_type: LTXVScheduler
+    title: "LTXV Scheduler"
+    params:
+      steps: 20
+      max_shift: 2.05
+      base_shift: 0.95
+      stretch: true
+      terminal: 0.1
+  
+  noise_gen:
+    class_type: RandomNoise
+    title: "Random Noise"
+
+  guider:
+    class_type: CFGGuider
+    title: "CFG Guider"
+    params:
+      cfg: 4.0
+
+  sampler_select:
+    class_type: KSamplerSelect
+    title: "Select Sampler"
+    params:
+      sampler_name: "euler_ancestral"
+
+  sampler:
+    class_type: SamplerCustomAdvanced
+    title: "Sampler"
+  
+  latent_separator:
+    class_type: LTXVSeparateAVLatent
+    title: "Separate A/V Latents"
+
+  video_decoder:
+    class_type: VAEDecodeTiled
+    title: "VAE Decode (Tiled)"
+    params:
+      tile_size: 512
+      overlap: 64
+      temporal_size: 4096
+      temporal_overlap: 8
+
+  audio_decoder:
+    class_type: LTXVAudioVAEDecode
+    title: "Audio VAE Decode"
+
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+    params:
+      fps: 24
+
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params:
+      format: "mp4"
+      codec: "auto"
+
+dynamic_lora_model_only_chains:
+  loras_model_only:
+    template: LoraLoaderModelOnly
+    output_map:
+      "checkpoint_loader:0": model
+    end_input_map:
+      model: "guider:model"
+
+connections:
+  - from: "checkpoint_loader:0"
+    to: "guider:model"
+  - from: "checkpoint_loader:2"
+    to: "video_decoder:vae"
+  - from: "text_encoder_loader:0"
+    to: "pos_prompt:clip"
+  - from: "text_encoder_loader:0"
+    to: "neg_prompt:clip"
+  - from: "audio_vae_loader:0"
+    to: "latent_audio_gen:audio_vae"
+  - from: "audio_vae_loader:0"
+    to: "audio_decoder:audio_vae"
+  - from: "pos_prompt:0"
+    to: "conditioning:positive"
+  - from: "neg_prompt:0"
+    to: "conditioning:negative"
+  - from: "latent_video_gen:0"
+    to: "latent_combiner:video_latent"
+  - from: "latent_audio_gen:0"
+    to: "latent_combiner:audio_latent"
+  - from: "latent_combiner:0"
+    to: "scheduler:latent"
+  - from: "latent_combiner:0"
+    to: "sampler:latent_image"
+  - from: "conditioning:0"
+    to: "guider:positive"
+  - from: "conditioning:1"
+    to: "guider:negative"
+  - from: "guider:0"
+    to: "sampler:guider"
+  - from: "noise_gen:0"
+    to: "sampler:noise"
+  - from: "scheduler:0"
+    to: "sampler:sigmas"
+  - from: "sampler_select:0"
+    to: "sampler:sampler"
+  - from: "sampler:0"
+    to: "latent_separator:av_latent"
+  - from: "latent_separator:0"
+    to: "video_decoder:samples"
+  - from: "latent_separator:1"
+    to: "audio_decoder:samples"
+  - from: "video_decoder:0"
+    to: "create_video:images"
+  - from: "audio_decoder:0"
+    to: "create_video:audio"
+  - from: "create_video:0"
+    to: "save_video:video"
+    
+ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  
+  aspect_ratio:
+    width: "latent_video_gen:width"
+    height: "latent_video_gen:height"
+  
+  video_length:
+    - "latent_video_gen:length"
+    - "latent_audio_gen:frames_number"
+    
+  seed: "noise_gen:noise_seed"
+  
+  filename_prefix: "save_video:filename_prefix"
