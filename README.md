@@ -9,9 +9,7 @@ Comfy web UI is more than a modular, mobile-first frontend for ComfyUI — it's 
 ## ⚠️ Important Notices
 
 ### Development status
-> ⚠️ **This project is in active early development.** Features, code structure, and APIs may change frequently. Contributions and suggestions are very welcome!
-
-> The preset model library is currently intended for testing and will be improved and standardized later.
+> ⚠️ **This project is in active early development.** Features, code structure, and APIs may change frequently. The preset model library is currently intended for testing.
 
 ### Security warning
 > ⚠️ **This project is designed for use on trusted local networks and has limited built-in security.**
@@ -27,10 +25,10 @@ Comfy web UI is more than a modular, mobile-first frontend for ComfyUI — it's 
 This project integrates many popular AI generation models and utilities into a single, one-stop creative suite.
 
 - **🖥️ Dual UI modes**
-  - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/PC/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control. **[HF spaces](https://huggingface.co/spaces/RioShiina/ImageGen-SDXL)** 🤗
-  - **[One-tap compact panels](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/Phone/ImageEdit.png) (VideoGen, AudioGen, 3DGen):** Use best-practice fixed parameters to maximize simplicity, optimized for mobile.
+  - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control. **[HF spaces](https://huggingface.co/spaces/RioShiina/ImageGen-SDXL)** 🤗
+  - **[One-tap compact panels](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageEdit/Instruction%20%26%20Reference%20Edit/FLUX-2.png) (ImageEdit, VideoGen, AudioGen, 3DGen):** Use best-practice fixed parameters to maximize simplicity, optimized for mobile.
 
-- **🤖 [API & MCP ready](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/PC/API_MCP/API_MCP.png) — Workflow as a Service**
+- **🤖 [API & MCP ready](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/API_MCP/API_MCP.png) — Workflow as a Service**
   - The project not only provides a UI, but also exposes complex workflow recipes as simple, high-level Python functions via Gradio's API and MCP mechanisms.
   - This makes Comfy web UI a powerful backend for "Workflow as a Service" — any AI client or application that supports the Gradio MCP standard can call these functions to automate and integrate generation tasks.
 
@@ -43,15 +41,17 @@ This project integrates many popular AI generation models and utilities into a s
   The image generation features are built around a matrix-style dynamic workflow assembly mechanism. You can freely combine "task dimensions" and "model dimensions" to form dozens of base generation modes.
 
   - **Task dimension (`task_type`)**: supports `txt2img`, `img2img`, `Inpaint`, `Outpaint`, `Hires. fix`.
-  - **Model dimension (`model_type`)**: supports a wide range of model families such as `FLUX`, `HiDream`, `Qwen-Image`, `HunyuanImage`, `Chroma1`, `Chroma1-Radiance`, `Neta-Lumina`, `SD3.5`, `SDXL`, `SD1.5`, etc.
+  - **Model dimension (`model_type`)**: supports a wide range of model families such as `FLUX.2`, `Z-Image`, `Qwen-Image`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
 
   After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
 
-  - **Dynamic LoRA chains:** Load multiple LoRAs from Civitai, URLs, or local files and chain them; each LoRA's weight is independently controllable.
+  - **Dynamic LoRA chains:** Load multiple LoRAs from Civitai, URLs, uploaded files, or local paths and chain them; each LoRA's weight is independently controllable.
   - **Dynamic ControlNet chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
   - **Dynamic IP-Adapter chains:** Build complex multi-image IP-Adapter networks and finely control each reference image's weight and stylistic influence.
+  - **Dynamic Reference Latent chains:** (for FLUX.2 and OmniGen2 models) Enables image editing and combination workflows in multimodal models by injecting multiple reference images.
   - **Dynamic conditioning by region:** Apply independent prompts to different rectangular regions of the image for precise compositional control.
-  - **Dynamic style injection (Style):** (for FLUX models) Inject multiple style reference images and control their influence independently.
+  - **Dynamic style injection:** (for FLUX.1 models) Inject multiple style reference images and control their influence independently.
+  - **Dynamic EasyCache chains:** Accelerates the generation process by inserting an EasyCache node.
   - **VAE replacement:** Swap in custom VAE models from Civitai, URLs, or local files at any point in the workflow.
 
   This enables constructing highly complex workflows with ease. For example:
@@ -61,14 +61,25 @@ This project integrates many popular AI generation models and utilities into a s
   > You only configure the UI; the WebUI automates model downloads, loading, and workflow chaining.
 
 - **🧠 Cross-modal generation & editing**
-  - **Instruction-based editing:** `Qwen-Image-Edit`, `Flux-Kontext-Dev`
+  - **Instruction & Reference editing:** `FLUX.2`
+  - **Instruction editing:** `Qwen-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev`, `OmniGen2-Image-Edit` etc.
   - **Reference editing:** `ByteDance USO`
-  - **Video generation (Wan 2.1 & Wan 2.2):** `txt2video`, `txt2alphavideo`, `img2video`, `sound2video`, `FLFV`, `Fun Camera`, `Fun Control`, `Fun Inpaint`, `Animate`
+  - **Video generation:** `LTX-2`, `Wan-2.2`, `Wan-2.1`, `HunyuanVideo-1.5`, `HuMo`, `Kandinsky`
   - **Audio generation (ACE-Step):** `txt2music`, `music2music`
   - **3D generation (Hunyuan3D-2):** `Image-to-3D`, `Multi-view-to-3D`
 
 - **🛠️ Utility toolbox**
   - Includes tools such as `Media Info` (a superset of PNG Info), `ControlNet preprocessors`, `background removal (RMBG)`, `video frame interpolation (RIFE - TensorRT)`, and `image/video upscaling (TensorRT)`.
+
+- **🚀 Seamless Integration with Community Resources (e.g., Civitai)**
+
+  Comfy web UI is designed to be the perfect companion for browsing resource-sharing sites like Civitai. Its dynamic resource loading mechanisms (like the dynamic LoRA chains) allow you to rapidly validate and test model resources shared by the community:
+
+  - **Discover:** Find one or more interesting LoRA, Textual Inversion, or VAE models on Civitai.
+  - **Copy:** Directly copy the model's version ID from the website or its URL.
+  - **Paste & Run:** Paste the IDs into the corresponding input fields in the WebUI (e.g., the LoRA configuration section), adjust the weights, and then click Generate.
+
+  The backend automatically downloads, caches, and dynamically injects the resources into your workflow. This turns the process of testing a variable number of model resources into a seamless and smooth interactive experience.
 
 - **🔩 Architectural advantages: compatibility, multi-backend, and distributed scaling**
   - **Forward compatibility:** The project dynamically queries available node information from ComfyUI via the `/object_info` API at startup. This means the frontend adapts automatically when ComfyUI or custom nodes are updated.
