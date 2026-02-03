@@ -44,6 +44,11 @@ Checkpoints:
           unet: "z_image_turbo_nvfp4.safetensors"
           vae: "ae.safetensors"
           clip: "qwen_3_4b_fp4_mixed.safetensors"
+      - display_name: "Tongyi-MAI/Z Image"
+        components:
+          unet: "z_image_bf16.safetensors"
+          vae: "ae.safetensors"
+          clip: "qwen_3_4b_fp4_mixed.safetensors"
   Ovis-Image:
     latent_type: sd3_latent
     models:

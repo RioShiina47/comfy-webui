@@ -213,6 +213,10 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/z_image_turbo"
       repository_file_path: "split_files/diffusion_models/z_image_turbo_nvfp4.safetensors"
+    - filename: "z_image_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/z_image"
+      repository_file_path: "split_files/diffusion_models/z_image_bf16.safetensors"
     # Qwen-Image
     - filename: "qwen_image_2512_fp8_e4m3fn.safetensors"
       source: "hf"
