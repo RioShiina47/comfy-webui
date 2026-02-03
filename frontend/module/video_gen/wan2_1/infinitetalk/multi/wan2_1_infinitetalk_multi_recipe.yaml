@@ -1,0 +1,213 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "{{ unet_name }}"
+      weight_dtype: "default"
+  infinitetalk_patch_loader:
+    class_type: ModelPatchLoader
+    title: "Load InfiniteTalk Multi-Speaker Patch"
+    params:
+      name: "wan2.1_infiniteTalk_multi_fp16.safetensors"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      clip_name: "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+      type: "wan"
+      device: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "wan_2.1_vae.safetensors"
+  audio_encoder_loader:
+    class_type: AudioEncoderLoader
+    title: "Load Audio Encoder"
+    params:
+      audio_encoder_name: "wav2vec2-chinese-base_fp16.safetensors"
+
+  load_ref_image:
+    class_type: LoadImage
+    title: "Load Reference Image"
+  scale_ref_image:
+    class_type: ImageScaleToTotalPixels
+    title: "Scale Reference Image"
+    params:
+      upscale_method: "nearest-exact"
+      megapixels: 1.0
+
+  load_mask_1:
+    class_type: LoadImage
+    title: "Load Mask 1"
+  load_mask_2:
+    class_type: LoadImage
+    title: "Load Mask 2"
+  convert_mask_1:
+    class_type: ImageToMask
+    title: "Convert Image to Mask 1"
+    params:
+      channel: "red"
+  convert_mask_2:
+    class_type: ImageToMask
+    title: "Convert Image to Mask 2"
+    params:
+      channel: "red"
+
+  load_audio_1:
+    class_type: LoadAudio
+    title: "Load Audio 1"
+  load_audio_2:
+    class_type: LoadAudio
+    title: "Load Audio 2"
+  audio_encoder_1:
+    class_type: AudioEncoderEncode
+    title: "Encode Audio 1"
+  audio_encoder_2:
+    class_type: AudioEncoderEncode
+    title: "Encode Audio 2"
+  audio_concat:
+    class_type: AudioConcat
+    title: "Concatenate Audio"
+    params:
+      direction: "after"
+
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "Positive Prompt"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "Negative Prompt"
+
+  infinitetalk_preprocessor:
+    class_type: WanInfiniteTalkToVideo
+    title: "InfiniteTalk Preprocessor (Multi)"
+    params:
+      mode: "two_speakers"
+      length: 81
+      motion_frame_count: 9
+      audio_scale: 1.0
+
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 4
+      cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
+
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+    params:
+      fps: 25
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params:
+      format: "auto"
+      codec: "auto"
+
+dynamic_wan2_1_infinitetalk_multi_chains:
+  infinitetalk_multi_chain:
+    create_video_node: "create_video"
+    preprocessor_node: "infinitetalk_preprocessor"
+    sampler_node: "ksampler"
+    decoder_node: "vae_decode"
+
+dynamic_lora_model_only_chains:
+  loras_model_only:
+    template: LoraLoaderModelOnly
+    output_map:
+      "unet_loader:0": model
+    end_input_map:
+      model: "infinitetalk_preprocessor:model"
+
+connections:
+  # Models
+  - from: "unet_loader:0"
+    to: "infinitetalk_preprocessor:model"
+  - from: "infinitetalk_patch_loader:0"
+    to: "infinitetalk_preprocessor:model_patch"
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "vae_loader:0"
+    to: "infinitetalk_preprocessor:vae"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "audio_encoder_loader:0"
+    to: "audio_encoder_1:audio_encoder"
+  - from: "audio_encoder_loader:0"
+    to: "audio_encoder_2:audio_encoder"
+    
+  - from: "pos_prompt:0"
+    to: "infinitetalk_preprocessor:positive"
+  - from: "neg_prompt:0"
+    to: "infinitetalk_preprocessor:negative"
+  - from: "load_ref_image:0"
+    to: "scale_ref_image:image"
+  - from: "scale_ref_image:0"
+    to: "infinitetalk_preprocessor:start_image"
+  - from: "load_audio_1:0"
+    to: "audio_encoder_1:audio"
+  - from: "load_audio_2:0"
+    to: "audio_encoder_2:audio"
+  - from: "audio_encoder_1:0"
+    to: "infinitetalk_preprocessor:audio_encoder_output_1"
+  - from: "audio_encoder_2:0"
+    to: "infinitetalk_preprocessor:mode.audio_encoder_output_2"
+  - from: "load_mask_1:0"
+    to: "convert_mask_1:image"
+  - from: "load_mask_2:0"
+    to: "convert_mask_2:image"
+  - from: "convert_mask_1:0"
+    to: "infinitetalk_preprocessor:mode.mask_1"
+  - from: "convert_mask_2:0"
+    to: "infinitetalk_preprocessor:mode.mask_2"
+
+  - from: "infinitetalk_preprocessor:0"
+    to: "ksampler:model"
+  - from: "infinitetalk_preprocessor:1"
+    to: "ksampler:positive"
+  - from: "infinitetalk_preprocessor:2"
+    to: "ksampler:negative"
+  - from: "infinitetalk_preprocessor:3"
+    to: "ksampler:latent_image"
+
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_decode:0"
+    to: "create_video:images"
+  - from: "load_audio_1:0"
+    to: "audio_concat:audio1"
+  - from: "load_audio_2:0"
+    to: "audio_concat:audio2"
+  - from: "audio_concat:0"
+    to: "create_video:audio"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  ref_image_file: "load_ref_image:image"
+  mask_1_file: "load_mask_1:image"
+  mask_2_file: "load_mask_2:image"
+  audio_1_file: "load_audio_1:audio"
+  audio_2_file: "load_audio_2:audio"
+  
+  aspect_ratio:
+    width: ["infinitetalk_preprocessor:width", "scale_ref_image:width"]
+    height: ["infinitetalk_preprocessor:height", "scale_ref_image:height"]
+  
+  seed: "ksampler:seed"
+  filename_prefix: "save_video:filename_prefix"
+  unet_name: "unet_loader:unet_name"
