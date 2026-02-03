@@ -48,6 +48,9 @@ main_tabs_order:
       - "wan2.1 img2video"
       - "txt2video(alpha)"
       - "wan2.1 wanmove"
+      - "wan2.1 infinitetalk":
+        - "wan2.1 infinitetalk single"
+        - "wan2.1 infinitetalk multi"
     - "HunyuanVideo-1.5":
       - "HunyuanVideo-1.5 T2V"
       - "HunyuanVideo-1.5 I2V"
