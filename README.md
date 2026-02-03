@@ -98,7 +98,7 @@ The project communicates with ComfyUI via its dynamic workflow assembly API — 
 
 ### Automated long-context workflows
 
-For workflows that support context passing (e.g., sound2video and Animate), the system can automatically build and execute long, chunked workflows in the background based on arbitrarily long input material.
+For workflows that support context passing (e.g., sound2video, Animate, infinitetalk, etc.), the system can automatically build and execute long, chunked workflows in the background based on arbitrarily long input material.
 
 ### Plug-and-play modularity
 
