@@ -1,0 +1,105 @@
+nodes:
+  load_unet:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "acestep_v1.5_turbo.safetensors"
+      weight_dtype: "default"
+
+  load_clip:
+    class_type: DualCLIPLoader
+    title: "Load Dual CLIP"
+    params:
+      clip_name1: "qwen_0.6b_ace15.safetensors"
+      clip_name2: "qwen_1.7b_ace15.safetensors"
+      type: "ace"
+      device: "default"
+
+  load_vae:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "ace_1.5_vae.safetensors"
+
+  text_encoder:
+    class_type: TextEncodeAceStepAudio1.5
+    title: "Text Encoder (ACE Step 1.5)"
+  
+  empty_latent:
+    class_type: EmptyAceStep1.5LatentAudio
+    title: "Empty Latent Audio"
+  
+  negative_conditioning:
+    class_type: ConditioningZeroOut
+    title: "Negative Conditioning"
+    
+  model_sampler:
+    class_type: ModelSamplingAuraFlow
+    title: "Model Sampler (AuraFlow)"
+    params:
+      shift: 3.0
+      
+  sampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 8
+      cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
+      
+  vae_decode_audio:
+    class_type: VAEDecodeAudio
+    title: "VAE Decode Audio"
+    
+  save_audio:
+    class_type: SaveAudioMP3
+    title: "Save Audio MP3"
+    params: {}
+
+connections:
+  - from: "load_unet:0"
+    to: "model_sampler:model"
+  - from: "model_sampler:0"
+    to: "sampler:model"
+
+  - from: "load_clip:0"
+    to: "text_encoder:clip"
+  - from: "load_vae:0"
+    to: "vae_decode_audio:vae"
+
+  - from: "text_encoder:0"
+    to: "sampler:positive"
+  - from: "text_encoder:0"
+    to: "negative_conditioning:conditioning"
+  
+  - from: "negative_conditioning:0"
+    to: "sampler:negative"
+  
+  - from: "empty_latent:0"
+    to: "sampler:latent_image"
+
+  - from: "sampler:0"
+    to: "vae_decode_audio:samples"
+  - from: "vae_decode_audio:0"
+    to: "save_audio:audio"
+
+ui_map:
+  tags: "text_encoder:tags"
+  lyrics: "text_encoder:lyrics"
+  seed: 
+    - "text_encoder:seed"
+    - "sampler:seed"
+  bpm: "text_encoder:bpm"
+  duration: 
+    - "text_encoder:duration"
+    - "empty_latent:seconds"
+  keyscale: "text_encoder:keyscale"
+  language: "text_encoder:language"
+  timesignature: "text_encoder:timesignature"
+  steps: "sampler:steps"
+  filename_prefix: "save_audio:filename_prefix"
+  clip_name1: "load_clip:clip_name1"
+  clip_name2: "load_clip:clip_name2"
+  batch_size: "empty_latent:batch_size"

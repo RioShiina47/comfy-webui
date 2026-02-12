@@ -1,0 +1,24 @@
+file: 
+  diffusion_models: 
+    - filename: "acestep_v1.5_turbo.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ace_step_1.5_ComfyUI_files"
+      repository_file_path: "split_files/diffusion_models/acestep_v1.5_turbo.safetensors"
+  text_encoders:
+    - filename: "qwen_0.6b_ace15.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ace_step_1.5_ComfyUI_files"
+      repository_file_path: "split_files/text_encoders/qwen_0.6b_ace15.safetensors"
+    - filename: "qwen_1.7b_ace15.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ace_step_1.5_ComfyUI_files"
+      repository_file_path: "split_files/text_encoders/qwen_1.7b_ace15.safetensors"
+    - filename: "qwen_4b_ace15.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ace_step_1.5_ComfyUI_files"
+      repository_file_path: "split_files/text_encoders/qwen_4b_ace15.safetensors"
+  vae:
+    - filename: "ace_1.5_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ace_step_1.5_ComfyUI_files"
+      repository_file_path: "split_files/vae/ace_1.5_vae.safetensors"
