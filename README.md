@@ -65,7 +65,7 @@ This project integrates many popular AI generation models and utilities into a s
   - **Instruction editing:** `Qwen-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev`, `OmniGen2-Image-Edit` etc.
   - **Reference editing:** `ByteDance USO`
   - **Video generation:** `LTX-2`, `Wan-2.2`, `Wan-2.1`, `HunyuanVideo-1.5`, `HuMo`, `Kandinsky`
-  - **Audio generation (ACE-Step):** `txt2music`, `music2music`
+  - **Audio generation:** `ACE-Step 1.5`, `ACE-Step`
   - **3D generation (Hunyuan3D-2):** `Image-to-3D`, `Multi-view-to-3D`
 
 - **🛠️ Utility toolbox**
