@@ -47,7 +47,7 @@ def create_ui():
                 components['scheduler'] = gr.State("simple")
 
             with gr.Column(scale=1):
-                components['output_audio'] = gr.Audio(label="Result", show_label=False, interactive=False)
+                components['output_audio'] = gr.Audio(label="Result", show_label=False, interactive=False, show_download_button=True)
 
         components['run_button'] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
                 
