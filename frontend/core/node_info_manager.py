@@ -87,17 +87,28 @@ def get_node_input_options(class_type: str, input_name: str) -> list:
         print(f"[NodeInfoManager] Warning: Could not find node info for class_type '{class_type}'")
         return []
 
+    def _extract_options(details):
+        if isinstance(details, list) and len(details) > 0:
+            if isinstance(details[0], list):
+                return details[0]
+            
+            if len(details) > 1 and isinstance(details[1], dict) and "options" in details[1]:
+                options = details[1]["options"]
+                if isinstance(options, list):
+                    return options
+        return None
+
     required_inputs = node_info.get("input", {}).get("required", {})
     if input_name in required_inputs:
-        details = required_inputs[input_name]
-        if isinstance(details, list) and len(details) > 0 and isinstance(details[0], list):
-            return details[0]
+        opts = _extract_options(required_inputs[input_name])
+        if opts is not None:
+            return opts
             
     optional_inputs = node_info.get("input", {}).get("optional", {})
     if input_name in optional_inputs:
-        details = optional_inputs[input_name]
-        if isinstance(details, list) and len(details) > 0 and isinstance(details[0], list):
-            return details[0]
+        opts = _extract_options(optional_inputs[input_name])
+        if opts is not None:
+            return opts
 
     print(f"[NodeInfoManager] Warning: Could not find options for input '{input_name}' in node '{class_type}'")
     return []
