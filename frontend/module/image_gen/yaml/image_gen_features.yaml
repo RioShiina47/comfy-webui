@@ -55,6 +55,12 @@ flux2:
     - conditioning
     - reference_latent
 
+flux2-kv:
+  enabled_chains:
+    - lora
+    - conditioning
+    - reference_latent
+
 flux1:
   enabled_chains:
     - lora

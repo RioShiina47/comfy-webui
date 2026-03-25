@@ -7,7 +7,6 @@ from core.utils import save_temp_image, handle_seed
 from core.input_processors import process_lora_inputs
 from core.yaml_loader import load_and_merge_yaml_from_module
 
-WORKFLOW_RECIPE_PATH = "flux2_recipe.yaml"
 MAX_REF_IMAGES = 10
 PREFIX = "flux2_ref_edit"
 
@@ -80,12 +79,17 @@ def process_inputs(ui_values, seed_override=None):
 
     local_ui_values.update(model_params)
 
+    if model_selection == 'FLUX.2-klein-9B-KV':
+        recipe_path = "flux2_kv_recipe.yaml"
+    else:
+        recipe_path = "flux2_recipe.yaml"
+
     seed = seed_override if seed_override is not None else local_ui_values.get('seed', -1)
     local_ui_values['seed'] = handle_seed(seed)
         
     local_ui_values['filename_prefix'] = get_filename_prefix()
 
-    assembler = WorkflowAssembler(WORKFLOW_RECIPE_PATH, base_path=module_path)
+    assembler = WorkflowAssembler(recipe_path, base_path=module_path)
     final_workflow = assembler.assemble(local_ui_values)
     
     return final_workflow, None
