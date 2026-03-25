@@ -34,7 +34,7 @@ def create_ui():
                     components['model'] = gr.Dropdown(
                         label="Model",
                         choices=list(MODEL_CONFIG.keys()),
-                        value="FLUX.2-klein-4B",
+                        value="FLUX.2-klein-9B-KV",
                         interactive=True
                     )
                 with gr.Row():

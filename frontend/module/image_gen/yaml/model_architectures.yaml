@@ -1,4 +1,5 @@
 architecture_order:
+  - "FLUX.2-KV"
   - "FLUX.2"
   - "Z-Image"
   - "Qwen-Image"
@@ -16,6 +17,9 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "FLUX.2-KV":
+    model_type: "flux2-kv"
+    controlnet_key: "FLUX.2"
   "FLUX.2":
     model_type: "flux2"
     controlnet_key: "FLUX.2"
