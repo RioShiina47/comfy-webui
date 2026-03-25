@@ -24,8 +24,8 @@ nodes:
     title: "CLIP Text Encode (Negative)"
     
   latent_source:
-    class_type: EmptyLatentImage
-    title: "Empty Latent"
+    class_type: EmptyFlux2LatentImage
+    title: "Empty Flux 2 Latent"
 
   ksampler:
     class_type: KSampler

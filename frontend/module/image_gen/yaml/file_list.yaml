@@ -173,6 +173,11 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # FLUX.2-klein-9B-KV
+    - filename: "flux-2-klein-9b-kv-fp8.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/FLUX.2-klein-9b-kv-fp8"
+      repository_file_path: "flux-2-klein-9b-kv-fp8.safetensors"
     # FLUX.2-klein-4B
     - filename: "flux-2-klein-4b-nvfp4.safetensors"
       source: "hf"
