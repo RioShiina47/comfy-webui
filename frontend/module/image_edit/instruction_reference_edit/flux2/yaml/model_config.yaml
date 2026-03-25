@@ -1,3 +1,9 @@
+FLUX.2-klein-9B-KV:
+  unet_name: flux-2-klein-9b-kv-fp8.safetensors
+  clip_name: qwen_3_8b_fp4mixed.safetensors
+  steps: 4
+  cfg: 1.0
+
 FLUX.2-klein-4B:
   unet_name: flux-2-klein-4b-nvfp4.safetensors
   clip_name: qwen_3_4b_fp4_flux2.safetensors

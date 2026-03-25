@@ -27,6 +27,14 @@ Checkpoints:
           unet: "flux2-dev-nvfp4.safetensors"
           clip: "mistral_3_small_flux2_fp4_mixed.safetensors"
           vae: "flux2-vae.safetensors"
+  FLUX.2-KV:
+    latent_type: flux2_latent
+    models:
+      - display_name: "black-forest-labs/FLUX.2-klein-9B-KV"
+        components:
+          unet: "flux-2-klein-9b-kv-fp8.safetensors"
+          clip: "qwen_3_8b_fp4mixed.safetensors"
+          vae: "flux2-vae.safetensors"
   NewBie-Image:
     latent_type: sd3_latent
     models:
