@@ -1,0 +1,194 @@
+nodes:
+  checkpoint_loader:
+    class_type: CheckpointLoaderSimple
+    params: { ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors" }
+  text_encoder_loader:
+    class_type: LTXAVTextEncoderLoader
+    params: { text_encoder: "gemma_3_12B_it_fp4_mixed.safetensors", ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors", device: "default" }
+  audio_vae_loader:
+    class_type: LTXVAudioVAELoader
+    params: { ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors" }
+  distilled_lora:
+    class_type: LoraLoaderModelOnly
+    params: { lora_name: "ltx-2.3-22b-distilled-lora-384.safetensors", strength_model: 1.0 }
+
+  load_audio:
+    class_type: LoadAudio
+  trim_audio:
+    class_type: TrimAudioDuration
+    params: { start_index: 0 }
+  encode_audio:
+    class_type: LTXVAudioVAEEncode
+  solid_mask:
+    class_type: SolidMask
+    params: { value: 0 }
+  mask_audio_latent:
+    class_type: SetLatentNoiseMask
+  pos_prompt:
+    class_type: CLIPTextEncode
+  neg_prompt:
+    class_type: CLIPTextEncode
+
+  conditioning:
+    class_type: LTXVConditioning
+    params: { frame_rate: 24 }
+  empty_video_latent:
+    class_type: EmptyLTXVLatentVideo
+    params: { batch_size: 1 }
+  latent_combiner_1:
+    class_type: LTXVConcatAVLatent
+  sigmas_1:
+    class_type: ManualSigmas
+    params: { sigmas: "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0" }
+  noise_1:
+    class_type: RandomNoise
+  guider_1:
+    class_type: CFGGuider
+    params: { cfg: 1.0 }
+  sampler_select_1:
+    class_type: KSamplerSelect
+    params: { sampler_name: "euler_ancestral_cfg_pp" }
+  sampler_1:
+    class_type: SamplerCustomAdvanced
+  latent_separator_1:
+    class_type: LTXVSeparateAVLatent
+
+  latent_upscaler_loader_spatial:
+    class_type: LatentUpscaleModelLoader
+    params: { model_name: "ltx-2.3-spatial-upscaler-x2-1.1.safetensors" }
+  latent_upscaler_spatial:
+    class_type: LTXVLatentUpsampler
+  latent_combiner_2:
+    class_type: LTXVConcatAVLatent
+  crop_guides:
+    class_type: LTXVCropGuides
+  sigmas_2:
+    class_type: ManualSigmas
+    params: { sigmas: "0.85, 0.7250, 0.4219, 0.0" }
+  noise_2:
+    class_type: RandomNoise
+  guider_2:
+    class_type: CFGGuider
+    params: { cfg: 1.0 }
+  sampler_select_2:
+    class_type: KSamplerSelect
+    params: { sampler_name: "euler_cfg_pp" }
+  sampler_2:
+    class_type: SamplerCustomAdvanced
+  latent_separator_2:
+    class_type: LTXVSeparateAVLatent
+
+  latent_upscaler_loader_temporal:
+    class_type: LatentUpscaleModelLoader
+    params: { model_name: "ltx-2.3-temporal-upscaler-x2-1.0.safetensors" }
+  latent_upscaler_temporal:
+    class_type: LTXVLatentUpsampler
+  latent_combiner_3:
+    class_type: LTXVConcatAVLatent
+  sigmas_3:
+    class_type: ManualSigmas
+    params: { sigmas: "0.85, 0.7250, 0.4219, 0.0" }
+  noise_3:
+    class_type: RandomNoise
+  guider_3:
+    class_type: CFGGuider
+    params: { cfg: 1.0 }
+  sampler_select_3:
+    class_type: KSamplerSelect
+    params: { sampler_name: "euler_cfg_pp" }
+  sampler_3:
+    class_type: SamplerCustomAdvanced
+  latent_separator_3:
+    class_type: LTXVSeparateAVLatent
+  
+  video_decoder:
+    class_type: VAEDecodeTiled
+    params: { tile_size: 768, overlap: 64, temporal_size: 4096, temporal_overlap: 4 }
+  audio_decoder:
+    class_type: LTXVAudioVAEDecode
+  create_video:
+    class_type: CreateVideo
+    params: { fps: 24 }
+  save_video:
+    class_type: SaveVideo
+    params: { format: "mp4", codec: "auto" }
+
+connections:
+  - { from: "checkpoint_loader:0", to: "distilled_lora:model"}
+  - { from: "checkpoint_loader:2", to: "latent_upscaler_spatial:vae" }
+  - { from: "checkpoint_loader:2", to: "latent_upscaler_temporal:vae" }
+  - { from: "checkpoint_loader:2", to: "video_decoder:vae" }
+  - { from: "text_encoder_loader:0", to: "pos_prompt:clip" }
+  - { from: "text_encoder_loader:0", to: "neg_prompt:clip" }
+  - { from: "audio_vae_loader:0", to: "encode_audio:audio_vae" }
+  - { from: "audio_vae_loader:0", to: "audio_decoder:audio_vae" }
+
+  - { from: "load_audio:0", to: "trim_audio:audio" }
+  - { from: "trim_audio:0", to: "encode_audio:audio" }
+  - { from: "encode_audio:0", to: "mask_audio_latent:samples" }
+  - { from: "solid_mask:0", to: "mask_audio_latent:mask" }
+  
+  - { from: "pos_prompt:0", to: "conditioning:positive" }
+  - { from: "neg_prompt:0", to: "conditioning:negative" }
+  - { from: "empty_video_latent:0", to: "latent_combiner_1:video_latent" }
+  - { from: "mask_audio_latent:0", to: "latent_combiner_1:audio_latent" }
+  - { from: "distilled_lora:0", to: "guider_1:model" }
+  - { from: "conditioning:0", to: "guider_1:positive" }
+  - { from: "conditioning:1", to: "guider_1:negative" }
+  - { from: "guider_1:0", to: "sampler_1:guider" }
+  - { from: "noise_1:0", to: "sampler_1:noise" }
+  - { from: "sigmas_1:0", to: "sampler_1:sigmas" }
+  - { from: "sampler_select_1:0", to: "sampler_1:sampler" }
+  - { from: "latent_combiner_1:0", to: "sampler_1:latent_image" }
+  - { from: "sampler_1:0", to: "latent_separator_1:av_latent" }
+
+  - { from: "latent_separator_1:0", to: "latent_upscaler_spatial:samples" }
+  - { from: "latent_upscaler_loader_spatial:0", to: "latent_upscaler_spatial:upscale_model" }
+  - { from: "latent_upscaler_spatial:0", to: "latent_combiner_2:video_latent" }
+  - { from: "latent_separator_1:1", to: "latent_combiner_2:audio_latent" }
+  - { from: "latent_separator_1:0", to: "crop_guides:latent" }
+  - { from: "conditioning:0", to: "crop_guides:positive" }
+  - { from: "conditioning:1", to: "crop_guides:negative" }
+  - { from: "distilled_lora:0", to: "guider_2:model" }
+  - { from: "crop_guides:0", to: "guider_2:positive" }
+  - { from: "crop_guides:1", to: "guider_2:negative" }
+  - { from: "guider_2:0", to: "sampler_2:guider" }
+  - { from: "noise_2:0", to: "sampler_2:noise" }
+  - { from: "sigmas_2:0", to: "sampler_2:sigmas" }
+  - { from: "sampler_select_2:0", to: "sampler_2:sampler" }
+  - { from: "latent_combiner_2:0", to: "sampler_2:latent_image" }
+  - { from: "sampler_2:0", to: "latent_separator_2:av_latent" }
+  
+  - { from: "latent_separator_2:0", to: "latent_upscaler_temporal:samples" }
+  - { from: "latent_upscaler_loader_temporal:0", to: "latent_upscaler_temporal:upscale_model" }
+  - { from: "latent_upscaler_temporal:0", to: "latent_combiner_3:video_latent" }
+  - { from: "latent_separator_2:1", to: "latent_combiner_3:audio_latent" }
+  - { from: "distilled_lora:0", to: "guider_3:model" }
+  - { from: "crop_guides:0", to: "guider_3:positive" } 
+  - { from: "crop_guides:1", to: "guider_3:negative" } 
+  - { from: "guider_3:0", to: "sampler_3:guider" }
+  - { from: "noise_3:0", to: "sampler_3:noise" }
+  - { from: "sigmas_3:0", to: "sampler_3:sigmas" }
+  - { from: "sampler_select_3:0", to: "sampler_3:sampler" }
+  - { from: "latent_combiner_3:0", to: "sampler_3:latent_image" }
+  - { from: "sampler_3:0", to: "latent_separator_3:av_latent" }
+  
+  - { from: "latent_separator_3:0", to: "video_decoder:samples" }
+  - { from: "latent_separator_3:1", to: "audio_decoder:samples" }
+  - { from: "video_decoder:0", to: "create_video:images" }
+  - { from: "audio_decoder:0", to: "create_video:audio" }
+  - { from: "create_video:0", to: "save_video:video" }
+
+ui_map:
+  audio_file: "load_audio:audio"
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  aspect_ratio:
+    width: ["empty_video_latent:width", "solid_mask:width"]
+    height: ["empty_video_latent:height", "solid_mask:height"]
+  video_length:
+    - "empty_video_latent:length"
+  duration_in_seconds:
+    - "trim_audio:duration"
+  seed: ["noise_1:noise_seed", "noise_2:noise_seed", "noise_3:noise_seed"]
+  filename_prefix: "save_video:filename_prefix"
