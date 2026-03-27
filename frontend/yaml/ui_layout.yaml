@@ -83,6 +83,7 @@ main_tabs_order:
     - "VL":
       - "QwenVL"
     - "Tagger":
+      - "LTX-2 Prompt Gen"
       - "WD14 Tagger"
       - "CLIP Interrogator"
       - "NewBie XML Generator"
