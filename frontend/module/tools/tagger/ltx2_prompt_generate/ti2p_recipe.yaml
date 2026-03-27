@@ -1,0 +1,57 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+
+  scale_image:
+    class_type: ImageScaleToTotalPixels
+    title: "ImageScaleToTotalPixels"
+    params:
+      upscale_method: "nearest-exact"
+      megapixels: 1
+      resolution_steps: 1
+
+  text_encoder:
+    class_type: LTXAVTextEncoderLoader
+    title: "LTXV Audio Text Encoder Loader"
+    params:
+      text_encoder: "gemma_3_12B_it_fp4_mixed.safetensors"
+      ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors"
+      device: "default"
+
+  generate_prompt:
+    class_type: TextGenerateLTX2Prompt
+    title: "TextGenerateLTX2Prompt"
+    params:
+      sampling_mode: "on"
+
+  save_text:
+    class_type: "easy saveText"
+    title: "Save Text"
+    params:
+      file_extension: "txt"
+      overwrite: true
+
+connections:
+  - from: "load_image:0"
+    to: "scale_image:image"
+  - from: "scale_image:0"
+    to: "generate_prompt:image"
+  - from: "text_encoder:0"
+    to: "generate_prompt:clip"
+  - from: "generate_prompt:0"
+    to: "save_text:text"
+
+ui_map:
+  input_image: "load_image:image"
+  prompt: "generate_prompt:prompt"
+  max_length: "generate_prompt:max_length"
+  temperature: "generate_prompt:sampling_mode.temperature"
+  top_k: "generate_prompt:sampling_mode.top_k"
+  top_p: "generate_prompt:sampling_mode.top_p"
+  min_p: "generate_prompt:sampling_mode.min_p"
+  repetition_penalty: "generate_prompt:sampling_mode.repetition_penalty"
+  seed: "generate_prompt:sampling_mode.seed"
+  
+  output_file_path: "save_text:output_file_path"
+  filename_prefix: "save_text:file_name"
