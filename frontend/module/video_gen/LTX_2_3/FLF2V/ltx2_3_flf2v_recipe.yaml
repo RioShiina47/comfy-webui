@@ -1,0 +1,194 @@
+nodes:
+  checkpoint_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+    params: { ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors" }
+    
+  distilled_lora:
+    class_type: LoraLoaderModelOnly
+    title: "Load Distilled LoRA"
+    params: { lora_name: "ltx-2.3-22b-distilled-lora-384.safetensors", strength_model: 1.0 }
+
+  text_encoder_loader:
+    class_type: LTXAVTextEncoderLoader
+    title: "Load Text Encoder"
+    params:
+      text_encoder: "gemma_3_12B_it_fp4_mixed.safetensors"
+      ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors"
+      device: "default"
+
+  audio_vae_loader:
+    class_type: LTXVAudioVAELoader
+    title: "Load Audio VAE"
+    params: { ckpt_name: "ltx-2.3-22b-dev-nvfp4.safetensors" }
+
+  load_start_image:
+    class_type: LoadImage
+    title: "Load First Frame"
+  load_end_image:
+    class_type: LoadImage
+    title: "Load Last Frame"
+
+  resize_start_image:
+    class_type: ImageScale
+    title: "Resize Start Image"
+    params: { upscale_method: "nearest-exact", crop: "center" }
+
+  resize_end_image:
+    class_type: ImageScale
+    title: "Resize End Image"
+    params: { upscale_method: "nearest-exact", crop: "center" }
+
+  preprocess_start:
+    class_type: LTXVPreprocess
+    title: "Preprocess Start Image"
+    params: { img_compression: 25 }
+
+  preprocess_end:
+    class_type: LTXVPreprocess
+    title: "Preprocess End Image"
+    params: { img_compression: 25 }
+
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "Positive Prompt"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "Negative Prompt"
+
+  conditioning:
+    class_type: LTXVConditioning
+    title: "LTXV Conditioning"
+    params: { frame_rate: 24 }
+
+  empty_latent_video:
+    class_type: EmptyLTXVLatentVideo
+    title: "Empty Video Latent"
+    params: { batch_size: 1 }
+  empty_latent_audio:
+    class_type: LTXVEmptyLatentAudio
+    title: "Empty Audio Latent"
+    params: { batch_size: 1, frame_rate: 24 }
+  
+  guide_first_frame:
+    class_type: LTXVAddGuide
+    title: "Add First Frame Guide"
+    params: { frame_idx: 0 }
+  guide_last_frame:
+    class_type: LTXVAddGuide
+    title: "Add Last Frame Guide"
+    params: { frame_idx: -1 }
+
+  latent_combiner:
+    class_type: LTXVConcatAVLatent
+    title: "Combine A/V Latents"
+
+  sigmas:
+    class_type: ManualSigmas
+    title: "Manual Sigmas"
+    params:
+      sigmas: "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+  noise:
+    class_type: RandomNoise
+    title: "Random Noise"
+  guider:
+    class_type: CFGGuider
+    title: "CFG Guider"
+    params: { cfg: 1.0 }
+  sampler_node:
+    class_type: SamplerEulerAncestral
+    title: "Euler Ancestral Sampler"
+    params: { eta: 0.0, s_noise: 1.0 }
+  sampler:
+    class_type: SamplerCustomAdvanced
+    title: "Advanced Sampler"
+
+  latent_separator:
+    class_type: LTXVSeparateAVLatent
+    title: "Separate A/V Latents"
+
+  video_decoder:
+    class_type: VAEDecodeTiled
+    title: "VAE Decode (Tiled)"
+    params: { tile_size: 768, overlap: 64, temporal_size: 4096, temporal_overlap: 64 }
+  audio_decoder:
+    class_type: LTXVAudioVAEDecode
+    title: "Audio VAE Decode"
+
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+    params: { fps: 24 }
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params: { format: "auto", codec: "auto" }
+
+connections:
+  - {from: "text_encoder_loader:0", to: "pos_prompt:clip"}
+  - {from: "text_encoder_loader:0", to: "neg_prompt:clip"}
+  - {from: "audio_vae_loader:0", to: "empty_latent_audio:audio_vae"}
+  - {from: "audio_vae_loader:0", to: "audio_decoder:audio_vae"}
+  - {from: "checkpoint_loader:2", to: "guide_first_frame:vae"}
+  - {from: "checkpoint_loader:2", to: "guide_last_frame:vae"}
+  - {from: "checkpoint_loader:2", to: "video_decoder:vae"}
+
+  - {from: "load_start_image:0", to: "resize_start_image:image"}
+  - {from: "load_end_image:0", to: "resize_end_image:image"}
+  - {from: "resize_start_image:0", to: "preprocess_start:image"}
+  - {from: "resize_end_image:0", to: "preprocess_end:image"}
+
+  - {from: "pos_prompt:0", to: "conditioning:positive"}
+  - {from: "neg_prompt:0", to: "conditioning:negative"}
+  
+  - {from: "conditioning:0", to: "guide_first_frame:positive"}
+  - {from: "conditioning:1", to: "guide_first_frame:negative"}
+  - {from: "empty_latent_video:0", to: "guide_first_frame:latent"}
+  - {from: "preprocess_start:0", to: "guide_first_frame:image"}
+
+  - {from: "guide_first_frame:0", to: "guide_last_frame:positive"}
+  - {from: "guide_first_frame:1", to: "guide_last_frame:negative"}
+  - {from: "guide_first_frame:2", to: "guide_last_frame:latent"}
+  - {from: "preprocess_end:0", to: "guide_last_frame:image"}
+
+  - {from: "guide_last_frame:2", to: "latent_combiner:video_latent"}
+  - {from: "empty_latent_audio:0", to: "latent_combiner:audio_latent"}
+  
+  - {from: "checkpoint_loader:0", to: "distilled_lora:model"}
+  - {from: "distilled_lora:0", to: "guider:model"}
+  - {from: "guide_last_frame:0", to: "guider:positive"}
+  - {from: "guide_last_frame:1", to: "guider:negative"}
+  
+  - {from: "guider:0", to: "sampler:guider"}
+  - {from: "noise:0", to: "sampler:noise"}
+  - {from: "sigmas:0", to: "sampler:sigmas"}
+  - {from: "sampler_node:0", to: "sampler:sampler"}
+  - {from: "latent_combiner:0", to: "sampler:latent_image"}
+  
+  - {from: "sampler:1", to: "latent_separator:av_latent"}
+
+  - {from: "latent_separator:0", to: "video_decoder:samples"}
+  - {from: "latent_separator:1", to: "audio_decoder:samples"}
+  - {from: "video_decoder:0", to: "create_video:images"}
+  - {from: "audio_decoder:0", to: "create_video:audio"}
+  - {from: "create_video:0", to: "save_video:video"}
+
+ui_map:
+  start_image: "load_start_image:image"
+  end_image: "load_end_image:image"
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  
+  aspect_ratio:
+    width: ["empty_latent_video:width", "resize_start_image:width", "resize_end_image:width"]
+    height: ["empty_latent_video:height", "resize_start_image:height", "resize_end_image:height"]
+  
+  video_length:
+    - "empty_latent_video:length"
+    - "empty_latent_audio:frames_number"
+    
+  strength_first: "guide_first_frame:strength"
+  strength_last: "guide_last_frame:strength"
+  
+  seed: "noise:noise_seed"
+  filename_prefix: "save_video:filename_prefix"

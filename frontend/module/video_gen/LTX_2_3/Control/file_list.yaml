@@ -1,0 +1,34 @@
+file: 
+  checkpoints: 
+    - filename: "ltx-2.3-22b-dev-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.3-nvfp4"
+      repository_file_path: "ltx-2.3-22b-dev-nvfp4.safetensors"
+  text_encoders: 
+    - filename: "gemma_3_12B_it_fp4_mixed.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ltx-2"
+      repository_file_path: "gemma_3_12B_it_fp4_mixed.safetensors"
+  loras: 
+    - filename: "ltx-2.3-22b-distilled-lora-384.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.3"
+      repository_file_path: "ltx-2.3-22b-distilled-lora-384.safetensors"
+    - filename: "ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control"
+      repository_file_path: "ltx-2.3-22b-ic-lora-union-control-ref0.5.safetensors"
+  loras/file/ltx-2.3: 
+    - filename: "gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ltx-2"
+      repository_file_path: "split_files/loras/gemma-3-12b-it-abliterated_lora_rank64_bf16.safetensors"
+  latent_upscale_models: 
+    - filename: "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.3"
+      repository_file_path: "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
+    - filename: "ltx-2.3-temporal-upscaler-x2-1.0.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.3"
+      repository_file_path: "ltx-2.3-temporal-upscaler-x2-1.0.safetensors"
