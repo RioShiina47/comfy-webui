@@ -35,6 +35,14 @@ Checkpoints:
           unet: "flux-2-klein-9b-kv-fp8.safetensors"
           clip: "qwen_3_8b_fp4mixed.safetensors"
           vae: "flux2-vae.safetensors"
+  LongCat-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "meituan-longcat/LongCat-Image"
+        components:
+          unet: "longcat_image_bf16.safetensors"
+          vae: "ae.safetensors"
+          clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
   NewBie-Image:
     latent_type: sd3_latent
     models:
