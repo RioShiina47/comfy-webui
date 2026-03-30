@@ -11,6 +11,7 @@ main_tabs_order:
       - "FLUX.2"
     - "Instruction Edit":
       - "Qwen-Image-Edit"
+      - "FireRed-Image-Edit"
       - "ChronoEdit"
       - "Flux-Kontext-Dev"
       - "OmniGen2-Image_Edit"

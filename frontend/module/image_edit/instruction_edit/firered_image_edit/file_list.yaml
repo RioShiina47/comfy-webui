@@ -1,0 +1,21 @@
+file: 
+  diffusion_models: 
+    - filename: "FireRed-Image-Edit-1.1-transformer.safetensors"
+      source: "hf"
+      repo_id: "FireRedTeam/FireRed-Image-Edit-1.1-ComfyUI"
+      repository_file_path: "FireRed-Image-Edit-1.1-transformer.safetensors"
+  loras:
+    - filename: "FireRed-Image-Edit-1.0-Lightning-8steps-v1.1.safetensors"
+      source: "hf"
+      repo_id: "FireRedTeam/FireRed-Image-Edit-1.1-ComfyUI"
+      repository_file_path: "FireRed-Image-Edit-1.0-Lightning-8steps-v1.1.safetensors"
+  text_encoders: 
+    - filename: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"
+  vae: 
+    - filename: "qwen_image_vae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/vae/qwen_image_vae.safetensors"
