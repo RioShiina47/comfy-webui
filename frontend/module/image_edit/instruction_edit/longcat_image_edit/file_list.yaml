@@ -1,0 +1,20 @@
+file: 
+  diffusion_models: 
+    - filename: "longcat_image_edit_bf16.safetensors"
+      source: "hf"
+      repo_id: "TalmajM/LongCat-Image-Edit_ComfyUI_repackaged"
+      repository_file_path: "split_files/diffusion_models/longcat_image_edit_bf16.safetensors"
+    - filename: "longcat_image_edit_turbo_bf16.safetensors"
+      source: "hf"
+      repo_id: "TalmajM/LongCat-Image-Edit-Turbo_ComfyUI_repackaged"
+      repository_file_path: "split_files/diffusion_models/longcat_image_edit_turbo_bf16.safetensors"
+  text_encoders: 
+    - filename: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
+      repository_file_path: "split_files/text_encoders/qwen_2.5_vl_7b_fp8_scaled.safetensors"
+  vae: 
+    - filename: "ae.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/z_image_turbo"
+      repository_file_path: "split_files/vae/ae.safetensors"
