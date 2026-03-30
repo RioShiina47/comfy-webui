@@ -1,0 +1,141 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Image"
+  
+  scale_image:
+    class_type: ImageScaleToTotalPixels
+    title: "ImageScaleToTotalPixels"
+    params:
+      upscale_method: "lanczos"
+      megapixels: 1
+      resolution_steps: 16
+  
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "ae.safetensors"
+  
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      clip_name: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+      type: "longcat_image"
+      device: "default"
+  
+  pos_prompt_encoder:
+    class_type: TextEncodeQwenImageEdit
+    title: "TextEncodeQwenImageEdit (Positive)"
+  
+  neg_prompt_encoder:
+    class_type: TextEncodeQwenImageEdit
+    title: "TextEncodeQwenImageEdit (Negative)"
+  
+  flux_guidance_pos:
+    class_type: FluxGuidance
+    title: "FluxGuidance (Positive)"
+    params:
+      guidance: 4.5
+  
+  flux_guidance_neg:
+    class_type: FluxGuidance
+    title: "FluxGuidance (Negative)"
+    params:
+      guidance: 4.5
+
+  reference_method_pos:
+    class_type: FluxKontextMultiReferenceLatentMethod
+    title: "Edit Model Reference Method (Positive)"
+    params:
+      reference_latents_method: "index"
+
+  reference_method_neg:
+    class_type: FluxKontextMultiReferenceLatentMethod
+    title: "Edit Model Reference Method (Negative)"
+    params:
+      reference_latents_method: "index"
+
+  empty_latent:
+    class_type: EmptySD3LatentImage
+    title: "EmptySD3LatentImage"
+
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "longcat_image_edit_bf16.safetensors"
+      weight_dtype: "default"
+
+  ksampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 50
+      cfg: 4.5
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1
+  
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  
+  save_image:
+    class_type: SaveImage
+    title: "Save Image"
+
+connections:
+  - from: "load_image:0"
+    to: "scale_image:image"
+  
+  - from: "clip_loader:0"
+    to: "pos_prompt_encoder:clip"
+  - from: "vae_loader:0"
+    to: "pos_prompt_encoder:vae"
+  - from: "scale_image:0"
+    to: "pos_prompt_encoder:image"
+
+  - from: "clip_loader:0"
+    to: "neg_prompt_encoder:clip"
+  - from: "vae_loader:0"
+    to: "neg_prompt_encoder:vae"
+  - from: "scale_image:0"
+    to: "neg_prompt_encoder:image"
+
+  - from: "pos_prompt_encoder:0"
+    to: "flux_guidance_pos:conditioning"
+  - from: "neg_prompt_encoder:0"
+    to: "flux_guidance_neg:conditioning"
+
+  - from: "flux_guidance_pos:0"
+    to: "reference_method_pos:conditioning"
+  - from: "flux_guidance_neg:0"
+    to: "reference_method_neg:conditioning"
+
+  - from: "unet_loader:0"
+    to: "ksampler:model"
+  - from: "reference_method_pos:0"
+    to: "ksampler:positive"
+  - from: "reference_method_neg:0"
+    to: "ksampler:negative"
+  - from: "empty_latent:0"
+    to: "ksampler:latent_image"
+
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_decode:0"
+    to: "save_image:images"
+
+ui_map:
+  input_image: "load_image:image"
+  positive_prompt: "pos_prompt_encoder:prompt"
+  negative_prompt: "neg_prompt_encoder:prompt"
+  seed: "ksampler:seed"
+  width: "empty_latent:width"
+  height: "empty_latent:height"
+  batch_size: "empty_latent:batch_size"
+  filename_prefix: "save_image:filename_prefix"
