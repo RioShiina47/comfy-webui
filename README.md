@@ -41,7 +41,7 @@ This project integrates many popular AI generation models and utilities into a s
   The image generation features are built around a matrix-style dynamic workflow assembly mechanism. You can freely combine "task dimensions" and "model dimensions" to form dozens of base generation modes.
 
   - **Task dimension (`task_type`)**: supports `txt2img`, `img2img`, `Inpaint`, `Outpaint`, `Hires. fix`.
-  - **Model dimension (`model_type`)**: supports a wide range of model families such as `FLUX.2`, `Z-Image`, `Qwen-Image`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
+  - **Model dimension (`model_type`)**: supports a wide range of model families such as `FLUX.2`, `Z-Image`, `Qwen-Image`, `LongCat-Image`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
 
   After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
 

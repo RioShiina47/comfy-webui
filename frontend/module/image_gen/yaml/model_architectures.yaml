@@ -3,6 +3,7 @@ architecture_order:
   - "FLUX.2"
   - "Z-Image"
   - "Qwen-Image"
+  - "LongCat-Image"
   - "NewBie-Image"
   - "Ovis-Image"
   - "HunyuanImage"
@@ -29,6 +30,9 @@ architectures:
   "Qwen-Image":
     model_type: "qwen-image"
     controlnet_key: "Qwen-Image"
+  "LongCat-Image":
+    model_type: "longcat-image"
+    controlnet_key: "LongCat-Image"
   "NewBie-Image":
     model_type: "newbie-image"
     controlnet_key: "NewBie-Image"
