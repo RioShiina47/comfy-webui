@@ -62,7 +62,7 @@ This project integrates many popular AI generation models and utilities into a s
 
 - **🧠 Cross-modal generation & editing**
   - **Instruction & Reference editing:** `FLUX.2`
-  - **Instruction editing:** `Qwen-Image-Edit`, `FireRed-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev`, `OmniGen2-Image-Edit` etc.
+  - **Instruction editing:** `Qwen-Image-Edit`, `FireRed-Image-Edit`, `LongCat-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev`, `OmniGen2-Image-Edit` etc.
   - **Reference editing:** `ByteDance USO`
   - **Video generation:** `LTX-2.3`, `LTX-2`, `Wan-2.2`, `Wan-2.1`, `HunyuanVideo-1.5`, `HuMo`, `Kandinsky`
   - **Audio generation:** `ACE-Step 1.5`, `ACE-Step`

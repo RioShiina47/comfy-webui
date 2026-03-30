@@ -12,6 +12,7 @@ main_tabs_order:
     - "Instruction Edit":
       - "Qwen-Image-Edit"
       - "FireRed-Image-Edit"
+      - "LongCat-Image-Edit"
       - "ChronoEdit"
       - "Flux-Kontext-Dev"
       - "OmniGen2-Image_Edit"
