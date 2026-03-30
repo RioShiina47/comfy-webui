@@ -203,6 +203,11 @@ file:
       source: "hf"
       repo_id: "black-forest-labs/FLUX.2-dev-NVFP4"
       repository_file_path: "flux2-dev-nvfp4.safetensors"
+    # LongCat-Image
+    - filename: "longcat_image_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/LongCat-Image"
+      repository_file_path: "split_files/diffusion_models/longcat_image_bf16.safetensors"
     # NewBie-Image
     - filename: "NewBie-Image-Exp0.1-bf16.safetensors"
       source: "hf"
