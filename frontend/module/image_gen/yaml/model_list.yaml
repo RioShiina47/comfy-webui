@@ -1,4 +1,12 @@
 Checkpoints:
+  Anima:
+    latent_type: latent
+    models:
+      - display_name: "circlestone-labs/Anima-preview3-base"
+        components:
+          unet: "anima-preview3-base.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
   FLUX.2:
     latent_type: flux2_latent
     models:
