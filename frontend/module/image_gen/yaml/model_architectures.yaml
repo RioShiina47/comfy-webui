@@ -4,6 +4,7 @@ architecture_order:
   - "Z-Image"
   - "Qwen-Image"
   - "LongCat-Image"
+  - "Anima"
   - "NewBie-Image"
   - "Ovis-Image"
   - "HunyuanImage"
@@ -33,6 +34,9 @@ architectures:
   "LongCat-Image":
     model_type: "longcat-image"
     controlnet_key: "LongCat-Image"
+  "Anima":
+    model_type: "anima"
+    controlnet_key: "Anima"
   "NewBie-Image":
     model_type: "newbie-image"
     controlnet_key: "NewBie-Image"
