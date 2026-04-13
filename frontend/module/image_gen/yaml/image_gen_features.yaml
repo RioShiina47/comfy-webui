@@ -7,6 +7,11 @@ default:
     - style
     - conditioning
 
+anima:
+  enabled_chains:
+    - lora
+    - conditioning
+
 longcat-image:
   enabled_chains:
     - lora
