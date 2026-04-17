@@ -1,9 +1,10 @@
 file: 
   checkpoints: 
-    # Neta-Lumina
-    - filename: "netayumeLuminaNetaLumina_v40.safetensors"
-      source: "civitai"
-      model_version_id: "2485296"
+    # Lumina
+    - filename: "lumina_2.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lumina_Image_2.0_Repackaged"
+      repository_file_path: "all_in_one/lumina_2.safetensors"
     # SD3.5
     - filename: "sd3.5_large_fp8_scaled.safetensors"
       source: "hf"
@@ -19,10 +20,10 @@ file:
       repo_id: "stabilityai/stable-diffusion-xl-base-1.0"
       repository_file_path: "sd_xl_base_1.0.safetensors"
     # SD1.5
-    - filename: "v1-5-pruned.safetensors"
+    - filename: "v1-5-pruned-emaonly.safetensors"
       source: "hf"
       repo_id: "stable-diffusion-v1-5/stable-diffusion-v1-5"
-      repository_file_path: "v1-5-pruned.safetensors"
+      repository_file_path: "v1-5-pruned-emaonly.safetensors"
   clip_vision: 
     # style_injector
     - filename: "sigclip_vision_patch14_384.safetensors"
@@ -48,7 +49,7 @@ file:
       source: "hf"
       repo_id: "InstantX/Qwen-Image-ControlNet-Inpainting"
       repository_file_path: "diffusion_pytorch_model.safetensors"
-    # FLUX
+    # FLUX.1
     - filename: "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"
       source: "hf"
       repo_id: "Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro-2.0"
@@ -173,6 +174,15 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # ERNIE-Image
+    - filename: "ernie-image.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ERNIE-Image"
+      repository_file_path: "diffusion_models/ernie-image.safetensors"
+    - filename: "ernie-image-turbo.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ERNIE-Image"
+      repository_file_path: "diffusion_models/ernie-image-turbo.safetensors"
     # Anima
     - filename: "anima-preview3-base.safetensors"
       source: "hf"
@@ -241,7 +251,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
       repository_file_path: "split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors"
-    # Flux
+    # Flux.1
     - filename: "flux1-dev-kontext_fp8_scaled.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/flux1-kontext-dev_ComfyUI"
@@ -250,6 +260,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/FLUX.1-Krea-dev_ComfyUI"
       repository_file_path: "split_files/diffusion_models/flux1-krea-dev_fp8_scaled.safetensors"
+    # HiDream
     - filename: "hidream_i1_dev_fp8.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/HiDream-I1_ComfyUI"
@@ -274,10 +285,12 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/HunyuanImage_2.1_ComfyUI"
       repository_file_path: "split_files/diffusion_models/hunyuanimage2.1_refiner_fp8_e4m3fn.safetensors" 
-    - filename: "Chroma1-Radiance-v0.2-fp8_scaled.safetensors"
+    # Chroma1-Radiance
+    - filename: "Chroma1-Radiance-x0-fp8mixed_fullmm-20260104.safetensors"
       source: "hf"
       repo_id: "silveroxides/Chroma1-Radiance-fp8-scaled"
-      repository_file_path: "Chroma1-Radiance-v0.2-fp8_scaled.safetensors" 
+      repository_file_path: "Chroma1-Radiance-x0-fp8mixed_fullmm-20260104.safetensors" 
+    # Chroma1
     - filename: "Chroma1-HD-Flash_float8_e4m3fn_scaled_learned_topk8_svd.safetensors"
       source: "hf"
       repo_id: "Clybius/Chroma-fp8-scaled"
@@ -414,6 +427,11 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    # ERNIE-Image
+    - filename: "ministral-3-3b.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ERNIE-Image"
+      repository_file_path: "text_encoders/ministral-3-3b.safetensors"
     # Anima
     - filename: "qwen_3_06b_base.safetensors"
       source: "hf"

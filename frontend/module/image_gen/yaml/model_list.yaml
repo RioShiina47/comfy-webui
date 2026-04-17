@@ -1,4 +1,17 @@
 Checkpoints:
+  ERNIE-Image:
+    latent_type: flux2_latent
+    models:
+      - display_name: "baidu/ERNIE-Image"
+        components:
+          unet: "ernie-image.safetensors"
+          vae: "flux2-vae.safetensors"
+          clip: "ministral-3-3b.safetensors"
+      - display_name: "baidu/ERNIE-Image-Turbo"
+        components:
+          unet: "ernie-image-turbo.safetensors"
+          vae: "flux2-vae.safetensors"
+          clip: "ministral-3-3b.safetensors"
   Anima:
     latent_type: latent
     models:
@@ -84,8 +97,8 @@ Checkpoints:
   Lumina:
     latent_type: sd3_latent
     models:
-      - display_name: "duongve13112002/NetaYume-Lumina-v4.0"
-        path: "netayumeLuminaNetaLumina_v40.safetensors"
+      - display_name: "Alpha-VLLM/Lumina-Image-2.0"
+        path: "lumina_2.safetensors"
   OmniGen2:
     latent_type: sd3_latent
     models:
@@ -111,9 +124,9 @@ Checkpoints:
   Chroma1-Radiance:
     latent_type: chroma_radiance_latent
     models:
-      - display_name: "lodestones/Chroma1-Radiance-v0.2"
+      - display_name: "lodestones/Chroma1-Radiance-x0"
         components:
-          unet: "Chroma1-Radiance-v0.2-fp8_scaled.safetensors"
+          unet: "Chroma1-Radiance-x0-fp8mixed_fullmm-20260104.safetensors"
           vae: "pixel_space"
           clip: "t5xxl_fp8_e4m3fn_scaled.safetensors"
 
@@ -217,4 +230,4 @@ Checkpoints:
     latent_type: latent
     models:
       - display_name: "stable-diffusion-v1-5/stable-diffusion-v1-5"
-        path: "v1-5-pruned.safetensors"
+        path: "v1-5-pruned-emaonly.safetensors"
