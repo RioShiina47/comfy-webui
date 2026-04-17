@@ -89,17 +89,16 @@ main_tabs_order:
       - "Depth-Anything-Tensorrt"
       - "Dwpose-Tensorrt"
       - "Video-Depth-Anything"
+    - "Prompt Enhancer":
+      - "ERNIE Image Prompt Enhancer"
+      - "LTX-2 Prompt Gen"
+      - "NewBie XML Generator"
     - "VL":
       - "QwenVL"
     - "Tagger":
-      - "LTX-2 Prompt Gen"
       - "WD14 Tagger"
       - "CLIP Interrogator"
-      - "NewBie XML Generator"
     - "Media Info"
-    - "Fill":
-      - "Inpaint"
-      - "Outpaint"
     - "RMBG"
     - "RIFE"
     - "Upscale":
