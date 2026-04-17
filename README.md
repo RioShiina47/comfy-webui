@@ -25,7 +25,7 @@ Comfy web UI is more than a modular, mobile-first frontend for ComfyUI — it's 
 This project integrates many popular AI generation models and utilities into a single, one-stop creative suite.
 
 - **🖥️ Dual UI modes**
-  - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control. **[HF spaces](https://huggingface.co/spaces/RioShiina/ImageGen-SDXL)** 🤗
+  - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control. **[HF spaces](https://huggingface.co/collections/RioShiina/imagegen)** 🤗
   - **[One-tap compact panels](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageEdit/Instruction%20%26%20Reference%20Edit/FLUX-2.png) (ImageEdit, VideoGen, AudioGen, 3DGen):** Use best-practice fixed parameters to maximize simplicity, optimized for mobile.
 
 - **🤖 [API & MCP ready](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/API_MCP/API_MCP.png) — Workflow as a Service**
@@ -41,7 +41,7 @@ This project integrates many popular AI generation models and utilities into a s
   The image generation features are built around a matrix-style dynamic workflow assembly mechanism. You can freely combine "task dimensions" and "model dimensions" to form dozens of base generation modes.
 
   - **Task dimension (`task_type`)**: supports `txt2img`, `img2img`, `Inpaint`, `Outpaint`, `Hires. fix`.
-  - **Model dimension (`model_type`)**: supports a wide range of model families such as `FLUX.2`, `Z-Image`, `Qwen-Image`, `LongCat-Image`, `Anima`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
+  - **Model dimension (`model_type`)**: supports a wide range of model families such as `FLUX.2`, `Z-Image`, `Qwen-Image`, `ERNIE-Image`, `LongCat-Image`, `Anima`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
 
   After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
 
