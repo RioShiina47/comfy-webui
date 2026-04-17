@@ -1,0 +1,6 @@
+file: 
+  text_encoders: 
+    - filename: "ernie-image-prompt-enhancer.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/ERNIE-Image"
+      repository_file_path: "text_encoders/ernie-image-prompt-enhancer.safetensors"
