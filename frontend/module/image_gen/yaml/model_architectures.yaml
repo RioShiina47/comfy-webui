@@ -1,6 +1,7 @@
 architecture_order:
   - "FLUX.2-KV"
   - "FLUX.2"
+  - "ERNIE-Image"
   - "Z-Image"
   - "Qwen-Image"
   - "LongCat-Image"
@@ -19,6 +20,9 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "ERNIE-Image":
+    model_type: "ernie_image"
+    controlnet_key: "ERNIE-Image"
   "FLUX.2-KV":
     model_type: "flux2-kv"
     controlnet_key: "FLUX.2"

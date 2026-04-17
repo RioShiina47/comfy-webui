@@ -7,6 +7,20 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+ERNIE-Image:
+  _defaults:
+    steps: 20
+    cfg: 4.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    total_pixels: 1048576
+  "baidu/ERNIE-Image-Turbo":
+    steps: 8
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    total_pixels: 1048576
+
 Anima:
   _defaults:
     steps: 30
@@ -145,6 +159,11 @@ FLUX.1:
     sampler_name: "euler"
     scheduler: "simple"
     total_pixels: 1048576
+  "flux1-schnell":
+    steps: 4
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
 
 Qwen-Image:
   _defaults:
@@ -162,6 +181,16 @@ HiDream:
     scheduler: "simple"
     total_pixels: 1048576
     negative_prompt: "bad ugly jpeg artifacts"
+  "HiDream_i1_Dev":
+    steps: 28
+    cfg: 1.0
+    sampler_name: "lcm"
+    scheduler: "normal"
+  "HiDream_i1_Fast":
+    steps: 16
+    cfg: 1.0
+    sampler_name: "lcm"
+    scheduler: "normal"
 
 HunyuanImage:
   _defaults:

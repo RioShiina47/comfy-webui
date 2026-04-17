@@ -7,6 +7,10 @@ default:
     - style
     - conditioning
 
+ernie_image:
+  enabled_chains:
+    - conditioning
+
 anima:
   enabled_chains:
     - lora
