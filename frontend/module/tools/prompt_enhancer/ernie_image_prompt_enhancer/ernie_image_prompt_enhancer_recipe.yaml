@@ -1,0 +1,43 @@
+nodes:
+  text_encoder:
+    class_type: CLIPLoader
+    title: "Load CLIP (PE)"
+    params:
+      clip_name: "ernie-image-prompt-enhancer.safetensors"
+      type: "flux2"
+      device: "default"
+
+  generate_prompt:
+    class_type: TextGenerate
+    title: "TextGenerate"
+    params:
+      sampling_mode: "on"
+      thinking: false
+      use_default_template: true
+      presence_penalty: 0
+
+  save_text:
+    class_type: "easy saveText"
+    title: "Save Text"
+    params:
+      file_extension: "txt"
+      overwrite: true
+
+connections:
+  - from: "text_encoder:0"
+    to: "generate_prompt:clip"
+  - from: "generate_prompt:0"
+    to: "save_text:text"
+
+ui_map:
+  formatted_prompt: "generate_prompt:prompt"
+  max_length: "generate_prompt:max_length"
+  temperature: "generate_prompt:sampling_mode.temperature"
+  top_k: "generate_prompt:sampling_mode.top_k"
+  top_p: "generate_prompt:sampling_mode.top_p"
+  min_p: "generate_prompt:sampling_mode.min_p"
+  repetition_penalty: "generate_prompt:sampling_mode.repetition_penalty"
+  seed: "generate_prompt:sampling_mode.seed"
+  
+  output_file_path: "save_text:output_file_path"
+  filename_prefix: "save_text:file_name"
