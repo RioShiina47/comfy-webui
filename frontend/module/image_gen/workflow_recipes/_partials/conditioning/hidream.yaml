@@ -28,6 +28,11 @@ connections:
     to: "pos_prompt:clip"
   - from: "clip_loader:0"
     to: "neg_prompt:clip"
+
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
     
   - from: "vae_loader:0"
     to: "vae_decode:vae"
