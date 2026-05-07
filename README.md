@@ -45,14 +45,14 @@ This project integrates many popular AI generation models and utilities into a s
 
   After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
 
-  - **Dynamic LoRA chains:** Load multiple LoRAs from Civitai, URLs, uploaded files, or local paths and chain them; each LoRA's weight is independently controllable.
-  - **Dynamic ControlNet chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
+  - **Dynamic LoRA/Newbie LoRA chains:** Load multiple LoRAs from Civitai, URLs, uploaded files, or local paths and chain them; each LoRA's weight is independently controllable.
+  - **Dynamic ControlNet/DiffSynth ControlNet/Anima ControlNet Lllite chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
   - **Dynamic IP-Adapter chains:** Build complex multi-image IP-Adapter networks and finely control each reference image's weight and stylistic influence.
   - **Dynamic Reference Latent chains:** (for FLUX.2 and OmniGen2 models) Enables image editing and combination workflows in multimodal models by injecting multiple reference images.
   - **Dynamic conditioning by region:** Apply independent prompts to different rectangular regions of the image for precise compositional control.
   - **Dynamic style injection:** (for FLUX.1 models) Inject multiple style reference images and control their influence independently.
   - **Dynamic EasyCache chains:** Accelerates the generation process by inserting an EasyCache node.
-  - **VAE replacement:** Swap in custom VAE models from Civitai, URLs, or local files at any point in the workflow.
+  - **Dynamic VAE chains/VAE replacement:** Swap in custom VAE models from Civitai, URLs, or local files at any point in the workflow.
 
   This enables constructing highly complex workflows with ease. For example:
 

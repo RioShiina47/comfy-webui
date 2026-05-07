@@ -1,4 +1,6 @@
 injector_definitions:
+  dynamic_vae_chains:
+    module: "chain_injectors.vae_injector"
   dynamic_lora_chains: 
     module: "chain_injectors.lora_injector"
   dynamic_lora_model_only_chains: 
@@ -7,6 +9,8 @@ injector_definitions:
     module: "chain_injectors.newbie_lora_injector"
   dynamic_controlnet_chains: 
     module: "chain_injectors.controlnet_injector"
+  dynamic_anima_controlnet_lllite_chains:
+    module: "chain_injectors.anima_controlnet_lllite_injector"
   dynamic_diffsynth_controlnet_chains:
     module: "chain_injectors.diffsynth_controlnet_injector"
   dynamic_ipadapter_chains:
@@ -25,6 +29,7 @@ injector_definitions:
     module: "chain_injectors.easycache_injector"
   
 injector_order:
+  - dynamic_vae_chains
   - dynamic_lora_chains
   - dynamic_lora_model_only_chains
   - dynamic_newbie_lora_chains
@@ -36,4 +41,5 @@ injector_order:
   - dynamic_conditioning_chains
   - dynamic_style_chains
   - dynamic_controlnet_chains
+  - dynamic_anima_controlnet_lllite_chains
   - dynamic_easycache_chains
