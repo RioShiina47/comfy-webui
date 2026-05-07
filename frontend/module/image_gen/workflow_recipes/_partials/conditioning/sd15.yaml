@@ -24,6 +24,12 @@ connections:
   - from: "ckpt_loader:2"
     to: "vae_encode:vae"
 
+dynamic_vae_chains:
+  vae_chain:
+    targets:
+      - "vae_decode:vae"
+      - "vae_encode:vae"
+
 dynamic_lora_chains:
   lora_chain:
     template: "LoraLoader"
