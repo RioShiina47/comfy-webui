@@ -103,6 +103,35 @@ def process_controlnet_inputs(all_ui_values: dict, prefix: str):
             })
     return controlnets
 
+def process_anima_controlnet_lllite_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    controlnets = []
+    cn_images = all_ui_values.get(key('anima_controlnet_lllite_images'), [])
+    if not cn_images:
+        return []
+
+    cn_strengths = all_ui_values.get(key('anima_controlnet_lllite_strengths'), [])
+    cn_start_percents = all_ui_values.get(key('anima_controlnet_lllite_start_percents'), [])
+    cn_end_percents = all_ui_values.get(key('anima_controlnet_lllite_end_percents'), [])
+    cn_filepaths = all_ui_values.get(key('anima_controlnet_lllite_filepaths'), [])
+
+    for i in range(len(cn_images)):
+        image_pil = cn_images[i]
+        strength = cn_strengths[i] if i < len(cn_strengths) else 1.0
+        start_percent = cn_start_percents[i] if i < len(cn_start_percents) else 0.0
+        end_percent = cn_end_percents[i] if i < len(cn_end_percents) else 1.0
+        cn_path = cn_filepaths[i] if i < len(cn_filepaths) else "None"
+
+        if image_pil is not None and strength > 0 and cn_path and cn_path != "None":
+            image_filename = save_temp_image(image_pil)
+            controlnets.append({
+                "image": image_filename,
+                "strength": strength,
+                "start_percent": start_percent,
+                "end_percent": end_percent,
+                "control_net_name": cn_path,
+            })
+    return controlnets
 
 def process_diffsynth_controlnet_inputs(all_ui_values: dict, prefix: str):
     key = lambda name: f"{prefix}_{name}"

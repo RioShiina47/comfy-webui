@@ -1,0 +1,13 @@
+Anima_ControlNet_Lllite:
+  - Filepath: "anima-lllite-lineart-1.safetensors"
+    Series: "kohya-ss"
+    Type: ["Lineart"]
+  - Filepath: "anima-lllite-depth-1.safetensors"
+    Series: "kohya-ss"
+    Type: ["Depth"]
+  - Filepath: "anima-lllite-pose-1.safetensors"
+    Series: "kohya-ss"
+    Type: ["Pose"]
+  - Filepath: "anima-lllite-scribble-1.safetensors"
+    Series: "kohya-ss"
+    Type: ["Scribble"]

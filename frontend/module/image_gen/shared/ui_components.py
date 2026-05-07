@@ -110,9 +110,45 @@ def create_generation_parameters_ui(prefix: str):
         components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=8, step=1, value=1, interactive=True)
     return components
 
+def create_anima_controlnet_lllite_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
+    with gr.Accordion("Anima ControlNet Lllite Settings", open=False) as anima_cn_accordion:
+        components[key('anima_controlnet_lllite_accordion')] = anima_cn_accordion
+        
+        cn_rows, images, series, types, strengths, filepaths, start_percents, end_percents = [], [], [], [], [], [], [], []
+        components.update({
+            key('anima_controlnet_lllite_rows'): cn_rows,
+            key('anima_controlnet_lllite_images'): images,
+            key('anima_controlnet_lllite_series'): series,
+            key('anima_controlnet_lllite_types'): types,
+            key('anima_controlnet_lllite_strengths'): strengths,
+            key('anima_controlnet_lllite_filepaths'): filepaths,
+            key('anima_controlnet_lllite_start_percents'): start_percents,
+            key('anima_controlnet_lllite_end_percents'): end_percents
+        })
+        
+        for i in range(max_controlnets):
+            with gr.Row(visible=(i < 1)) as row:
+                with gr.Column(scale=1):
+                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
+                with gr.Column(scale=2):
+                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
+                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
+                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
+                    # 隐藏参数并固定默认值
+                    start_percents.append(gr.State(0.0))
+                    end_percents.append(gr.State(1.0))
+                    filepaths.append(gr.State(None))
+                cn_rows.append(row)
+
+        with gr.Row():
+            components[key('add_anima_controlnet_lllite_button')] = gr.Button("✚ Add Lllite")
+            components[key('delete_anima_controlnet_lllite_button')] = gr.Button("➖ Delete Lllite", visible=False)
+        components[key('anima_controlnet_lllite_count_state')] = gr.State(1)
+
 def create_flux1_ipadapter_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
-    constants = load_constants_config()
     max_ipadapters = constants.get('MAX_IPADAPTERS', 5)
     with gr.Accordion("IPAdapter Settings (FLUX)", open=False) as flux1_ipadapter_accordion:
         components[key('flux1_ipadapter_accordion')] = flux1_ipadapter_accordion
@@ -144,7 +180,6 @@ def create_flux1_ipadapter_ui(components, prefix):
 
 def create_sd3_ipadapter_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
-    constants = load_constants_config()
     max_ipadapters = constants.get('MAX_IPADAPTERS', 5)
     with gr.Accordion("IPAdapter Settings (SD3)", open=False) as sd3_ipadapter_accordion:
         components[key('sd3_ipadapter_accordion')] = sd3_ipadapter_accordion
@@ -176,7 +211,6 @@ def create_sd3_ipadapter_ui(components, prefix):
 
 def create_vae_override_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
-    constants = load_constants_config()
     source_choices = ["None"] + constants.get('LORA_SOURCE_CHOICES', [])
 
     with gr.Accordion("VAE Settings (Override)", open=False) as vae_accordion:

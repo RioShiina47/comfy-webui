@@ -4,6 +4,7 @@ import numpy as np
 
 from .sd_shared import (
     create_lora_ui, create_controlnet_ui, create_ipadapter_ui, create_embedding_ui,
+    create_anima_controlnet_lllite_ui,
     parse_generation_parameters_for_ui, register_shared_events,
     create_model_architecture_filter_ui, create_sdxl_category_filter_ui,
     create_run_generation_logic, create_style_ui,
@@ -107,6 +108,7 @@ def create_ui():
         with gr.Column() as accordion_wrapper:
              create_lora_ui(components, PREFIX)
              create_controlnet_ui(components, PREFIX)
+             create_anima_controlnet_lllite_ui(components, PREFIX)
              create_diffsynth_controlnet_ui(components, PREFIX)
              create_ipadapter_ui(components, PREFIX)
              create_flux1_ipadapter_ui(components, PREFIX)

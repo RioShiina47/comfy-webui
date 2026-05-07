@@ -43,6 +43,10 @@ dynamic_lora_chains:
       "model": ["ksampler:model"]
       "clip": ["pos_prompt:clip", "neg_prompt:clip"]
 
+dynamic_anima_controlnet_lllite_chains:
+  anima_controlnet_lllite_chain:
+    ksampler_node: "ksampler"
+
 dynamic_conditioning_chains:
   conditioning_chain:
     ksampler_node: "ksampler"
