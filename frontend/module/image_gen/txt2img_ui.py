@@ -3,6 +3,7 @@ import gradio as gr
 from .sd_shared import ( 
     create_base_ui_components, create_generation_parameters_ui, 
     create_lora_ui, create_controlnet_ui, create_ipadapter_ui, create_embedding_ui, 
+    create_anima_controlnet_lllite_ui,
     create_style_ui, create_conditioning_ui, create_vae_override_ui,
     create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
     create_reference_latent_ui,
@@ -37,6 +38,7 @@ def create_ui():
         
         create_lora_ui(components, PREFIX)
         create_controlnet_ui(components, PREFIX)
+        create_anima_controlnet_lllite_ui(components, PREFIX)
         create_diffsynth_controlnet_ui(components, PREFIX)
         create_ipadapter_ui(components, PREFIX)
         create_flux1_ipadapter_ui(components, PREFIX)

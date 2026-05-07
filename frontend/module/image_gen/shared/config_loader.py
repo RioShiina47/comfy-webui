@@ -6,6 +6,7 @@ _model_config = None
 _model_defaults = None
 _controlnet_models_config = None
 _diffsynth_controlnet_models_config = None
+_anima_controlnet_lllite_models_config = None
 _ipadapter_presets_config = None
 _constants_config = None
 _features_config = None
@@ -68,6 +69,12 @@ def load_controlnet_models():
         config = _load_local_yaml("controlnet_models.yaml")
         _controlnet_models_config = config.get("ControlNet", {})
     return _controlnet_models_config
+
+def load_anima_controlnet_lllite_models():
+    global _anima_controlnet_lllite_models_config
+    if _anima_controlnet_lllite_models_config is None:
+        _anima_controlnet_lllite_models_config = _load_local_yaml("anima_controlnet_lllite_models.yaml")
+    return _anima_controlnet_lllite_models_config
 
 def load_diffsynth_controlnet_models():
     global _diffsynth_controlnet_models_config

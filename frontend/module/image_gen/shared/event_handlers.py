@@ -4,7 +4,7 @@ import shutil
 from core.config import LORA_DIR, EMBEDDING_DIR
 from core.shared_ui import register_ui_chain_events
 from .utils import get_model_type, get_model_generation_defaults, parse_generation_parameters_for_ui
-from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_diffsynth_controlnet_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
+from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_diffsynth_controlnet_models, load_anima_controlnet_lllite_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
 
 constants = load_constants_config()
 
@@ -56,15 +56,24 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     scheduler_dropdown = components.get(key('scheduler'))
     lora_accordion = components.get(key('lora_accordion'))
     gallery_component = components.get(key('output_gallery'))
+    
     controlnet_accordion = components.get(key('controlnet_accordion'))
     controlnet_series_list = components.get(key('controlnet_series'))
     controlnet_types_list = components.get(key('controlnet_types'))
     controlnet_filepaths_list = components.get(key('controlnet_filepaths'))
     controlnet_images_list = components.get(key('controlnet_images'))
+    
+    anima_cn_accordion = components.get(key('anima_controlnet_lllite_accordion'))
+    anima_cn_series_list = components.get(key('anima_controlnet_lllite_series'))
+    anima_cn_types_list = components.get(key('anima_controlnet_lllite_types'))
+    anima_cn_filepaths_list = components.get(key('anima_controlnet_lllite_filepaths'))
+    anima_cn_images_list = components.get(key('anima_controlnet_lllite_images'))
+
     diffsynth_controlnet_accordion = components.get(key('diffsynth_controlnet_accordion'))
     diffsynth_controlnet_series_list = components.get(key('diffsynth_controlnet_series'))
     diffsynth_controlnet_types_list = components.get(key('diffsynth_controlnet_types'))
     diffsynth_controlnet_filepaths_list = components.get(key('diffsynth_controlnet_filepaths'))
+    
     ipadapter_accordion = components.get(key('ipadapter_accordion'))
     flux1_ipadapter_accordion = components.get(key('flux1_ipadapter_accordion'))
     sd3_ipadapter_accordion = components.get(key('sd3_ipadapter_accordion'))
@@ -138,7 +147,6 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
 
         chain_map = {
             'lora': lora_accordion,
-            'controlnet': controlnet_accordion,
             'controlnet_model_patch': diffsynth_controlnet_accordion,
             'ipadapter': ipadapter_accordion,
             'flux1_ipadapter': flux1_ipadapter_accordion,
@@ -164,11 +172,10 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             updates[clip_skip_slider] = gr.update(visible=is_sd15, maximum=2 if is_sd15 else 4)
 
         defaults = get_model_generation_defaults(selected_model_name, model_type, model_defaults)
-        
         arch_key = get_controlnet_key_for_model_type(model_type)
         
-        cn_config = load_controlnet_models()
         if controlnet_accordion and 'controlnet' in enabled_chains:
+            cn_config = load_controlnet_models()
             controlnet_visible = arch_key in cn_config
             updates[controlnet_accordion] = gr.update(visible=controlnet_visible)
             
@@ -189,7 +196,30 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             if controlnet_filepaths_list:
                 for filepath_state in controlnet_filepaths_list:
                     updates[filepath_state] = "None"
-        
+        elif controlnet_accordion:
+            updates[controlnet_accordion] = gr.update(visible=False)
+
+        if anima_cn_accordion and 'anima_controlnet_lllite' in enabled_chains:
+            updates[anima_cn_accordion] = gr.update(visible=True)
+            cn_config = load_anima_controlnet_lllite_models()
+            arch_key_to_use = "Anima_ControlNet_Lllite"
+            type_choices = []
+            if arch_key_to_use in cn_config:
+                all_types = [t for model in cn_config[arch_key_to_use] for t in model.get("Type", [])]
+                type_choices = sorted(list(set(all_types)))
+            
+            default_type = type_choices[0] if type_choices else None
+            type_update = gr.update(choices=type_choices, value=default_type)
+            
+            if anima_cn_types_list:
+                for type_dd in anima_cn_types_list: updates[type_dd] = type_update
+            if anima_cn_series_list:
+                for series_dd in anima_cn_series_list: updates[series_dd] = gr.update(choices=[], value=None)
+            if anima_cn_filepaths_list:
+                for filepath_state in anima_cn_filepaths_list: updates[filepath_state] = "None"
+        elif anima_cn_accordion:
+            updates[anima_cn_accordion] = gr.update(visible=False)
+
         diffsynth_cn_config = load_diffsynth_controlnet_models()
         if diffsynth_controlnet_accordion and 'controlnet_model_patch' in enabled_chains:
             diffsynth_cn_visible = arch_key in diffsynth_cn_config
@@ -265,6 +295,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "w": width_num, "h": height_num, "steps": steps_slider, "cfg": cfg_slider,
         "sampler": sampler_dropdown, "scheduler": scheduler_dropdown, "lora": lora_accordion,
         "embedding": embedding_accordion, "gallery": gallery_component, "cn_accordion": controlnet_accordion,
+        "anima_cn_accordion": anima_cn_accordion,
         "diffsynth_cn_accordion": diffsynth_controlnet_accordion,
         "ipa_accordion": ipadapter_accordion, "flux1_ipa_accordion": flux1_ipadapter_accordion, "sd3_ipa_accordion": sd3_ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
         "ipa_final_lora_slider": ipadapter_final_lora_strength_slider,
@@ -283,6 +314,13 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         for i, cn_series in enumerate(controlnet_series_list): on_model_change_outputs[f'cn_series_{i}'] = cn_series
     if controlnet_filepaths_list:
         for i, cn_filepath in enumerate(controlnet_filepaths_list): on_model_change_outputs[f'cn_filepath_{i}'] = cn_filepath
+
+    if anima_cn_types_list:
+        for i, cn_type in enumerate(anima_cn_types_list): on_model_change_outputs[f'anima_cn_type_{i}'] = cn_type
+    if anima_cn_series_list:
+        for i, cn_series in enumerate(anima_cn_series_list): on_model_change_outputs[f'anima_cn_series_{i}'] = cn_series
+    if anima_cn_filepaths_list:
+        for i, cn_filepath in enumerate(anima_cn_filepaths_list): on_model_change_outputs[f'anima_cn_filepath_{i}'] = cn_filepath
 
     if diffsynth_controlnet_types_list:
         for i, cn_type in enumerate(diffsynth_controlnet_types_list): on_model_change_outputs[f'diffsynth_cn_type_{i}'] = cn_type
@@ -377,6 +415,58 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
                 fn=on_cn_series_change,
                 inputs=[controlnet_series_list[i], controlnet_types_list[i], model_type_state],
                 outputs=[controlnet_filepaths_list[i]],
+                show_progress=False,
+                show_api=False
+            )
+            
+    def on_anima_cn_type_change(selected_type):
+        cn_config = load_anima_controlnet_lllite_models()
+        arch_key = "Anima_ControlNet_Lllite"
+        
+        series_choices = []
+        if arch_key in cn_config and selected_type:
+            series_choices = sorted(list(set(
+                model.get("Series", "Default")
+                for model in cn_config[arch_key]
+                if selected_type in model.get("Type", [])
+            )))
+
+        default_series = series_choices[0] if series_choices else None
+        
+        filepath = "None"
+        if default_series:
+            for model in cn_config.get(arch_key, []):
+                if model.get("Series") == default_series and selected_type in model.get("Type", []):
+                    filepath = model.get("Filepath")
+                    break
+                    
+        return gr.update(choices=series_choices, value=default_series), filepath
+
+    def on_anima_cn_series_change(selected_series, selected_type):
+        cn_config = load_anima_controlnet_lllite_models()
+        arch_key = "Anima_ControlNet_Lllite"
+        
+        filepath = "None"
+        if arch_key in cn_config and selected_series and selected_type:
+            for model in cn_config[arch_key]:
+                if model.get("Series") == selected_series and selected_type in model.get("Type", []):
+                    filepath = model.get("Filepath")
+                    break
+        return filepath
+
+    if anima_cn_series_list and anima_cn_types_list and anima_cn_filepaths_list:
+        for i in range(constants.get('MAX_CONTROLNETS', 5)):
+            anima_cn_types_list[i].change(
+                fn=on_anima_cn_type_change,
+                inputs=[anima_cn_types_list[i]],
+                outputs=[anima_cn_series_list[i], anima_cn_filepaths_list[i]],
+                show_progress=False,
+                show_api=False
+            )
+            anima_cn_series_list[i].change(
+                fn=on_anima_cn_series_change,
+                inputs=[anima_cn_series_list[i], anima_cn_types_list[i]],
+                outputs=[anima_cn_filepaths_list[i]],
                 show_progress=False,
                 show_api=False
             )

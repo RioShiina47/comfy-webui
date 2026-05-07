@@ -40,6 +40,23 @@ file:
       repo_id: "h94/IP-Adapter"
       repository_file_path: "sdxl_models/image_encoder/model.safetensors"
   controlnet: 
+    # Anima
+    - filename: "anima-lllite-lineart-1.safetensors"
+      source: "hf"
+      repo_id: "kohya-ss/Anima-LLLite"
+      repository_file_path: "anima-lllite-lineart-1.safetensors"
+    - filename: "anima-lllite-depth-1.safetensors"
+      source: "hf"
+      repo_id: "kohya-ss/Anima-LLLite"
+      repository_file_path: "anima-lllite-depth-1.safetensors"
+    - filename: "anima-lllite-pose-1.safetensors"
+      source: "hf"
+      repo_id: "kohya-ss/Anima-LLLite"
+      repository_file_path: "anima-lllite-pose-1.safetensors"
+    - filename: "anima-lllite-scribble-1.safetensors"
+      source: "hf"
+      repo_id: "kohya-ss/Anima-LLLite"
+      repository_file_path: "anima-lllite-scribble-1.safetensors"
     # Qwen-Image
     - filename: "Qwen-Image-InstantX-ControlNet-Union.safetensors"
       source: "hf"
