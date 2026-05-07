@@ -190,6 +190,44 @@ def create_controlnet_ui(components, prefix):
             components[key('delete_controlnet_button')] = gr.Button("➖ Delete ControlNet", visible=False)
         components[key('controlnet_count_state')] = gr.State(1)
 
+def create_anima_controlnet_lllite_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    constants = get_ui_constants()
+    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
+    with gr.Accordion("Anima ControlNet Lllite Settings", open=False) as anima_cn_accordion:
+        components[key('anima_controlnet_lllite_accordion')] = anima_cn_accordion
+        
+        cn_rows, images, series, types, strengths, filepaths, start_percents, end_percents = [], [], [], [], [], [], [], []
+        components.update({
+            key('anima_controlnet_lllite_rows'): cn_rows,
+            key('anima_controlnet_lllite_images'): images,
+            key('anima_controlnet_lllite_series'): series,
+            key('anima_controlnet_lllite_types'): types,
+            key('anima_controlnet_lllite_strengths'): strengths,
+            key('anima_controlnet_lllite_filepaths'): filepaths,
+            key('anima_controlnet_lllite_start_percents'): start_percents,
+            key('anima_controlnet_lllite_end_percents'): end_percents
+        })
+        
+        for i in range(max_controlnets):
+            with gr.Row(visible=(i < 1)) as row:
+                with gr.Column(scale=1):
+                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
+                with gr.Column(scale=2):
+                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
+                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
+                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
+                    with gr.Row():
+                        start_percents.append(gr.Slider(label="Start At", minimum=0.0, maximum=1.0, step=0.01, value=0.0, interactive=True))
+                        end_percents.append(gr.Slider(label="End At", minimum=0.0, maximum=1.0, step=0.01, value=1.0, interactive=True))
+                    filepaths.append(gr.State(None))
+                cn_rows.append(row)
+
+        with gr.Row():
+            components[key('add_anima_controlnet_lllite_button')] = gr.Button("✚ Add Lllite")
+            components[key('delete_anima_controlnet_lllite_button')] = gr.Button("➖ Delete Lllite", visible=False)
+        components[key('anima_controlnet_lllite_count_state')] = gr.State(1)
+
 def create_diffsynth_controlnet_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
     constants = get_ui_constants()
@@ -450,6 +488,9 @@ def register_ui_chain_events(components, prefix):
 
     _add_row_factory(key('controlnet_count_state'), key('add_controlnet_button'), key('delete_controlnet_button'), key('controlnet_rows'), constants.get('MAX_CONTROLNETS', 5))
     _delete_row_factory(key('controlnet_count_state'), key('add_controlnet_button'), key('delete_controlnet_button'), key('controlnet_rows'), constants.get('MAX_CONTROLNETS', 5), reset_keys=[key('controlnet_images'), key('controlnet_strengths')])
+
+    _add_row_factory(key('anima_controlnet_lllite_count_state'), key('add_anima_controlnet_lllite_button'), key('delete_anima_controlnet_lllite_button'), key('anima_controlnet_lllite_rows'), constants.get('MAX_CONTROLNETS', 5))
+    _delete_row_factory(key('anima_controlnet_lllite_count_state'), key('add_anima_controlnet_lllite_button'), key('delete_anima_controlnet_lllite_button'), key('anima_controlnet_lllite_rows'), constants.get('MAX_CONTROLNETS', 5), reset_keys=[key('anima_controlnet_lllite_images'), key('anima_controlnet_lllite_strengths'), key('anima_controlnet_lllite_start_percents'), key('anima_controlnet_lllite_end_percents')])
 
     _add_row_factory(key('diffsynth_controlnet_count_state'), key('add_diffsynth_controlnet_button'), key('delete_diffsynth_controlnet_button'), key('diffsynth_controlnet_rows'), constants.get('MAX_CONTROLNETS', 5))
     _delete_row_factory(key('diffsynth_controlnet_count_state'), key('add_diffsynth_controlnet_button'), key('delete_diffsynth_controlnet_button'), key('diffsynth_controlnet_rows'), constants.get('MAX_CONTROLNETS', 5), reset_keys=[key('diffsynth_controlnet_images'), key('diffsynth_controlnet_strengths')])

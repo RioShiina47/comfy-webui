@@ -14,6 +14,7 @@ ernie_image:
 anima:
   enabled_chains:
     - lora
+    - anima_controlnet_lllite
     - conditioning
 
 longcat-image:
