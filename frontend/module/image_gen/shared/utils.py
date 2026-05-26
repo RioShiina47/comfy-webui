@@ -50,54 +50,7 @@ def get_latent_type_for_model(selected_model_name: str) -> str:
                 return arch_data.get("latent_type", "latent")
     return "latent"
 
-def parse_generation_parameters_for_ui(full_prompt_text: str):
-    if not full_prompt_text: return {}
-    data = {}
-    neg_prompt_keyword = "Negative prompt:"
-    parts = re.split(neg_prompt_keyword, full_prompt_text, flags=re.IGNORECASE)
-    data['positive_prompt'] = parts[0].strip()
-    params_text = ""
-    if len(parts) > 1:
-        remaining_lines = parts[1].strip().split('\n'); data['negative_prompt'] = remaining_lines[0].strip()
-        params_text = "\n".join(remaining_lines[1:])
-    else:
-        prompt_lines = data['positive_prompt'].split('\n')
-        if len(prompt_lines) > 1:
-            data['positive_prompt'] = prompt_lines[0].strip()
-            potential_params_text = "\n".join(prompt_lines[1:])
-            
-            if "Negative prompt:" in potential_params_text:
-                 parts_again = re.split(neg_prompt_keyword, potential_params_text, flags=re.IGNORECASE)
-                 data['negative_prompt'] = parts_again[1].strip().split('\n')[0]
-                 params_text = parts_again[1]
-            else:
-                 params_text = potential_params_text
 
-    param_map = {
-        'steps': (r"\b(Steps|steps): ([^,]+)", int), 'sampler_name': (r"\b(Sampler|sampler_name): ([^,]+)", str),
-        'scheduler': (r"\b(Scheduler|scheduler): ([^,]+)", str), 'cfg': (r"\b(CFG scale|cfg): ([^,]+)", float),
-        'seed': (r"\b(Seed|seed): ([^,]+)", int), 'clip_skip': (r"\b(Clip skip|clip_skip): ([^,]+)", int),
-    }
-    sampler_map = get_constants().get('SAMPLER_MAP', {})
-    for key, (pattern, cast_type) in param_map.items():
-        match = re.search(pattern, params_text, re.IGNORECASE)
-        if match:
-            try:
-                value = match.group(2).strip()
-                if key == 'sampler_name': data[key] = sampler_map.get(value.lower(), value.lower())
-                else: data[key] = cast_type(value)
-            except (ValueError, TypeError): pass
-    if (m := re.search(r"Size: (\d+)x(\d+)", params_text, re.IGNORECASE)): data.update({'width': int(m.group(1)), 'height': int(m.group(2))})
-    if (m := re.search(r"\b(Model|model_name): ([^,]+)", params_text, re.IGNORECASE)):
-        parsed_model = m.group(2).strip(); config = load_model_config()
-        all_models = [
-            model for arch_data in config.get("Checkpoints", {}).values()
-            for model in arch_data.get("models", [])
-        ]
-        found = next((m['display_name'] for m in all_models if m['display_name'] == parsed_model), None)
-        if not found: found = next((m['display_name'] for m in all_models if parsed_model in m['display_name']), None)
-        if found: data['model_name'] = found
-    return data
 
 def get_model_generation_defaults(model_display_name: str, model_type: str, defaults_config: dict):
     final_defaults = {

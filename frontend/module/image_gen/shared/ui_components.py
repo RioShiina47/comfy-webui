@@ -3,7 +3,8 @@ from core import node_info_manager
 from core.shared_ui import (
     create_lora_ui, create_embedding_ui, create_controlnet_ui, 
     create_diffsynth_controlnet_ui, create_ipadapter_ui, 
-    create_style_ui, create_conditioning_ui, create_reference_latent_ui
+    create_style_ui, create_conditioning_ui, create_reference_latent_ui,
+    create_hidream_o1_reference_ui
 )
 from .config_loader import load_constants_config, load_model_config, load_architectures_config
 from .vae_utils import on_vae_upload
@@ -67,9 +68,7 @@ def create_base_ui_components(prefix: str):
                     scale=3
                 )
         with gr.Column(scale=1, min_width=120):
-            with gr.Column():
-                components[key('parse_prompt_button')] = gr.Button("↙️ Parse")
-                components[key('run_button')] = gr.Button("🚀 Generate", variant="primary", elem_classes=["run-shortcut"])
+            components[key('run_button')] = gr.Button("🚀 Generate", variant="primary", elem_classes=["run-shortcut"])
     
     components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=3, placeholder="Enter your prompt or paste generation info here...", interactive=True)
     components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=3, interactive=True)

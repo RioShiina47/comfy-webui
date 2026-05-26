@@ -111,7 +111,15 @@ RESOLUTION_MAP:
     "3:4 (Classic Portrait)": [896, 1152]
     "3:2 (Photography)": [1216, 832]
     "2:3 (Photography Portrait)": [832, 1216]
-  hidream:
+  hidream-o1:
+    "1:1 (Square)": [2048, 2048]
+    "16:9 (Landscape)": [2720, 1536]
+    "9:16 (Portrait)": [1536, 2720]
+    "4:3 (Classic)": [2304, 1728]
+    "3:4 (Classic Portrait)": [1728, 2304]
+    "3:2 (Photography)": [2560, 1728]
+    "2:3 (Photography Portrait)": [1728, 2560]
+  hidream-i1:
     "1:1 (Square)": [1024, 1024]
     "16:9 (Landscape)": [1344, 768]
     "9:16 (Portrait)": [768, 1344]
@@ -151,19 +159,3 @@ RESOLUTION_MAP:
     "3:4 (Classic Portrait)": [896, 1152]
     "3:2 (Photography)": [1216, 832]
     "2:3 (Photography Portrait)": [832, 1216]
-
-SAMPLER_MAP:
-  euler a: "euler_ancestral"
-  dpm++ 2s a: "dpmpp_2s_ancestral"
-  dpm++ 2m: "dpmpp_2m"
-  dpm++ sde: "dpmpp_sde"
-  dpm++ 2m sde: "dpmpp_2m_sde"
-  dpm++ 3m sde: "dpmpp_3m_sde"
-  ddim: "ddim"
-  uni_pc: "uni_pc"
-  euler_a: "euler_ancestral"
-  dpm++ 2s a karras: "dpmpp_2s_ancestral"
-  dpm++ 2m karras: "dpmpp_2m"
-  dpm++ sde karras: "dpmpp_sde"
-  dpm++ 2m sde karras: "dpmpp_2m_sde"
-  dpm++ 3m sde karras: "dpmpp_3m_sde"

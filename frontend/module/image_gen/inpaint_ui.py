@@ -5,12 +5,12 @@ import numpy as np
 from .sd_shared import (
     create_lora_ui, create_controlnet_ui, create_ipadapter_ui, create_embedding_ui,
     create_anima_controlnet_lllite_ui,
-    parse_generation_parameters_for_ui, register_shared_events,
+    register_shared_events,
     create_model_architecture_filter_ui, create_sdxl_category_filter_ui,
     create_run_generation_logic, create_style_ui,
     create_conditioning_ui, create_vae_override_ui,
     create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
-    create_reference_latent_ui
+    create_reference_latent_ui, create_hidream_o1_reference_ui
 )
 from .image_gen_logic import process_inputs as process_inputs_logic
 
@@ -46,9 +46,7 @@ def create_ui():
                         scale=3
                     )
             with gr.Column(scale=1, min_width=120):
-                with gr.Column():
-                    components[key('parse_prompt_button')] = gr.Button("↙️ Parse")
-                    components[key('run_button')] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
+                components[key('run_button')] = gr.Button(UI_INFO["run_button_text"], variant="primary", elem_classes=["run-shortcut"])
         
         components[key('model_and_run_rows')] = [model_selection_row, run_buttons_row]
 
@@ -116,6 +114,7 @@ def create_ui():
              create_embedding_ui(components, PREFIX)
              create_conditioning_ui(components, PREFIX)
              create_reference_latent_ui(components, PREFIX)
+             create_hidream_o1_reference_ui(components, PREFIX)
              create_vae_override_ui(components, PREFIX)
              create_style_ui(components, PREFIX)
         components[key('accordion_wrapper')] = accordion_wrapper
@@ -170,32 +169,6 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
     
     register_shared_events(components, PREFIX, sdxl_gallery_height=468, demo=demo)
 
-    model_dropdown = components[key("model_name")]
-    
-    parse_button = components[key("parse_prompt_button")]
-    positive_prompt = components[key("positive_prompt")]
-    output_map = {
-        'positive_prompt': positive_prompt,
-        'negative_prompt': components[key("negative_prompt")],
-        'model_name': model_dropdown, 'seed': components.get(key("seed")),
-        'steps': components.get(key("steps")), 'cfg': components.get(key("cfg")),
-        'sampler_name': components.get(key("sampler_name")), 'scheduler': components.get(key("scheduler")),
-        'clip_skip': components.get(key("clip_skip"))
-    }
-    output_keys = ['positive_prompt', 'negative_prompt', 'model_name', 'seed', 'steps', 'cfg', 'sampler_name', 'scheduler', 'clip_skip']
-    final_outputs = [output_map[key] for key in output_keys if output_map[key] is not None]
-
-    def on_parse_prompt_wrapper(prompt_text):
-        parsed_data = parse_generation_parameters_for_ui(prompt_text)
-        return_values = [parsed_data.get(key, gr.update()) for key in output_keys if output_map[key] is not None]
-        return tuple(return_values)
-
-    parse_button.click(
-        fn=on_parse_prompt_wrapper,
-        inputs=[positive_prompt],
-        outputs=final_outputs,
-        show_api=False
-    )
 
 def process_inputs(ui_values, seed_override=None):
     return process_inputs_logic('inpaint', ui_values, seed_override)

@@ -15,9 +15,9 @@ Checkpoints:
   Anima:
     latent_type: latent
     models:
-      - display_name: "circlestone-labs/Anima-preview3-base"
+      - display_name: "circlestone-labs/Anima-base-v1.0"
         components:
-          unet: "anima-preview3-base.safetensors"
+          unet: "anima-base-v1.0.safetensors"
           vae: "qwen_image_vae.safetensors"
           clip: "qwen_3_06b_base.safetensors"
   FLUX.2:
@@ -182,7 +182,15 @@ Checkpoints:
           clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
           lora: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
 
-  HiDream:
+  HiDream-O1:
+    latent_type: hidream_o1_latent
+    models:
+      - display_name: "HiDream-O1-Image-Dev"
+        path: "hidream_o1_image_dev_fp8_scaled.safetensors"
+      - display_name: "HiDream-O1-Image"
+        path: "hidream_o1_image_fp8_scaled.safetensors"
+
+  HiDream-I1:
     latent_type: sd3_latent
     models:
       - display_name: "HiDream_i1_Dev"

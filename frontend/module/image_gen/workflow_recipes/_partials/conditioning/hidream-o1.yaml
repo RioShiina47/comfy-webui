@@ -1,0 +1,68 @@
+nodes:
+  ckpt_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+    
+  model_noise_scale:
+    class_type: ModelNoiseScale
+    title: "ModelNoiseScale"
+    params:
+      noise_scale: 8
+
+connections:
+  - from: "ckpt_loader:0"
+    to: "model_noise_scale:model"
+    
+  - from: "model_noise_scale:0"
+    to: "ksampler:model"
+
+  - from: "ckpt_loader:1"
+    to: "pos_prompt:clip"
+  - from: "ckpt_loader:1"
+    to: "neg_prompt:clip"
+
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+    
+  - from: "ckpt_loader:2"
+    to: "vae_decode:vae"
+  - from: "ckpt_loader:2"
+    to: "vae_encode:vae"
+
+dynamic_vae_chains:
+  vae_chain:
+    targets:
+      - "vae_decode:vae"
+      - "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    start: "ckpt_loader" 
+    output_map:
+      "0": "model" 
+      "1": "clip"  
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["model_noise_scale:model"]
+      "clip": ["pos_prompt:clip", "neg_prompt:clip"]
+
+dynamic_hidream_o1_smoothing_chains:
+  hidream_o1_smoothing_chain:
+    target_node: "ksampler"
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    ksampler_node: "ksampler"
+    clip_source: "ckpt_loader:1"
+
+dynamic_hidream_o1_reference_chains:
+  hidream_o1_reference_chain:
+    ksampler_node: "ksampler"
+
+ui_map:
+  model_name: "ckpt_loader:ckpt_name"

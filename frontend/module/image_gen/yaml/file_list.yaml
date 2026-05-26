@@ -1,5 +1,14 @@
 file: 
   checkpoints: 
+    # HiDream-O1
+    - filename: "hidream_o1_image_dev_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HiDream-O1-Image"
+      repository_file_path: "checkpoints/hidream_o1_image_dev_fp8_scaled.safetensors"
+    - filename: "hidream_o1_image_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/HiDream-O1-Image"
+      repository_file_path: "checkpoints/hidream_o1_image_fp8_scaled.safetensors"
     # Lumina
     - filename: "lumina_2.safetensors"
       source: "hf"
@@ -201,10 +210,10 @@ file:
       repo_id: "Comfy-Org/ERNIE-Image"
       repository_file_path: "diffusion_models/ernie-image-turbo.safetensors"
     # Anima
-    - filename: "anima-preview3-base.safetensors"
+    - filename: "anima-base-v1.0.safetensors"
       source: "hf"
       repo_id: "circlestone-labs/Anima"
-      repository_file_path: "split_files/diffusion_models/anima-preview3-base.safetensors"
+      repository_file_path: "split_files/diffusion_models/anima-base-v1.0.safetensors"
     # FLUX.2-klein-9B-KV
     - filename: "flux-2-klein-9b-kv-fp8.safetensors"
       source: "hf"
@@ -285,7 +294,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/FLUX.1-Krea-dev_ComfyUI"
       repository_file_path: "split_files/diffusion_models/flux1-krea-dev_fp8_scaled.safetensors"
-    # HiDream
+    # HiDream-I1
     - filename: "hidream_i1_dev_fp8.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/HiDream-I1_ComfyUI"
@@ -298,6 +307,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/HiDream-I1_ComfyUI"
       repository_file_path: "split_files/diffusion_models/hidream_i1_full_fp8.safetensors"
+    # HunyuanImage
     - filename: "hunyuanimage2.1_fp8_e4m3fn.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/HunyuanImage_2.1_ComfyUI"
@@ -452,6 +462,11 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    # HiDream-O1
+    - filename: "gemma4_e4b_it_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/gemma-4"
+      repository_file_path: "text_encoders/gemma4_e4b_it_fp8_scaled.safetensors"
     # ERNIE-Image
     - filename: "ministral-3-3b.safetensors"
       source: "hf"

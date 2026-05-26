@@ -173,7 +173,20 @@ Qwen-Image:
     scheduler: "simple"
     total_pixels: 1763584
 
-HiDream:
+HiDream-O1:
+  _defaults:
+    steps: 40
+    cfg: 5.0
+    sampler_name: "dpmpp_2m_sde_gpu"
+    scheduler: "normal"
+    total_pixels: 4194304
+  "HiDream-O1-Image-Dev":
+    steps: 28
+    cfg: 1.0
+    sampler_name: "lcm"
+    scheduler: "normal"
+
+HiDream-I1:
   _defaults:
     steps: 50
     cfg: 3.0
