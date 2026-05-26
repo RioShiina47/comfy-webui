@@ -3,7 +3,7 @@ import os
 import shutil
 from core.config import LORA_DIR, EMBEDDING_DIR
 from core.shared_ui import register_ui_chain_events
-from .utils import get_model_type, get_model_generation_defaults, parse_generation_parameters_for_ui
+from .utils import get_model_type, get_model_generation_defaults
 from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_diffsynth_controlnet_models, load_anima_controlnet_lllite_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
 
 constants = load_constants_config()
@@ -85,6 +85,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     style_accordion = components.get(key('style_accordion'))
     conditioning_accordion = components.get(key('conditioning_accordion'))
     reference_latent_accordion = components.get(key('reference_latent_accordion'))
+    hidream_o1_reference_accordion = components.get(key('hidream_o1_reference_accordion'))
+    vae_accordion = components.get(key('vae_accordion'))
 
 
     def on_architecture_filter_change(arch_filter):
@@ -154,7 +156,9 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'embedding': embedding_accordion,
             'style': style_accordion,
             'conditioning': conditioning_accordion,
-            'reference_latent': reference_latent_accordion
+            'reference_latent': reference_latent_accordion,
+            'hidream_o1_reference': hidream_o1_reference_accordion,
+            'vae': vae_accordion
         }
 
         for chain_key, accordion_component in chain_map.items():
@@ -300,7 +304,9 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "ipa_accordion": ipadapter_accordion, "flux1_ipa_accordion": flux1_ipadapter_accordion, "sd3_ipa_accordion": sd3_ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
         "ipa_final_lora_slider": ipadapter_final_lora_strength_slider,
         "conditioning_accordion": conditioning_accordion,
-        "reference_latent_accordion": reference_latent_accordion
+        "reference_latent_accordion": reference_latent_accordion,
+        "hidream_o1_reference_accordion": hidream_o1_reference_accordion,
+        "vae_accordion": vae_accordion
     }
     
     positive_prompt_textbox = components.get(key('positive_prompt'))
@@ -557,38 +563,3 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             image_input.change(fn=on_image_upload, inputs=[image_input, model_type_state], outputs=[width_num, height_num, aspect_ratio_dropdown], show_api=False)
 
     register_ui_chain_events(components, prefix)
-
-
-    parse_button = components[f"{prefix}_parse_prompt_button"]
-    positive_prompt = components[f"{prefix}_positive_prompt"]
-
-    output_map = {
-        'positive_prompt': positive_prompt, 'negative_prompt': components[f"{prefix}_negative_prompt"],
-        'model_name': model_dropdown, 'seed': components.get(f"{prefix}_seed"),
-        'steps': components.get(f"{prefix}_steps"), 'cfg': components.get(f"{prefix}_cfg"),
-        'sampler_name': components.get(f"{prefix}_sampler_name"), 'scheduler': components.get(f"{prefix}_scheduler"),
-        'clip_skip': components.get(f"{prefix}_clip_skip"), 'width': components.get(f"{prefix}_width"),
-        'height': components.get(f"{prefix}_height")
-    }
-
-    output_keys = [
-        'positive_prompt', 'negative_prompt', 'model_name', 'seed', 'steps', 
-        'cfg', 'sampler_name', 'scheduler', 'clip_skip', 'width', 'height'
-    ]
-
-    final_outputs = [output_map[key] for key in output_keys if output_map[key] is not None]
-
-    def on_parse_prompt_wrapper(prompt_text):
-        parsed_data = parse_generation_parameters_for_ui(prompt_text)
-        return_values = []
-        for key in output_keys:
-            if output_map[key] is not None:
-                return_values.append(parsed_data.get(key, gr.update()))
-        return tuple(return_values)
-
-    parse_button.click(
-        fn=on_parse_prompt_wrapper,
-        inputs=[positive_prompt],
-        outputs=final_outputs,
-        show_api=False
-    )

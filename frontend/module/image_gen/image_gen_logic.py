@@ -17,7 +17,8 @@ from core.input_processors import (
     process_embedding_inputs,
     process_style_inputs,
     process_conditioning_inputs,
-    process_reference_latent_inputs
+    process_reference_latent_inputs,
+    process_hidream_o1_reference_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -115,6 +116,13 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     cn_items = process_controlnet_inputs(ui_values, prefix)
     anima_cn_items = process_anima_controlnet_lllite_inputs(ui_values, prefix)
     
+    hidream_o1_smoothing_data = []
+    if model_type == 'hidream-o1' and display_name == "HiDream-O1-Image":
+        hidream_o1_smoothing_data.append({})
+
+    ref_latent_inputs = process_reference_latent_inputs(ui_values, prefix)
+    hidream_o1_ref_inputs = process_hidream_o1_reference_inputs(ui_values, prefix)
+
     processed_chains = {
         'lora_chain': process_lora_inputs(ui_values, prefix),
         'controlnet_chain': cn_items,
@@ -125,8 +133,10 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'sd3_ipadapter_chain': process_sd3_ipadapter_inputs(ui_values, prefix),
         'style_chain': process_style_inputs(ui_values, prefix),
         'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
-        'reference_latent_chain': process_reference_latent_inputs(ui_values, prefix),
+        'reference_latent_chain': ref_latent_inputs,
+        'hidream_o1_reference_chain': hidream_o1_ref_inputs,
         'vae_chain': [vae_override] if vae_override else [],
+        'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
     }
 
     final_values_for_assembler = {**vals, **processed_chains}

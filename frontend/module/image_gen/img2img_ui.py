@@ -9,7 +9,7 @@ from .sd_shared import (
     create_run_generation_logic, create_style_ui,
     create_conditioning_ui, create_vae_override_ui,
     create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
-    create_reference_latent_ui
+    create_reference_latent_ui, create_hidream_o1_reference_ui
 )
 from .image_gen_logic import process_inputs as process_inputs_logic
 
@@ -40,9 +40,7 @@ def create_ui():
                         scale=3
                     )
             with gr.Column(scale=1, min_width=120):
-                with gr.Column():
-                    components[key('parse_prompt_button')] = gr.Button("↙️ Parse")
-                    components[key('run_button')] = gr.Button("🚀 Generate", variant="primary", elem_classes=["run-shortcut"])
+                components[key('run_button')] = gr.Button("🚀 Generate", variant="primary", elem_classes=["run-shortcut"])
         
         with gr.Row():
             with gr.Column(scale=1):
@@ -88,6 +86,7 @@ def create_ui():
         create_embedding_ui(components, PREFIX)
         create_conditioning_ui(components, PREFIX)
         create_reference_latent_ui(components, PREFIX)
+        create_hidream_o1_reference_ui(components, PREFIX)
         create_vae_override_ui(components, PREFIX)
         create_style_ui(components, PREFIX)
                 
