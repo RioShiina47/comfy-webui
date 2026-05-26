@@ -27,6 +27,10 @@ injector_definitions:
     module: "chain_injectors.style_injector"
   dynamic_easycache_chains:
     module: "chain_injectors.easycache_injector"
+  dynamic_hidream_o1_smoothing_chains:
+    module: "chain_injectors.hidream_o1_smoothing_injector"
+  dynamic_hidream_o1_reference_chains:
+    module: "chain_injectors.hidream_o1_reference_injector"
   
 injector_order:
   - dynamic_vae_chains
@@ -43,3 +47,5 @@ injector_order:
   - dynamic_controlnet_chains
   - dynamic_anima_controlnet_lllite_chains
   - dynamic_easycache_chains
+  - dynamic_hidream_o1_smoothing_chains
+  - dynamic_hidream_o1_reference_chains
