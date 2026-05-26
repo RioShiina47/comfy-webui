@@ -13,7 +13,8 @@ architecture_order:
   - "Chroma1"
   - "OmniGen2"
   - "Lumina"
-  - "HiDream"
+  - "HiDream-O1"
+  - "HiDream-I1"
   - "FLUX.1"
   - "SD3.5"
   - "SDXL"
@@ -65,9 +66,12 @@ architectures:
   "HunyuanImage":
     model_type: "hunyuanimage"
     controlnet_key: "HunyuanImage"
-  "HiDream":
-    model_type: "hidream"
-    controlnet_key: "HiDream"
+  "HiDream-O1":
+    model_type: "hidream-o1"
+    controlnet_key: "HiDream-O1"
+  "HiDream-I1":
+    model_type: "hidream-i1"
+    controlnet_key: "HiDream-I1"
   "Chroma1":
     model_type: "chroma1"
     controlnet_key: "Chroma1"

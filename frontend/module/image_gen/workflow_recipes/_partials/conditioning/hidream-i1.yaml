@@ -1,15 +1,15 @@
 nodes:
   unet_loader:
     class_type: UNETLoader
-    title: "Load HiDream UNET"
+    title: "Load HiDream-I1 UNET"
     params:
       weight_dtype: "default"
   vae_loader:
     class_type: VAELoader
-    title: "Load HiDream VAE"
+    title: "Load HiDream-I1 VAE"
   clip_loader:
     class_type: QuadrupleCLIPLoader
-    title: "Load HiDream Quadruple CLIP"
+    title: "Load HiDream-I1 Quadruple CLIP"
   
   model_sampler:
     class_type: ModelSamplingSD3

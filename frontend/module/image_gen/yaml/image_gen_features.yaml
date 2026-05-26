@@ -1,105 +1,107 @@
 default:
   enabled_chains:
-    - lora
-    - controlnet
-    - ipadapter
-    - embedding
-    - style
-    - conditioning
-
+  - lora
+  - controlnet
+  - ipadapter
+  - embedding
+  - style
+  - conditioning
+  - vae
 ernie_image:
   enabled_chains:
-    - conditioning
-
+  - conditioning
 anima:
   enabled_chains:
-    - lora
-    - anima_controlnet_lllite
-    - conditioning
-
+  - lora
+  - anima_controlnet_lllite
+  - conditioning
+  - vae
 longcat-image:
   enabled_chains:
-    - lora
-    - conditioning
-
+  - lora
+  - conditioning
 newbie-image:
   enabled_chains:
-    - lora
-    - embedding
-    - conditioning
-
+  - lora
+  - embedding
+  - conditioning
+  - vae
 z-image:
   enabled_chains:
-    - lora
-    - conditioning
-    - controlnet_model_patch
-
+  - lora
+  - conditioning
+  - controlnet_model_patch
+  - vae
 lumina:
   enabled_chains:
-    - lora
-    - embedding
-    - conditioning
-
+  - lora
+  - embedding
+  - conditioning
+  - vae
 sd35:
   enabled_chains:
-    - lora
-    - controlnet
-    - embedding
-    - conditioning
-    - sd3_ipadapter
-
+  - lora
+  - controlnet
+  - embedding
+  - conditioning
+  - sd3_ipadapter
+  - vae
 sdxl:
   enabled_chains:
-    - lora
-    - controlnet
-    - ipadapter
-    - embedding
-    - conditioning
-
+  - lora
+  - controlnet
+  - ipadapter
+  - embedding
+  - conditioning
+  - vae
 sd15:
   enabled_chains:
-    - lora
-    - controlnet
-    - ipadapter
-    - embedding
-    - conditioning
-
+  - lora
+  - controlnet
+  - ipadapter
+  - embedding
+  - conditioning
+  - vae
 flux2:
   enabled_chains:
-    - lora
-    - conditioning
-    - reference_latent
-
+  - lora
+  - conditioning
+  - reference_latent
+  - vae
 flux2-kv:
   enabled_chains:
-    - lora
-    - conditioning
-    - reference_latent
-
+  - lora
+  - conditioning
+  - reference_latent
+  - vae
 flux1:
   enabled_chains:
-    - lora
-    - controlnet
-    - style
-    - conditioning
-    - flux1_ipadapter
-
+  - lora
+  - controlnet
+  - style
+  - conditioning
+  - flux1_ipadapter
+  - vae
 omnigen2:
   enabled_chains:
-    - conditioning
-    - reference_latent
-
+  - conditioning
+  - reference_latent
 qwen-image:
   enabled_chains:
-    - lora
-    - controlnet
-    - conditioning
-
-hidream:
+  - lora
+  - controlnet
+  - conditioning
+  - vae
+hidream-o1:
   enabled_chains:
-    - lora
-    - conditioning
-
+  - lora
+  - conditioning
+  - hidream_o1_reference
+hidream-i1:
+  enabled_chains:
+  - lora
+  - conditioning
 hunyuanimage:
   enabled_chains:
-    - conditioning
+  - conditioning
+  - vae
