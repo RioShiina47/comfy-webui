@@ -7,6 +7,11 @@ default:
   - style
   - conditioning
   - vae
+
+lens:
+  enabled_chains:
+  - conditioning
+
 ernie_image:
   enabled_chains:
   - conditioning
