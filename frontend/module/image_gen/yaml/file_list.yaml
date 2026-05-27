@@ -200,6 +200,15 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # Lens
+    - filename: "lens_mxfp8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lens"
+      repository_file_path: "diffusion_models/lens_mxfp8.safetensors"
+    - filename: "lens_turbo_mxfp8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lens"
+      repository_file_path: "diffusion_models/lens_turbo_mxfp8.safetensors"
     # ERNIE-Image
     - filename: "ernie-image.safetensors"
       source: "hf"
@@ -462,6 +471,11 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   text_encoders: 
+    # Lens
+    - filename: "gpt_oss_20b_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Lens"
+      repository_file_path: "text_encoders/gpt_oss_20b_nvfp4.safetensors"
     # HiDream-O1
     - filename: "gemma4_e4b_it_fp8_scaled.safetensors"
       source: "hf"
