@@ -1,4 +1,5 @@
 architecture_order:
+  - "Lens"
   - "FLUX.2-KV"
   - "FLUX.2"
   - "ERNIE-Image"
@@ -21,6 +22,9 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "Lens":
+    model_type: "lens"
+    controlnet_key: "Lens"
   "ERNIE-Image":
     model_type: "ernie_image"
     controlnet_key: "ERNIE-Image"
