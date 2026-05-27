@@ -1,4 +1,17 @@
 Checkpoints:
+  Lens:
+    latent_type: flux2_latent
+    models:
+      - display_name: "Microsoft/Lens"
+        components:
+          unet: "lens_mxfp8.safetensors"
+          clip: "gpt_oss_20b_nvfp4.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "Microsoft/Lens-Turbo"
+        components:
+          unet: "lens_turbo_mxfp8.safetensors"
+          clip: "gpt_oss_20b_nvfp4.safetensors"
+          vae: "flux2-vae.safetensors"
   ERNIE-Image:
     latent_type: flux2_latent
     models:

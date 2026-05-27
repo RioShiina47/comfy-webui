@@ -7,6 +7,17 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+Lens:
+  _defaults:
+    steps: 20
+    cfg: 5.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    total_pixels: 1048576
+  "Microsoft/Lens-Turbo":
+    steps: 4
+    cfg: 1.0
+
 ERNIE-Image:
   _defaults:
     steps: 20
