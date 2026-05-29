@@ -1,4 +1,12 @@
 Checkpoints:
+  PixelDiT:
+    latent_type: chroma_radiance_latent
+    models:
+      - display_name: "nvidia/PixelDiT-1300M-1024px"
+        components:
+          unet: "pixeldit_1300m_1024px_mxfp8.safetensors"
+          clip: "gemma_2_2b_it_elm_fp8_scaled.safetensors"
+          vae: "pixel_space"
   Lens:
     latent_type: flux2_latent
     models:

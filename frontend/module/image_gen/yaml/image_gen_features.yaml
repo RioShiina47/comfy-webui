@@ -8,6 +8,10 @@ default:
   - conditioning
   - vae
 
+pixeldit:
+  enabled_chains:
+  - conditioning
+
 lens:
   enabled_chains:
   - conditioning

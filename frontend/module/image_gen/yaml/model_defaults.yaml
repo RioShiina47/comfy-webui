@@ -7,6 +7,14 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+PixelDiT:
+  _defaults:
+    steps: 30
+    cfg: 4.0
+    sampler_name: "er_sde"
+    scheduler: "simple"
+    total_pixels: 1048576
+
 Lens:
   _defaults:
     steps: 20

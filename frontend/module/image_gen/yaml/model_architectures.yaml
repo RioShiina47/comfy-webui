@@ -1,4 +1,5 @@
 architecture_order:
+  - "PixelDiT"
   - "Lens"
   - "FLUX.2-KV"
   - "FLUX.2"
@@ -22,6 +23,9 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "PixelDiT":
+    model_type: "pixeldit"
+    controlnet_key: "PixelDiT"
   "Lens":
     model_type: "lens"
     controlnet_key: "Lens"
