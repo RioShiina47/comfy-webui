@@ -8,7 +8,7 @@ from .sd_shared import (
     create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
     create_reference_latent_ui, create_hidream_o1_reference_ui,
     register_shared_events,
-    create_run_generation_logic
+    create_run_generation_logic, create_pid_ui
 )
 from .image_gen_logic import process_inputs as process_inputs_logic
 
@@ -49,6 +49,7 @@ def create_ui():
         create_hidream_o1_reference_ui(components, PREFIX)
         create_vae_override_ui(components, PREFIX)
         create_style_ui(components, PREFIX)
+        create_pid_ui(components, PREFIX)
                 
     components['run_button'] = components[f'{PREFIX}_run_button']
     return components
