@@ -59,5 +59,9 @@ dynamic_conditioning_chains:
     ksampler_node: "ksampler"
     clip_source: "ckpt_loader:1"
 
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
 ui_map:
   model_name: "ckpt_loader:ckpt_name"

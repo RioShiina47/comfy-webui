@@ -162,7 +162,7 @@ def process_ipadapter_inputs(all_ui_values: dict, prefix: str, ipadapter_presets
     key = lambda name: f"{prefix}_{name}"
     ipadapters = []
     ipa_images = all_ui_values.get(key('ipadapter_images'), [])
-    if not ipadapters:
+    if not ipa_images:
         return []
 
     final_preset = all_ui_values.get(key('ipadapter_final_preset'))

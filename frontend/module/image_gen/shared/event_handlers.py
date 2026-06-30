@@ -32,7 +32,6 @@ def update_model_list(architecture_filter: str, category_filter: str):
     return gr.update(choices=choices, value=default_value)
 
 def get_controlnet_key_for_model_type(model_type):
-    """Helper function to find the controlnet_key from model_architectures.yaml based on model_type."""
     arch_config = load_architectures_config().get("architectures", {})
     for arch_name, details in arch_config.items():
         if details.get("model_type") == model_type:
@@ -56,6 +55,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     scheduler_dropdown = components.get(key('scheduler'))
     lora_accordion = components.get(key('lora_accordion'))
     gallery_component = components.get(key('output_gallery'))
+    pid_accordion = components.get(key('pid_accordion'))
     
     controlnet_accordion = components.get(key('controlnet_accordion'))
     controlnet_series_list = components.get(key('controlnet_series'))
@@ -158,7 +158,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'conditioning': conditioning_accordion,
             'reference_latent': reference_latent_accordion,
             'hidream_o1_reference': hidream_o1_reference_accordion,
-            'vae': vae_accordion
+            'vae': vae_accordion,
+            'pid': pid_accordion
         }
 
         for chain_key, accordion_component in chain_map.items():
@@ -306,7 +307,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "conditioning_accordion": conditioning_accordion,
         "reference_latent_accordion": reference_latent_accordion,
         "hidream_o1_reference_accordion": hidream_o1_reference_accordion,
-        "vae_accordion": vae_accordion
+        "vae_accordion": vae_accordion, "pid_accordion": pid_accordion
     }
     
     positive_prompt_textbox = components.get(key('positive_prompt'))

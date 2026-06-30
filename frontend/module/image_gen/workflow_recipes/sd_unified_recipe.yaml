@@ -6,6 +6,3 @@ imports:
 connections:
   - from: "latent_source:0"
     to: "ksampler:latent_image"
-
-ui_map:
-  vae_loader: "vae_encode:vae"

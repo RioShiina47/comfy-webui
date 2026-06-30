@@ -48,6 +48,10 @@ dynamic_conditioning_chains:
     ksampler_node: "ksampler"
     clip_source: "clip_loader:0"
 
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   clip_name: "clip_loader:clip_name"

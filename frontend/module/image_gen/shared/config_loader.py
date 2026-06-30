@@ -11,6 +11,7 @@ _ipadapter_presets_config = None
 _constants_config = None
 _features_config = None
 _architectures_config = None
+_pid_config = None
 
 def _load_local_yaml(filename: str):
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -94,3 +95,9 @@ def load_features_config():
     if _features_config is None:
         _features_config = _load_local_yaml("image_gen_features.yaml")
     return _features_config
+
+def load_pid_config():
+    global _pid_config
+    if _pid_config is None:
+        _pid_config = _load_local_yaml("pid.yaml")
+    return _pid_config
