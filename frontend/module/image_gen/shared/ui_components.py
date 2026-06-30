@@ -135,7 +135,6 @@ def create_anima_controlnet_lllite_ui(components, prefix):
                     types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
                     series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
                     strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
-                    # 隐藏参数并固定默认值
                     start_percents.append(gr.State(0.0))
                     end_percents.append(gr.State(1.0))
                     filepaths.append(gr.State(None))
@@ -243,4 +242,17 @@ def create_vae_override_ui(components, prefix):
                     components[key('vae_file')]
                 ],
                 show_api=False
+            )
+
+def create_pid_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("PiD Settings", open=False) as pid_accordion:
+        components[key('pid_accordion')] = pid_accordion
+        gr.Markdown("💡 **Tip:** Use PiD (Pixel Diffusion Decoder) instead of the VAE Decoder for 4x decoding.")
+        with gr.Row():
+            components[key('pid_settings')] = gr.Dropdown(
+                label="PiD Mode", 
+                choices=["OFF", "ON"], 
+                value="OFF", 
+                interactive=True
             )
