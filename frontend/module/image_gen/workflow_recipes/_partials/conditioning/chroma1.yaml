@@ -55,6 +55,10 @@ dynamic_conditioning_chains:
     ksampler_node: "ksampler"
     clip_source: "t5_tokenizer:0"
 
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"

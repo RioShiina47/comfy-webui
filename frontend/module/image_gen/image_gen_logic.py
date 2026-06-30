@@ -137,6 +137,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'hidream_o1_reference_chain': hidream_o1_ref_inputs,
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
+        'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],
     }
 
     final_values_for_assembler = {**vals, **processed_chains}

@@ -13,12 +13,6 @@ nodes:
     params:
       type: "qwen_image"
       device: "default"
-  
-  lora_loader:
-    class_type: LoraLoaderModelOnly
-    title: "Load Qwen Lightning LoRA"
-    params:
-      strength_model: 1.0
   model_sampler:
     class_type: ModelSamplingAuraFlow
     title: "ModelSamplingAuraFlow"
@@ -27,8 +21,6 @@ nodes:
 
 connections:
   - from: "unet_loader:0"
-    to: "lora_loader:model"
-  - from: "lora_loader:0"
     to: "model_sampler:model"
 
   - from: "model_sampler:0"
@@ -53,7 +45,7 @@ dynamic_lora_chains:
   lora_chain:
     template: "LoraLoader"
     output_map:
-      "lora_loader:0": "model"
+      "unet_loader:0": "model"
       "clip_loader:0": "clip"
     input_map:
       "model": "model"
@@ -73,8 +65,11 @@ dynamic_conditioning_chains:
     ksampler_node: "ksampler"
     clip_source: "clip_loader:0"
 
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"
   clip_name: "clip_loader:clip_name"
-  lora_name: "lora_loader:lora_name"
