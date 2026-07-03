@@ -1,4 +1,5 @@
 architecture_order:
+  - "Boogu-Image"
   - "PixelDiT"
   - "Ideogram-4"
   - "Lens"
@@ -24,6 +25,8 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "Boogu-Image":
+    model_type: "boogu-image"
   "PixelDiT":
     model_type: "pixeldit"
   "Ideogram-4":
