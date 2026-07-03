@@ -6,6 +6,18 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+Boogu-Image:
+  _defaults:
+    steps: 25
+    cfg: 3.5
+    sampler_name: "dpmpp_2m"
+    scheduler: "simple"
+  "Boogu-Image-Turbo":
+    steps: 4
+    cfg: 1.0
+    sampler_name: "lcm"
+    scheduler: "sgm_uniform"
+
 PixelDiT:
   _defaults:
     steps: 30
