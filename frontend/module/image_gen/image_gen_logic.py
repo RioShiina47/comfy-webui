@@ -73,6 +73,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     if isinstance(model_info, dict):
         vals.update({
             'unet_name': model_info.get('unet'),
+            'unet_uncond_name': model_info.get('unet_uncond'),
             'vae_name': model_info.get('vae'),
             'clip_name': model_info.get('clip'),
             'clip1_name': model_info.get('clip1'),

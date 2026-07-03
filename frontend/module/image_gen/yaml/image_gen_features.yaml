@@ -12,77 +12,122 @@ pixeldit:
   enabled_chains:
   - conditioning
 
+ideogram-4:
+  enabled_chains:
+  - vae
+  - pid
+
 lens:
   enabled_chains:
   - conditioning
+  - pid
 
-ernie_image:
-  enabled_chains:
-  - conditioning
-anima:
-  enabled_chains:
-  - lora
-  - anima_controlnet_lllite
-  - conditioning
-  - vae
-longcat-image:
-  enabled_chains:
-  - lora
-  - conditioning
-newbie-image:
-  enabled_chains:
-  - lora
-  - embedding
-  - conditioning
-  - vae
-z-image:
-  enabled_chains:
-  - lora
-  - conditioning
-  - controlnet_model_patch
-  - vae
-lumina:
-  enabled_chains:
-  - lora
-  - embedding
-  - conditioning
-  - vae
-sd35:
-  enabled_chains:
-  - lora
-  - controlnet
-  - embedding
-  - conditioning
-  - sd3_ipadapter
-  - vae
-sdxl:
-  enabled_chains:
-  - lora
-  - controlnet
-  - ipadapter
-  - embedding
-  - conditioning
-  - vae
-sd15:
-  enabled_chains:
-  - lora
-  - controlnet
-  - ipadapter
-  - embedding
-  - conditioning
-  - vae
-flux2:
-  enabled_chains:
-  - lora
-  - conditioning
-  - reference_latent
-  - vae
 flux2-kv:
   enabled_chains:
   - lora
   - conditioning
   - reference_latent
   - vae
+  - pid
+
+flux2:
+  enabled_chains:
+  - lora
+  - conditioning
+  - reference_latent
+  - vae
+  - pid
+
+ernie-image:
+  enabled_chains:
+  - conditioning
+  - pid
+
+z-image:
+  enabled_chains:
+  - lora
+  - conditioning
+  - controlnet_model_patch
+  - vae
+  - pid
+
+qwen-image:
+  enabled_chains:
+  - lora
+  - controlnet
+  - conditioning
+  - vae
+  - pid
+
+longcat-image:
+  enabled_chains:
+  - lora
+  - conditioning
+  - pid
+
+anima:
+  enabled_chains:
+  - lora
+  - anima_controlnet_lllite
+  - conditioning
+  - vae
+  - pid
+
+newbie-image:
+  enabled_chains:
+  - lora
+  - embedding
+  - conditioning
+  - vae
+  - pid
+
+ovis-image:
+  enabled_chains:
+  - conditioning
+  - vae
+  - pid
+
+hunyuanimage:
+  enabled_chains:
+  - conditioning
+  - vae
+
+chroma1-radiance:
+  enabled_chains:
+  - conditioning
+
+chroma1:
+  enabled_chains:
+  - conditioning
+  - vae
+  - pid
+
+omnigen2:
+  enabled_chains:
+  - conditioning
+  - reference_latent
+  - pid
+
+lumina:
+  enabled_chains:
+  - lora
+  - embedding
+  - conditioning
+  - vae
+  - pid
+
+hidream-o1:
+  enabled_chains:
+  - lora
+  - conditioning
+  - hidream_o1_reference
+
+hidream-i1:
+  enabled_chains:
+  - lora
+  - conditioning
+  - pid
+
 flux1:
   enabled_chains:
   - lora
@@ -91,26 +136,33 @@ flux1:
   - conditioning
   - flux1_ipadapter
   - vae
-omnigen2:
-  enabled_chains:
-  - conditioning
-  - reference_latent
-qwen-image:
+  - pid
+
+sd35:
   enabled_chains:
   - lora
   - controlnet
+  - embedding
+  - conditioning
+  - sd3_ipadapter
+  - vae
+  - pid
+
+sdxl:
+  enabled_chains:
+  - lora
+  - controlnet
+  - ipadapter
+  - embedding
   - conditioning
   - vae
-hidream-o1:
+  - pid
+
+sd15:
   enabled_chains:
   - lora
-  - conditioning
-  - hidream_o1_reference
-hidream-i1:
-  enabled_chains:
-  - lora
-  - conditioning
-hunyuanimage:
-  enabled_chains:
+  - controlnet
+  - ipadapter
+  - embedding
   - conditioning
   - vae
