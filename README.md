@@ -41,7 +41,7 @@ This project integrates many popular AI generation models and utilities into a s
   The image generation features are built around a matrix-style dynamic workflow assembly mechanism. You can freely combine "task dimensions" and "model dimensions" to form dozens of base generation modes.
 
   - **Task dimension (`task_type`)**: supports `txt2img`, `img2img`, `Inpaint`, `Outpaint`, `Hires. fix`.
-  - **Model dimension (`model_type`)**: supports a wide range of model families such as `Lens`, `FLUX.2`, `Z-Image`, `Qwen-Image`, `ERNIE-Image`, `LongCat-Image`, `Anima`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream-O1`, `HiDream-I1`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
+  - **Model dimension (`model_type`)**: supports a wide range of model families such as `ideogram-4`, `Lens`, `FLUX.2`, `Z-Image`, `Qwen-Image`, `ERNIE-Image`, `LongCat-Image`, `Anima`, `NewBie-Image`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream-O1`, `HiDream-I1`, `FLUX.1`, `SD3.5`, `SDXL`, `SD1.5`, etc.
 
   After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
 
@@ -49,10 +49,11 @@ This project integrates many popular AI generation models and utilities into a s
   - **Dynamic ControlNet/DiffSynth ControlNet/Anima ControlNet Lllite chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
   - **Dynamic IP-Adapter chains:** Build complex multi-image IP-Adapter networks and finely control each reference image's weight and stylistic influence.
   - **Dynamic Reference Latent chains:** (for FLUX.2 and OmniGen2 models) Enables image editing and combination workflows in multimodal models by injecting multiple reference images.
-  - **Dynamic conditioning by region:** Apply independent prompts to different rectangular regions of the image for precise compositional control.
+  - **Dynamic conditioning chains:** Apply independent prompts to different rectangular regions of the image for precise compositional control.
   - **Dynamic style injection:** (for FLUX.1 models) Inject multiple style reference images and control their influence independently.
   - **Dynamic EasyCache chains:** Accelerates the generation process by inserting an EasyCache node.
-  - **Dynamic VAE chains/VAE replacement:** Swap in custom VAE models from Civitai, URLs, or local files at any point in the workflow.
+  - **Dynamic PiD replacement:** Use PiD (Pixel Diffusion Decoder) instead of the VAE Decoder for 4x decoding.
+  - **Dynamic VAE replacement:** Swap in custom VAE models from Civitai, URLs, or local files at any point in the workflow.
 
   This enables constructing highly complex workflows with ease. For example:
 

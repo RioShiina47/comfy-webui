@@ -1,0 +1,114 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      weight_dtype: "default"
+  cfg_override:
+    class_type: CFGOverride
+    title: "CFG Override"
+    params:
+      start_percent: 0.9
+      end_percent: 1.0
+  unet_uncond_loader:
+    class_type: UNETLoader
+    title: "Load Unconditional Model"
+    params:
+      weight_dtype: "default"
+  guider:
+    class_type: DualModelGuider
+    title: "Dual Model CFG Guider"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "ideogram4"
+      device: "default"
+  ksampler_select:
+    class_type: KSamplerSelect
+  scheduler_node:
+    class_type: Ideogram4Scheduler
+    params:
+      mu: 0.5
+      std: 1.75
+  random_noise:
+    class_type: RandomNoise
+  ksampler:
+    class_type: SamplerCustomAdvanced
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+
+connections:
+  - from: "unet_loader:0"
+    to: "cfg_override:model"
+  - from: "cfg_override:0"
+    to: "guider:model"
+  - from: "unet_uncond_loader:0"
+    to: "guider:model_negative"
+  
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+
+  - from: "pos_prompt:0"
+    to: "guider:positive"
+  - from: "neg_prompt:0"
+    to: "guider:negative"
+
+  - from: "guider:0"
+    to: "ksampler:guider"
+  - from: "ksampler_select:0"
+    to: "ksampler:sampler"
+  - from: "scheduler_node:0"
+    to: "ksampler:sigmas"
+  - from: "random_noise:0"
+    to: "ksampler:noise"
+
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "unet_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["cfg_override:model"]
+      "clip": ["pos_prompt:clip", "neg_prompt:clip"]
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    guider_node: "guider"
+    guider_target_inputs: ["positive"]
+    clip_source: "clip_loader:0"
+
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
+ui_map:
+  unet_name: "unet_loader:unet_name"
+  unet_uncond_name: "unet_uncond_loader:unet_name"
+  clip_name: "clip_loader:clip_name"
+  vae_name: "vae_loader:vae_name"
+  
+  scheduler_width: "scheduler_node:width"
+  scheduler_height: "scheduler_node:height"
+    
+  seed: "random_noise:noise_seed"
+  steps: "scheduler_node:steps"
+  cfg: 
+    - "guider:cfg"
+    - "cfg_override:cfg"
+  sampler_name: "ksampler_select:sampler_name"
+
+  scheduler: "dummy:scheduler"
+  denoise: "dummy:denoise"
