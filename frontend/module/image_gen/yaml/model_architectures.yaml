@@ -1,5 +1,6 @@
 architecture_order:
   - "PixelDiT"
+  - "Ideogram-4"
   - "Lens"
   - "FLUX.2-KV"
   - "FLUX.2"
@@ -25,19 +26,16 @@ architecture_order:
 architectures:
   "PixelDiT":
     model_type: "pixeldit"
-    controlnet_key: "PixelDiT"
+  "Ideogram-4":
+    model_type: "ideogram-4"
   "Lens":
     model_type: "lens"
-    controlnet_key: "Lens"
-  "ERNIE-Image":
-    model_type: "ernie_image"
-    controlnet_key: "ERNIE-Image"
   "FLUX.2-KV":
     model_type: "flux2-kv"
-    controlnet_key: "FLUX.2"
   "FLUX.2":
     model_type: "flux2"
-    controlnet_key: "FLUX.2"
+  "ERNIE-Image":
+    model_type: "ernie-image"
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"
@@ -56,36 +54,36 @@ architectures:
   "Ovis-Image":
     model_type: "ovis-image"
     controlnet_key: "Ovis-Image"
-  "FLUX.1":
-    model_type: "flux1"
-    controlnet_key: "FLUX.1"
+  "HunyuanImage":
+    model_type: "hunyuanimage"
+    controlnet_key: "HunyuanImage"
+  "Chroma1-Radiance":
+    model_type: "chroma1-radiance"
+    controlnet_key: "Chroma1-Radiance"
+  "Chroma1":
+    model_type: "chroma1"
+    controlnet_key: "Chroma1"
   "OmniGen2":
     model_type: "omnigen2"
     controlnet_key: "OmniGen2"
   "Lumina":
     model_type: "lumina"
     controlnet_key: "Lumina"
-  "SDXL":
-    model_type: "sdxl"
-    controlnet_key: "SDXL"
-  "SD3.5":
-    model_type: "sd35"
-    controlnet_key: "SD3.5"
-  "HunyuanImage":
-    model_type: "hunyuanimage"
-    controlnet_key: "HunyuanImage"
   "HiDream-O1":
     model_type: "hidream-o1"
     controlnet_key: "HiDream-O1"
   "HiDream-I1":
     model_type: "hidream-i1"
     controlnet_key: "HiDream-I1"
-  "Chroma1":
-    model_type: "chroma1"
-    controlnet_key: "Chroma1"
-  "Chroma1-Radiance":
-    model_type: "chroma1-radiance"
-    controlnet_key: "Chroma1-Radiance"
+  "FLUX.1":
+    model_type: "flux1"
+    controlnet_key: "FLUX.1"
+  "SD3.5":
+    model_type: "sd35"
+    controlnet_key: "SD3.5"
+  "SDXL":
+    model_type: "sdxl"
+    controlnet_key: "SDXL"
   "SD1.5":
     model_type: "sd15"
     controlnet_key: "SD1.5"

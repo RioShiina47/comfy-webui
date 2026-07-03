@@ -1,7 +1,7 @@
 PiD:
   - filepath: "pid_flux2_1024_to_4096_4step_mxfp8.safetensors"
     latent_format: "flux"
-    architectures: ["flux2", "flux2-kv", "lens", "ernie-image"]
+    architectures: ["flux2", "flux2-kv", "ideogram-4", "lens", "ernie-image"]
   - filepath: "pid_qwenimage_1024_to_4096_4step_bf16.safetensors"
     latent_format: "qwenimage"
     architectures: ["anima", "qwen-image"]
