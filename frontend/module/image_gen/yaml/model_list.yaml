@@ -1,4 +1,4 @@
-Checkpoints:
+Checkpoint:
   PixelDiT:
     latent_type: chroma_radiance_latent
     models:
@@ -7,6 +7,15 @@ Checkpoints:
           unet: "pixeldit_1300m_1024px_mxfp8.safetensors"
           clip: "gemma_2_2b_it_elm_fp8_scaled.safetensors"
           vae: "pixel_space"
+  Ideogram-4:
+    latent_type: flux2_latent
+    models:
+      - display_name: "ideogram-ai/ideogram-4"
+        components:
+          unet: "ideogram4_nvfp4_mixed.safetensors"
+          unet_uncond: "ideogram4_unconditional_nvfp4_mixed.safetensors"
+          clip: "qwen3vl_8b_nvfp4.safetensors"
+          vae: "flux2-vae.safetensors"
   Lens:
     latent_type: flux2_latent
     models:
@@ -20,27 +29,14 @@ Checkpoints:
           unet: "lens_turbo_mxfp8.safetensors"
           clip: "gpt_oss_20b_nvfp4.safetensors"
           vae: "flux2-vae.safetensors"
-  ERNIE-Image:
+  FLUX.2-KV:
     latent_type: flux2_latent
     models:
-      - display_name: "baidu/ERNIE-Image"
+      - display_name: "black-forest-labs/FLUX.2-klein-9B-KV"
         components:
-          unet: "ernie-image.safetensors"
+          unet: "flux-2-klein-9b-kv-fp8.safetensors"
+          clip: "qwen_3_8b_fp4mixed.safetensors"
           vae: "flux2-vae.safetensors"
-          clip: "ministral-3-3b.safetensors"
-      - display_name: "baidu/ERNIE-Image-Turbo"
-        components:
-          unet: "ernie-image-turbo.safetensors"
-          vae: "flux2-vae.safetensors"
-          clip: "ministral-3-3b.safetensors"
-  Anima:
-    latent_type: latent
-    models:
-      - display_name: "circlestone-labs/Anima-base-v1.0"
-        components:
-          unet: "anima-base-v1.0.safetensors"
-          vae: "qwen_image_vae.safetensors"
-          clip: "qwen_3_06b_base.safetensors"
   FLUX.2:
     latent_type: flux2_latent
     models:
@@ -69,31 +65,19 @@ Checkpoints:
           unet: "flux2-dev-nvfp4.safetensors"
           clip: "mistral_3_small_flux2_fp4_mixed.safetensors"
           vae: "flux2-vae.safetensors"
-  FLUX.2-KV:
+  ERNIE-Image:
     latent_type: flux2_latent
     models:
-      - display_name: "black-forest-labs/FLUX.2-klein-9B-KV"
+      - display_name: "baidu/ERNIE-Image"
         components:
-          unet: "flux-2-klein-9b-kv-fp8.safetensors"
-          clip: "qwen_3_8b_fp4mixed.safetensors"
+          unet: "ernie-image.safetensors"
           vae: "flux2-vae.safetensors"
-  LongCat-Image:
-    latent_type: sd3_latent
-    models:
-      - display_name: "meituan-longcat/LongCat-Image"
+          clip: "ministral-3-3b.safetensors"
+      - display_name: "baidu/ERNIE-Image-Turbo"
         components:
-          unet: "longcat_image_bf16.safetensors"
-          vae: "ae.safetensors"
-          clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
-  NewBie-Image:
-    latent_type: sd3_latent
-    models:
-      - display_name: "NewBie-AI/NewBie-image-Exp0.1"
-        components:
-          unet: "NewBie-Image-Exp0.1-bf16.safetensors"
-          vae: "ae.safetensors"
-          clip1: "gemma_3_4b_it_bf16.safetensors"
-          clip2: "jina_clip_v2_bf16.safetensors"
+          unet: "ernie-image-turbo.safetensors"
+          vae: "flux2-vae.safetensors"
+          clip: "ministral-3-3b.safetensors"
   Z-Image:
     latent_type: sd3_latent
     models:
@@ -107,6 +91,44 @@ Checkpoints:
           unet: "z_image_bf16.safetensors"
           vae: "ae.safetensors"
           clip: "qwen_3_4b_fp4_mixed.safetensors"
+  Qwen-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "Qwen-Image-2512"
+        components:
+          unet: "qwen_image_2512_fp8_e4m3fn.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+      - display_name: "Qwen-Image"
+        components:
+          unet: "qwen_image_nvfp4.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+  LongCat-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "meituan-longcat/LongCat-Image"
+        components:
+          unet: "longcat_image_bf16.safetensors"
+          vae: "ae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+  Anima:
+    latent_type: latent
+    models:
+      - display_name: "circlestone-labs/Anima-base-v1.0"
+        components:
+          unet: "anima-base-v1.0.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
+  NewBie-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "NewBie-AI/NewBie-image-Exp0.1"
+        components:
+          unet: "NewBie-Image-Exp0.1-bf16.safetensors"
+          vae: "ae.safetensors"
+          clip1: "gemma_3_4b_it_bf16.safetensors"
+          clip2: "jina_clip_v2_bf16.safetensors"
   Ovis-Image:
     latent_type: sd3_latent
     models:
@@ -115,19 +137,29 @@ Checkpoints:
           unet: "ovis_image_bf16.safetensors"
           vae: "ae.safetensors"
           clip: "ovis_2.5.safetensors"
-  Lumina:
-    latent_type: sd3_latent
+  HunyuanImage:
+    latent_type: hunyuan_latent
     models:
-      - display_name: "Alpha-VLLM/Lumina-Image-2.0"
-        path: "lumina_2.safetensors"
-  OmniGen2:
-    latent_type: sd3_latent
-    models:
-      - display_name: "OmniGen2"
+      - display_name: "HunyuanImage-2.1"
         components:
-          unet: "omnigen2_fp16.safetensors"
-          vae: "ae.safetensors"
-          clip: "qwen_2.5_vl_fp16.safetensors"
+          unet: "hunyuanimage2.1_fp8_e4m3fn.safetensors"
+          vae: "hunyuan_image_2.1_vae_fp16.safetensors"
+          clip1: "qwen_2.5_vl_7b_nvfp4.safetensors"
+          clip2: "byt5_small_glyphxl_fp16.safetensors"
+      - display_name: "HunyuanImage-2.1-Distilled"
+        components:
+          unet: "hunyuanimage2.1_distilled_fp8_e4m3fn.safetensors"
+          vae: "hunyuan_image_2.1_vae_fp16.safetensors"
+          clip1: "qwen_2.5_vl_7b_nvfp4.safetensors"
+          clip2: "byt5_small_glyphxl_fp16.safetensors"
+  Chroma1-Radiance:
+    latent_type: chroma_radiance_latent
+    models:
+      - display_name: "lodestones/Chroma1-Radiance-x0"
+        components:
+          unet: "Chroma1-Radiance-x0-fp8mixed_fullmm-20260104.safetensors"
+          vae: "pixel_space"
+          clip: "t5xxl_fp8_e4m3fn_scaled.safetensors"
   Chroma1:
     latent_type: sd3_latent
     models:
@@ -141,68 +173,19 @@ Checkpoints:
           unet: "Chroma1-HD-Flash_float8_e4m3fn_scaled_learned_topk8_svd.safetensors"
           vae: "ae.safetensors"
           clip: "t5xxl_fp8_e4m3fn_scaled.safetensors"
-          
-  Chroma1-Radiance:
-    latent_type: chroma_radiance_latent
-    models:
-      - display_name: "lodestones/Chroma1-Radiance-x0"
-        components:
-          unet: "Chroma1-Radiance-x0-fp8mixed_fullmm-20260104.safetensors"
-          vae: "pixel_space"
-          clip: "t5xxl_fp8_e4m3fn_scaled.safetensors"
-
-  SD3.5:
+  OmniGen2:
     latent_type: sd3_latent
     models:
-      - display_name: "StabilityAI/SD3.5-Large"
-        path: "sd3.5_large_fp8_scaled.safetensors"
-      - display_name: "StabilityAI/SD3.5-Medium"
-        path: "sd3.5_medium_incl_clips_t5xxlfp8scaled.safetensors"
-
-  SDXL:
-    latent_type: latent
-    models:
-      - display_name: "stabilityai/stable-diffusion-xl-base-1.0"
-        path: "sd_xl_base_1.0.safetensors"
-
-  FLUX.1:
+      - display_name: "OmniGen2"
+        components:
+          unet: "omnigen2_fp16.safetensors"
+          vae: "ae.safetensors"
+          clip: "qwen_2.5_vl_fp16.safetensors"
+  Lumina:
     latent_type: sd3_latent
     models:
-      - display_name: "flux1-dev"
-        components:
-          unet: "flux1-dev-fp8-e4m3fn.safetensors"
-          vae: "ae.safetensors"
-          clip1: "clip_l.safetensors"
-          clip2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
-      - display_name: "flux1-schnell"
-        components:
-          unet: "flux1-schnell-fp8-e4m3fn.safetensors"
-          vae: "ae.safetensors"
-          clip1: "clip_l.safetensors"
-          clip2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
-      - display_name: "flux1-krea-dev"
-        components:
-          unet: "flux1-krea-dev_fp8_scaled.safetensors"
-          vae: "ae.safetensors"
-          clip1: "clip_l.safetensors"
-          clip2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
-
-  Qwen-Image:
-    latent_type: sd3_latent
-    models:
-      - display_name: "QwenLM/Qwen-Image-2512"
-        components:
-          unet: "qwen_image_2512_fp8_e4m3fn.safetensors"
-          vae: "qwen_image_vae.safetensors"
-          clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
-          lora: "Qwen-Image-2512-Lightning-4steps-V1.0-bf16.safetensors"
-      - display_name: "QwenLM/Qwen-Image"
-        components:
-          unet: "qwen_image_fp8_e4m3fn.safetensors"
-          vae: "qwen_image_vae.safetensors"
-          clip: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
-          lora: "Qwen-Image-fp8-e4m3fn-Lightning-4steps-V1.0-bf16.safetensors"
-
+      - display_name: "Alpha-VLLM/Lumina-Image-2.0"
+        path: "lumina_2.safetensors"
   HiDream-O1:
     latent_type: hidream_o1_latent
     models:
@@ -210,7 +193,6 @@ Checkpoints:
         path: "hidream_o1_image_dev_fp8_scaled.safetensors"
       - display_name: "HiDream-O1-Image"
         path: "hidream_o1_image_fp8_scaled.safetensors"
-
   HiDream-I1:
     latent_type: sd3_latent
     models:
@@ -238,23 +220,41 @@ Checkpoints:
           clip2: "clip_g_hidream.safetensors"
           clip3: "t5xxl_fp8_e4m3fn_scaled.safetensors"
           clip4: "llama_3.1_8b_instruct_fp8_scaled.safetensors"
-
-  HunyuanImage:
-    latent_type: hunyuan_latent
+  FLUX.1:
+    latent_type: sd3_latent
     models:
-      - display_name: "HunyuanImage-2.1"
+      - display_name: "flux1-dev"
         components:
-          unet: "hunyuanimage2.1_fp8_e4m3fn.safetensors"
-          vae: "hunyuan_image_2.1_vae_fp16.safetensors"
-          clip1: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
-          clip2: "byt5_small_glyphxl_fp16.safetensors"
-      - display_name: "HunyuanImage-2.1-Distilled"
+          unet: "flux1-dev-nvfp4.safetensors"
+          vae: "ae.safetensors"
+          clip1: "clip_l.safetensors"
+          clip2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+      - display_name: "flux1-schnell"
         components:
-          unet: "hunyuanimage2.1_distilled_fp8_e4m3fn.safetensors"
-          vae: "hunyuan_image_2.1_vae_fp16.safetensors"
-          clip1: "qwen_2.5_vl_7b_fp8_scaled.safetensors"
-          clip2: "byt5_small_glyphxl_fp16.safetensors"
-
+          unet: "flux1-schnell-fp8-e4m3fn.safetensors"
+          vae: "ae.safetensors"
+          clip1: "clip_l.safetensors"
+          clip2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+      - display_name: "flux1-krea-dev"
+        components:
+          unet: "flux1-krea-dev_fp8_scaled.safetensors"
+          vae: "ae.safetensors"
+          clip1: "clip_l.safetensors"
+          clip2: "t5xxl_fp8_e4m3fn_scaled.safetensors"
+  SD3.5:
+    latent_type: sd3_latent
+    models:
+      - display_name: "StabilityAI/SD3.5-Large"
+        path: "sd3.5_large_fp8_scaled.safetensors"
+      - display_name: "StabilityAI/SD3.5-Medium"
+        path: "sd3.5_medium_incl_clips_t5xxlfp8scaled.safetensors"
+  SDXL:
+    latent_type: latent
+    models:
+    # SDXL-Base
+      - display_name: "stabilityai/stable-diffusion-xl-base-1.0"
+        path: "sd_xl_base_1.0.safetensors"
+        category: "Base"
   SD1.5:
     latent_type: latent
     models:
