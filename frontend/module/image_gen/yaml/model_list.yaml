@@ -1,4 +1,17 @@
-Checkpoint:
+Checkpoints:
+  Boogu-Image:
+    latent_type: latent
+    models:
+      - display_name: "Boogu-Image-Turbo"
+        components:
+          unet: "boogu_image_turbo_hotfix_nvfp4.safetensors"
+          clip: "qwen3vl_8b_nvfp4.safetensors"
+          vae: "ae.safetensors"
+      - display_name: "Boogu-Image-Base"
+        components:
+          unet: "boogu_image_base_nvfp4.safetensors"
+          clip: "qwen3vl_8b_nvfp4.safetensors"
+          vae: "ae.safetensors"
   PixelDiT:
     latent_type: chroma_radiance_latent
     models:
