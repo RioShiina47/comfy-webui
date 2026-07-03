@@ -201,7 +201,16 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
-    # Ideogram-4
+    # Boogu-Image
+    - filename: "boogu_image_base_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Boogu-Image"
+      repository_file_path: "diffusion_models/boogu_image_base_nvfp4.safetensors"
+    - filename: "boogu_image_turbo_hotfix_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Boogu-Image"
+      repository_file_path: "diffusion_models/boogu_image_turbo_hotfix_nvfp4.safetensors"
+    # Ideogram-4 & Boogu-Image
     - filename: "ideogram4_nvfp4_mixed.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Ideogram-4"

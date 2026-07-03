@@ -7,7 +7,7 @@ PiD:
     architectures: ["anima", "qwen-image"]
   - filepath: "pid_flux1_1024_to_4096_4step_mxfp8.safetensors"
     latent_format: "flux"
-    architectures: ["longcat-image", "newbie-image", "z-image", "ovis-image", "omnigen2", "chroma1", "hidream-i1", "flux1"]
+    architectures: ["longcat-image", "newbie-image", "z-image", "ovis-image", "omnigen2", "chroma1", "hidream-i1", "flux1", "boogu-image"]
   - filepath: "pid_sd3_1024_to_4096_4step_bf16.safetensors"
     latent_format: "sd3"
     architectures: ["sd35"]
