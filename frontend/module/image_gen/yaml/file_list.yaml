@@ -201,6 +201,15 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # Krea-2
+    - filename: "krea2_turbo_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Krea-2"
+      repository_file_path: "diffusion_models/krea2_turbo_nvfp4.safetensors"
+    - filename: "krea2_raw_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Krea-2"
+      repository_file_path: "diffusion_models/krea2_raw_fp8_scaled.safetensors"
     # Boogu-Image
     - filename: "boogu_image_base_nvfp4.safetensors"
       source: "hf"
@@ -515,6 +524,11 @@ file:
       repo_id: "alibaba-pai/Z-Image-Turbo-Fun-Controlnet-Union-2.1"
       repository_file_path: "Z-Image-Turbo-Fun-Controlnet-Tile-2.1-8steps.safetensors"
   text_encoders: 
+    # Krea-2
+    - filename: "qwen3vl_4b_fp8_scaled.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Krea-2"
+      repository_file_path: "text_encoders/qwen3vl_4b_fp8_scaled.safetensors"
     # Cosmos-Predict2
     - filename: "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
       source: "hf"
