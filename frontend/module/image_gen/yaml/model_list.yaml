@@ -125,6 +125,19 @@ Checkpoints:
           unet: "longcat_image_bf16.safetensors"
           vae: "ae.safetensors"
           clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+  Cosmos-Predict2:
+    latent_type: sd3_latent
+    models:
+      - display_name: "Cosmos-Predict2-2B-T2I"
+        components:
+          unet: "cosmos_predict2_2B_t2i.pt"
+          clip: "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
+          vae: "wan_2.1_vae.safetensors"
+      - display_name: "Cosmos-Predict2-14B-T2I"
+        components:
+          unet: "cosmos_predict2_14B_t2i.pt"
+          clip: "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
+          vae: "wan_2.1_vae.safetensors"
   Anima:
     latent_type: latent
     models:
