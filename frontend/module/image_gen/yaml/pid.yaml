@@ -4,7 +4,7 @@ PiD:
     architectures: ["flux2", "flux2-kv", "ideogram-4", "lens", "ernie-image"]
   - filepath: "pid_qwenimage_1024_to_4096_4step_bf16.safetensors"
     latent_format: "qwenimage"
-    architectures: ["anima", "qwen-image"]
+    architectures: ["anima", "qwen-image", "krea-2"]
   - filepath: "pid_flux1_1024_to_4096_4step_mxfp8.safetensors"
     latent_format: "flux"
     architectures: ["longcat-image", "newbie-image", "z-image", "kandinsky-5", "ovis-image", "omnigen2", "chroma1", "hidream-i1", "flux1", "boogu-image"]

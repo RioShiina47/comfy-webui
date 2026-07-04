@@ -8,6 +8,12 @@ default:
   - conditioning
   - vae
 
+krea-2:
+  enabled_chains:
+    - lora
+    - conditioning
+    - pid
+
 boogu-image:
   enabled_chains:
   - lora
