@@ -1,4 +1,17 @@
 Checkpoints:
+  Krea-2:
+    latent_type: latent
+    models:
+      - display_name: "Krea-2-Turbo"
+        components:
+          unet: "krea2_turbo_nvfp4.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "qwen_image_vae.safetensors"
+      - display_name: "Krea-2-Raw"
+        components:
+          unet: "krea2_raw_fp8_scaled.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "qwen_image_vae.safetensors"
   Boogu-Image:
     latent_type: latent
     models:
