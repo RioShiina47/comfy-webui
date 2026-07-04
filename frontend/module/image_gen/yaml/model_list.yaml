@@ -155,6 +155,15 @@ Checkpoints:
           vae: "ae.safetensors"
           clip1: "gemma_3_4b_it_bf16.safetensors"
           clip2: "jina_clip_v2_bf16.safetensors"
+  Kandinsky-5:
+    latent_type: latent
+    models:
+      - display_name: "Kandinsky-5.0-T2I-Lite"
+        components:
+          unet: "kandinsky5lite_t2i.safetensors"
+          vae: "ae.safetensors"
+          clip1: "qwen_2.5_vl_7b_nvfp4.safetensors"
+          clip2: "clip_l.safetensors"
   Ovis-Image:
     latent_type: sd3_latent
     models:

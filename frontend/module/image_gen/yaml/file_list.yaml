@@ -340,6 +340,11 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
       repository_file_path: "split_files/diffusion_models/qwen_image_nvfp4.safetensors"
+    # Kandinsky-5
+    - filename: "kandinsky5lite_t2i.safetensors"
+      source: "hf"
+      repo_id: "kandinskylab/Kandinsky-5.0-T2I-Lite"
+      repository_file_path: "model/kandinsky5lite_t2i.safetensors"
     # Flux.1
     - filename: "flux1-dev-nvfp4.safetensors"
       source: "hf"
