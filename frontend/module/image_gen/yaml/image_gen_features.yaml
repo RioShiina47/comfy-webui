@@ -92,6 +92,12 @@ newbie-image:
   - vae
   - pid
 
+kandinsky-5:
+  enabled_chains:
+  - conditioning
+  - vae
+  - pid
+
 ovis-image:
   enabled_chains:
   - conditioning

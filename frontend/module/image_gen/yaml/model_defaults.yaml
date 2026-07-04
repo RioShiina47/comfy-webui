@@ -124,6 +124,13 @@ NewBie-Image:
     positive_prompt: "You are an assistant designed to generate high-quality anime images with the highest degree of image-text alignment based on xml format textual prompts. <Prompt Start>"
     negative_prompt: "You are an assistant designed to generate low-quality images based on textual prompts. <Prompt Start>"
 
+Kandinsky-5:
+  _defaults:
+    steps: 50
+    cfg: 3.5
+    sampler_name: "euler"
+    scheduler: "simple"
+
 Ovis-Image:
   _defaults:
     steps: 20
