@@ -71,6 +71,11 @@ longcat-image:
   - conditioning
   - pid
 
+cosmos-predict2:
+  enabled_chains:
+  - conditioning
+  - vae
+
 anima:
   enabled_chains:
   - lora

@@ -99,6 +99,13 @@ LongCat-Image:
     sampler_name: "euler"
     scheduler: "simple"
 
+Cosmos-Predict2:
+  _defaults:
+    steps: 35
+    cfg: 4.0
+    sampler_name: "euler"
+    scheduler: "karras"
+
 Anima:
   _defaults:
     steps: 30
