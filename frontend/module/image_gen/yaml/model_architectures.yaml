@@ -12,6 +12,7 @@ architecture_order:
   - "Cosmos-Predict2"
   - "Anima"
   - "NewBie-Image"
+  - "Kandinsky-5"
   - "Ovis-Image"
   - "HunyuanImage"
   - "Chroma1-Radiance"
@@ -58,6 +59,9 @@ architectures:
   "NewBie-Image":
     model_type: "newbie-image"
     controlnet_key: "NewBie-Image"
+  "Kandinsky-5":
+    model_type: "kandinsky-5"
+    controlnet_key: "Kandinsky-5"
   "Ovis-Image":
     model_type: "ovis-image"
     controlnet_key: "Ovis-Image"
