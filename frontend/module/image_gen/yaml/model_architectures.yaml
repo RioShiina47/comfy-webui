@@ -9,6 +9,7 @@ architecture_order:
   - "Z-Image"
   - "Qwen-Image"
   - "LongCat-Image"
+  - "Cosmos-Predict2"
   - "Anima"
   - "NewBie-Image"
   - "Ovis-Image"
@@ -48,6 +49,9 @@ architectures:
   "LongCat-Image":
     model_type: "longcat-image"
     controlnet_key: "LongCat-Image"
+  "Cosmos-Predict2":
+    model_type: "cosmos-predict2"
+    controlnet_key: "Cosmos-Predict2"
   "Anima":
     model_type: "anima"
     controlnet_key: "Anima"
