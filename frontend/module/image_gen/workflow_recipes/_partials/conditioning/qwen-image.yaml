@@ -1,4 +1,10 @@
 nodes:
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
   unet_loader:
     class_type: UNETLoader
     title: "Load Qwen UNET"
@@ -70,6 +76,8 @@ dynamic_pid_chains:
     ksampler_node: "ksampler"
 
 ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"
   clip_name: "clip_loader:clip_name"
