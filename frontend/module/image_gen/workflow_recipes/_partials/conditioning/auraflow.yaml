@@ -1,0 +1,56 @@
+nodes:
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
+  ckpt_loader:
+    class_type: CheckpointLoaderSimple
+    title: "Load Checkpoint"
+
+connections:
+  - from: "ckpt_loader:0"
+    to: "ksampler:model"
+  - from: "ckpt_loader:1"
+    to: "pos_prompt:clip"
+  - from: "ckpt_loader:1"
+    to: "neg_prompt:clip"
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+  - from: "ckpt_loader:2"
+    to: "vae_decode:vae"
+  - from: "ckpt_loader:2"
+    to: "vae_encode:vae"
+
+dynamic_vae_chains:
+  vae_chain:
+    targets:
+      - "vae_decode:vae"
+      - "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    start: "ckpt_loader" 
+    output_map:
+      "0": "model" 
+      "1": "clip"  
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["ksampler:model"]
+      "clip": ["pos_prompt:clip", "neg_prompt:clip"]
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    ksampler_node: "ksampler"
+    clip_source: "ckpt_loader:1"
+
+ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  model_name: "ckpt_loader:ckpt_name"
