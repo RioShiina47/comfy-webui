@@ -1,10 +1,4 @@
 nodes:
-  pos_prompt:
-    class_type: CLIPTextEncode
-    title: "CLIP Text Encode (Positive)"
-  neg_prompt:
-    class_type: CLIPTextEncode
-    title: "CLIP Text Encode (Negative)"
   ksampler:
     class_type: KSampler
     title: "KSampler"
@@ -25,8 +19,6 @@ connections:
     to: "save_image:images"
 
 ui_map:
-  positive_prompt: "pos_prompt:text"
-  negative_prompt: "neg_prompt:text"
   seed: "ksampler:seed"
   steps: "ksampler:steps"
   cfg: "ksampler:cfg"
