@@ -1,4 +1,10 @@
 nodes:
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Positive)"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
   ckpt_loader:
     class_type: CheckpointLoaderSimple
     title: "Load Checkpoint"
@@ -59,4 +65,6 @@ dynamic_pid_chains:
     ksampler_node: "ksampler"
 
 ui_map:
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
   model_name: "ckpt_loader:ckpt_name"
