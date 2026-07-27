@@ -1,5 +1,6 @@
 architecture_order:
   - "Krea-2"
+  - "JoyAI-Image"
   - "Boogu-Image"
   - "PixelDiT"
   - "Ideogram-4"
@@ -31,6 +32,8 @@ architecture_order:
 architectures:
   Krea-2:
     model_type: "krea-2"
+  "JoyAI-Image":
+    model_type: "joyai-image"
   "Boogu-Image":
     model_type: "boogu-image"
   "PixelDiT":
