@@ -36,6 +36,7 @@ def ImageEdit(
     negative_prompt: str = "",
     width: int = 1328,
     height: int = 1328,
+    request: gr.Request = None
 ) -> str:
     """
     Edits an image based on a text instruction using the Qwen-Image-Edit model.
@@ -154,7 +155,11 @@ def ImageEdit(
                             
                             absolute_path = os.path.join(COMFYUI_OUTPUT_PATH, subfolder, filename)
                             
-                            base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
+                            if request and request.headers and "host" in request.headers:
+                                scheme = request.headers.get("x-forwarded-proto", "http")
+                                base_url = f"{scheme}://{request.headers['host']}"
+                            else:
+                                base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
                             final_url = f"{base_url}/gradio_api/file={urllib.parse.quote(absolute_path)}"
                             
                             print(f"[MCP ImageEdit] Generation complete. Returning URL: {final_url}")

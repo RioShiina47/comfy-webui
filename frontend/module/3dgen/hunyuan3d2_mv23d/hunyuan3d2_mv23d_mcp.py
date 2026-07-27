@@ -38,6 +38,7 @@ def ModelGen_multiview2model(
     back_image_data: str = None,
     left_image_url: str = None,
     left_image_data: str = None,
+    request: gr.Request = None
 ) -> dict[str, str]:
     """
     Generates a 3D model from three input images (front, back, left) using the Hunyuan3D-2mv model.
@@ -106,7 +107,11 @@ def ModelGen_multiview2model(
     if not found_all:
         raise RuntimeError("3D model generation failed; output files were not found after execution.")
 
-    base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
+    if request and request.headers and "host" in request.headers:
+        scheme = request.headers.get("x-forwarded-proto", "http")
+        base_url = f"{scheme}://{request.headers['host']}"
+    else:
+        base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
     
     shape_url = f"{base_url}/gradio_api/file={urllib.parse.quote(expected_files['shape'])}"
     textured_url = f"{base_url}/gradio_api/file={urllib.parse.quote(expected_files['textured'])}"

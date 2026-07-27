@@ -14,7 +14,8 @@ def AudioGen_txt2music(
     tags: str,
     lyrics: str = "[instrumental]",
     seconds: int = 30,
-    negative_prompt: str = ""
+    negative_prompt: str = "",
+    request: gr.Request = None
 ) -> str:
     """
     Generates a music clip from a text description and optional lyrics using the ACE-Step model.
@@ -73,7 +74,11 @@ def AudioGen_txt2music(
                             
                             absolute_path = os.path.join(COMFYUI_OUTPUT_PATH, subfolder, filename)
                             
-                            base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
+                            if request and request.headers and "host" in request.headers:
+                                scheme = request.headers.get("x-forwarded-proto", "http")
+                                base_url = f"{scheme}://{request.headers['host']}"
+                            else:
+                                base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
                             final_url = f"{base_url}/gradio_api/file={urllib.parse.quote(absolute_path)}"
                             
                             print(f"[MCP Txt2Music] Generation complete. Returning URL: {final_url}")
