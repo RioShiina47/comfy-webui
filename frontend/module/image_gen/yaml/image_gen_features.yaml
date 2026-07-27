@@ -14,6 +14,9 @@ krea-2:
     - conditioning
     - pid
 
+mage-flow:
+  enabled_chains:
+
 joyai-image:
   enabled_chains:
 

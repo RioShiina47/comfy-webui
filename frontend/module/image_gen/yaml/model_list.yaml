@@ -12,6 +12,29 @@ Checkpoints:
           unet: "krea2_raw_fp8_scaled.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "qwen_image_vae.safetensors"
+  Mage-Flow:
+    latent_type: none
+    models:
+      - display_name: "Mage-Flow-Turbo"
+        components:
+          unet: "mage_flow_turbo_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "mage_flow_vae_bf16.safetensors"
+      - display_name: "Mage-Flow"
+        components:
+          unet: "mage_flow_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "mage_flow_vae_bf16.safetensors"
+      - display_name: "Mage-Flow-Edit-Turbo"
+        components:
+          unet: "mage_flow_edit_turbo_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "mage_flow_vae_bf16.safetensors"
+      - display_name: "Mage-Flow-Edit"
+        components:
+          unet: "mage_flow_edit_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "mage_flow_vae_bf16.safetensors"
   JoyAI-Image:
     latent_type: sd3_latent
     models:

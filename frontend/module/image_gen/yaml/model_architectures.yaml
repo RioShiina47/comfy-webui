@@ -1,5 +1,6 @@
 architecture_order:
   - "Krea-2"
+  - "Mage-Flow"
   - "JoyAI-Image"
   - "Boogu-Image"
   - "PixelDiT"
@@ -32,6 +33,8 @@ architecture_order:
 architectures:
   Krea-2:
     model_type: "krea-2"
+  "Mage-Flow":
+    model_type: "mage-flow"
   "JoyAI-Image":
     model_type: "joyai-image"
   "Boogu-Image":
