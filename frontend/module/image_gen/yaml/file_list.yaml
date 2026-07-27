@@ -215,6 +215,15 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Krea-2"
       repository_file_path: "diffusion_models/krea2_raw_fp8_scaled.safetensors"
+    # JoyAI-Image
+    - filename: "joyai_image_edit_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "jdopensource/JoyAI-Image-Edit-ComfyUI"
+      repository_file_path: "diffusion_models/joyai_image_edit_int8_convrot.safetensors"
+    - filename: "joyai_image_edit_plus_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "jdopensource/JoyAI-Image-Edit-Plus-ComfyUI"
+      repository_file_path: "diffusion_models/joyai_image_edit_plus_int8_convrot.safetensors"
     # Boogu-Image
     - filename: "boogu_image_base_nvfp4.safetensors"
       source: "hf"
@@ -224,7 +233,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Boogu-Image"
       repository_file_path: "diffusion_models/boogu_image_turbo_hotfix_nvfp4.safetensors"
-    # Ideogram-4 & Boogu-Image
+    # Ideogram-4
     - filename: "ideogram4_nvfp4_mixed.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Ideogram-4"
@@ -534,6 +543,15 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Krea-2"
       repository_file_path: "text_encoders/qwen3vl_4b_fp8_scaled.safetensors"
+    # JoyAI-Image
+    - filename: "qwen3vl_8b_joyimage_edit_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "jdopensource/JoyAI-Image-Edit-ComfyUI"
+      repository_file_path: "text_encoders/qwen3vl_8b_joyimage_edit_int8_convrot.safetensors"
+    - filename: "qwen3vl_8b_joyimage_edit_plus_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "jdopensource/JoyAI-Image-Edit-Plus-ComfyUI"
+      repository_file_path: "text_encoders/qwen3vl_8b_joyimage_edit_plus_int8_convrot.safetensors"
     # Cosmos-Predict2
     - filename: "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
       source: "hf"

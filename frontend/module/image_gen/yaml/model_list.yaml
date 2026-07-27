@@ -12,6 +12,19 @@ Checkpoints:
           unet: "krea2_raw_fp8_scaled.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "qwen_image_vae.safetensors"
+  JoyAI-Image:
+    latent_type: sd3_latent
+    models:
+      - display_name: "JoyAI-Image-Edit"
+        components:
+          unet: "joyai_image_edit_int8_convrot.safetensors"
+          clip: "qwen3vl_8b_joyimage_edit_int8_convrot.safetensors"
+          vae: "wan_2.1_vae.safetensors"
+      - display_name: "JoyAI-Image-Edit-Plus"
+        components:
+          unet: "joyai_image_edit_plus_int8_convrot.safetensors"
+          clip: "qwen3vl_8b_joyimage_edit_plus_int8_convrot.safetensors"
+          vae: "wan_2.1_vae.safetensors"
   Boogu-Image:
     latent_type: latent
     models:
