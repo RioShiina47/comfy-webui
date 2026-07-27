@@ -14,6 +14,9 @@ krea-2:
     - conditioning
     - pid
 
+joyai-image:
+  enabled_chains:
+
 boogu-image:
   enabled_chains:
   - lora
