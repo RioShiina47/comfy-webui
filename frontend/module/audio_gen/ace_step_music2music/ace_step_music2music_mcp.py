@@ -43,7 +43,8 @@ def AudioGen_music2music(
     audio_data: str = None,
     lyrics: str = "[instrumental]",
     similarity: float = 0.7,
-    negative_prompt: str = ""
+    negative_prompt: str = "",
+    request: gr.Request = None
 ) -> str:
     """
     Re-composes a music clip based on a text description, optional lyrics, and an initial audio file.
@@ -106,11 +107,15 @@ def AudioGen_music2music(
                                 
                                 absolute_path = os.path.join(COMFYUI_OUTPUT_PATH, subfolder, filename)
                                 
+                            if request and request.headers and "host" in request.headers:
+                                scheme = request.headers.get("x-forwarded-proto", "http")
+                                base_url = f"{scheme}://{request.headers['host']}"
+                            else:
                                 base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
-                                final_url = f"{base_url}/gradio_api/file={urllib.parse.quote(absolute_path)}"
-                                
-                                print(f"[MCP Music2Music] Generation complete. Returning URL: {final_url}")
-                                return final_url
+                            final_url = f"{base_url}/gradio_api/file={urllib.parse.quote(absolute_path)}"
+                            
+                            print(f"[MCP Music2Music] Generation complete. Returning URL: {final_url}")
+                            return final_url
                 
                 if message.get('type') == 'status' and message.get('data', {}).get('status', {}).get('exec_info', {}).get('queue_remaining') == 0:
                     break

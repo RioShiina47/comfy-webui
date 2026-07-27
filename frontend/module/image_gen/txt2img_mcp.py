@@ -15,6 +15,7 @@ def ImageGen_txt2img(
     negative_prompt: str = "",
     width: int = 1328,
     height: int = 1328,
+    request: gr.Request = None
 ) -> str:
     """
     Generates an image from a text description. For best results, the recommended total resolution is close to 1328x1328.
@@ -102,7 +103,11 @@ def ImageGen_txt2img(
                             
                             absolute_path = os.path.join(COMFYUI_OUTPUT_PATH, subfolder, filename)
                             
-                            base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
+                            if request and request.headers and "host" in request.headers:
+                                scheme = request.headers.get("x-forwarded-proto", "http")
+                                base_url = f"{scheme}://{request.headers['host']}"
+                            else:
+                                base_url = f"http://{GRADIO_SERVER_NAME}:{SERVER_PORT}"
                             final_url = f"{base_url}/gradio_api/file={urllib.parse.quote(absolute_path)}"
                             
                             print(f"[MCP Txt2Img Tool] Generation complete. Returning URL: {final_url}")
