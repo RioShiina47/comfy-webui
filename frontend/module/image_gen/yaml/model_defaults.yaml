@@ -18,6 +18,16 @@ Krea-2:
     sampler_name: "euler"
     scheduler: "simple"
 
+JoyAI-Image:
+  _defaults:
+    steps: 40
+    cfg: 4.0
+    sampler_name: "euler"
+    scheduler: "normal"
+  "JoyAI-Image-Edit-Plus":
+    steps: 30
+    cfg: 4.0
+
 Boogu-Image:
   _defaults:
     steps: 25
