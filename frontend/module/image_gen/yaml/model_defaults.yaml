@@ -18,6 +18,19 @@ Krea-2:
     sampler_name: "euler"
     scheduler: "simple"
 
+Mage-Flow:
+  _defaults:
+    steps: 30
+    cfg: 5.0
+    sampler_name: "euler"
+    scheduler: "simple"
+  "Mage-Flow-Turbo":
+    steps: 4
+    cfg: 1.0
+  "Mage-Flow-Edit-Turbo":
+    steps: 4
+    cfg: 1.0
+
 JoyAI-Image:
   _defaults:
     steps: 40
