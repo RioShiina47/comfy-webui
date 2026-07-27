@@ -240,6 +240,13 @@ FLUX.1:
     sampler_name: "euler"
     scheduler: "simple"
 
+AuraFlow:
+  _defaults:
+    steps: 20
+    cfg: 3.5
+    sampler_name: "euler"
+    scheduler: "sgm_uniform"
+
 SD3.5:
   _defaults:
     steps: 20
