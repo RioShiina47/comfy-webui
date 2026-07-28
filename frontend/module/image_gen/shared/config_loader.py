@@ -7,6 +7,7 @@ _model_defaults = None
 _controlnet_models_config = None
 _diffsynth_controlnet_models_config = None
 _anima_controlnet_lllite_models_config = None
+_krea2_controlnet_models_config = None
 _ipadapter_presets_config = None
 _constants_config = None
 _features_config = None
@@ -83,6 +84,36 @@ def load_diffsynth_controlnet_models():
         config = _load_local_yaml("diffsynth_controlnet_models.yaml")
         _diffsynth_controlnet_models_config = config.get("DiffSynth_ControlNet", {})
     return _diffsynth_controlnet_models_config
+
+def load_krea2_controlnet_models():
+    global _krea2_controlnet_models_config
+    if _krea2_controlnet_models_config is None:
+        config = _load_local_yaml("krea2_controlnet_models.yaml")
+        _krea2_controlnet_models_config = config.get("Krea2_ControlNet", [])
+    return _krea2_controlnet_models_config
+
+def get_krea2_cn_defaults():
+    cn_config = load_krea2_controlnet_models()
+    if not cn_config:
+        return [], None, [], None, "None"
+        
+    all_types = sorted(list(set(t for model in cn_config for t in model.get("Type", []))))
+    default_type = all_types[0] if all_types else None
+    
+    series_choices = []
+    if default_type:
+        series_choices = sorted(list(set(model.get("Series", "Default") for model in cn_config if default_type in model.get("Type", []))))
+    default_series = series_choices[0] if series_choices else None
+    
+    filepath = "None"
+    if default_series and default_type:
+        for model in cn_config:
+            if model.get("Series") == default_series and default_type in model.get("Type", []):
+                filepath = model.get("Filepath")
+                break
+                
+    return all_types, default_type, series_choices, default_series, filepath
+
 
 def load_ipadapter_presets():
     global _ipadapter_presets_config

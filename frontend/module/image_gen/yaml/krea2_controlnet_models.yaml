@@ -1,0 +1,4 @@
+Krea2_ControlNet:
+  - Filepath: "depth-control-lora.safetensors"
+    Series: "Patil"
+    Type: ["Depth"]

@@ -49,6 +49,11 @@ dynamic_lora_chains:
       "model": ["ksampler:model"]
       "clip": ["pos_prompt:clip", "neg_prompt:clip"]
 
+dynamic_krea2_controlnet_chains:
+  krea2_controlnet_chain:
+    ksampler_node: "ksampler"
+    vae_source: "vae_loader:0"
+
 dynamic_conditioning_chains:
   conditioning_chain:
     ksampler_node: "ksampler"
