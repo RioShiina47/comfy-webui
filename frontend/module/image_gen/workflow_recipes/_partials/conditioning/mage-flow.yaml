@@ -61,6 +61,11 @@ dynamic_pid_chains:
   pid_chain:
     ksampler_node: "ksampler"
 
+dynamic_reference_image_chains:
+  reference_image_chain:
+    text_encode_node: "text_encode_latent"
+    vae_node: "vae_loader"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"
