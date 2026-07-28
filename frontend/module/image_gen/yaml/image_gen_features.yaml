@@ -20,6 +20,7 @@ mage-flow:
 
 joyai-image:
   enabled_chains:
+  - joyai_reference
 
 boogu-image:
   enabled_chains:
