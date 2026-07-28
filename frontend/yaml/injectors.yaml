@@ -33,6 +33,8 @@ injector_definitions:
     module: "chain_injectors.hidream_o1_smoothing_injector"
   dynamic_hidream_o1_reference_chains:
     module: "chain_injectors.hidream_o1_reference_injector"
+  dynamic_joyai_reference_chains:
+    module: "chain_injectors.joyai_reference_injector"
   dynamic_pid_chains:
     module: "chain_injectors.pid_injector"
   
@@ -54,4 +56,5 @@ injector_order:
   - dynamic_easycache_chains
   - dynamic_hidream_o1_smoothing_chains
   - dynamic_hidream_o1_reference_chains
+  - dynamic_joyai_reference_chains
   - dynamic_pid_chains

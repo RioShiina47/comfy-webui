@@ -19,7 +19,8 @@ from core.input_processors import (
     process_style_inputs,
     process_conditioning_inputs,
     process_reference_latent_inputs,
-    process_hidream_o1_reference_inputs
+    process_hidream_o1_reference_inputs,
+    process_joyai_reference_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -124,6 +125,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
 
     ref_latent_inputs = process_reference_latent_inputs(ui_values, prefix)
     hidream_o1_ref_inputs = process_hidream_o1_reference_inputs(ui_values, prefix)
+    joyai_ref_inputs = process_joyai_reference_inputs(ui_values, prefix)
 
     processed_chains = {
         'lora_chain': process_lora_inputs(ui_values, prefix),
@@ -138,6 +140,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
         'reference_latent_chain': ref_latent_inputs,
         'hidream_o1_reference_chain': hidream_o1_ref_inputs,
+        'joyai_reference_chain': joyai_ref_inputs,
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
         'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],

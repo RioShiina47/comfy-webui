@@ -71,6 +71,12 @@ dynamic_pid_chains:
   pid_chain:
     ksampler_node: "ksampler"
 
+dynamic_joyai_reference_chains:
+  joyai_reference_chain:
+    pos_prompt_node: "pos_prompt"
+    neg_prompt_node: "neg_prompt"
+    vae_node: "vae_loader"
+
 ui_map:
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"
