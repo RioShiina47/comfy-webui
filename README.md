@@ -46,10 +46,10 @@ This project integrates many popular AI generation models and utilities into a s
   After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
 
   - **Dynamic LoRA/Newbie LoRA chains:** Load multiple LoRAs from Civitai, URLs, uploaded files, or local paths and chain them; each LoRA's weight is independently controllable.
-  - **Dynamic ControlNet/Krea-2 ControlNet/DiffSynth ControlNet/Anima ControlNet Lllite chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
+  - **Dynamic ControlNet/Krea-2 ControlNet/DiffSynth ControlNet/Anima ControlNet LLLite chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
   - **Dynamic IP-Adapter chains:** Build complex multi-image IP-Adapter networks and finely control each reference image's weight and stylistic influence.
-  - **Dynamic Reference Latent chains:** (for FLUX.2 and OmniGen2 models) Enables image editing and combination workflows by injecting multiple reference images directly into the diffusion latent space.
-  - **Dynamic JoyAI-Image Reference chains:** (for JoyAI-Image models) Enables image editing and combination workflows in multimodal models utilizing VL models as Text Encoder by injecting multiple reference images as visual tokens.
+  - **Dynamic Reference Latent/HiDream-O1 Reference chains:** (for FLUX.2, FLUX.2-KV, OmniGen2 and HiDream-O1 models) Enables image editing and combination workflows by injecting multiple reference images directly into the diffusion latent space.
+  - **Dynamic Reference Image/JoyAI-Image Reference chains:** (for Mage-Flow and JoyAI-Image models) Enables image editing and combination workflows in multimodal models utilizing VL models as Text Encoder by injecting multiple reference images as visual tokens.
   - **Dynamic conditioning chains:** Apply independent prompts to different rectangular regions of the image for precise compositional control.
   - **Dynamic style injection:** (for FLUX.1 models) Inject multiple style reference images and control their influence independently.
   - **Dynamic EasyCache chains:** Accelerates the generation process by inserting an EasyCache node.

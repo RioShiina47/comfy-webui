@@ -17,6 +17,7 @@ krea-2:
 
 mage-flow:
   enabled_chains:
+  - reference_image
 
 joyai-image:
   enabled_chains:
