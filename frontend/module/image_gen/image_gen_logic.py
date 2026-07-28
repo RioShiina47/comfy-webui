@@ -11,6 +11,7 @@ from core.input_processors import (
     process_controlnet_inputs,
     process_anima_controlnet_lllite_inputs,
     process_diffsynth_controlnet_inputs,
+    process_krea2_controlnet_inputs,
     process_ipadapter_inputs,
     process_flux1_ipadapter_inputs,
     process_sd3_ipadapter_inputs,
@@ -127,6 +128,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     processed_chains = {
         'lora_chain': process_lora_inputs(ui_values, prefix),
         'controlnet_chain': cn_items,
+        'krea2_controlnet_chain': process_krea2_controlnet_inputs(ui_values, prefix),
         'anima_controlnet_lllite_chain': anima_cn_items,
         'diffsynth_controlnet_chain': process_diffsynth_controlnet_inputs(ui_values, prefix),
         'ipadapter_chain': process_ipadapter_inputs(ui_values, prefix, load_ipadapter_presets()),

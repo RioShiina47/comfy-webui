@@ -527,6 +527,11 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   loras: 
+    # Krea2 ControlNet
+    - filename: "depth-control-lora.safetensors"
+      source: "hf"
+      repo_id: "Patil/Krea-2-depth-controlnet"
+      repository_file_path: "depth-control-lora.safetensors"
     # SD1.5 FaceID
     - filename: "ip-adapter-faceid_sd15_lora.safetensors"
       source: "hf"
