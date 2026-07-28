@@ -4,7 +4,7 @@ import shutil
 from core.config import LORA_DIR, EMBEDDING_DIR
 from core.shared_ui import register_ui_chain_events
 from .utils import get_model_type, get_model_generation_defaults
-from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_diffsynth_controlnet_models, load_anima_controlnet_lllite_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
+from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_diffsynth_controlnet_models, load_anima_controlnet_lllite_models, load_krea2_controlnet_models, get_krea2_cn_defaults, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
 
 constants = load_constants_config()
 
@@ -73,6 +73,12 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     diffsynth_controlnet_series_list = components.get(key('diffsynth_controlnet_series'))
     diffsynth_controlnet_types_list = components.get(key('diffsynth_controlnet_types'))
     diffsynth_controlnet_filepaths_list = components.get(key('diffsynth_controlnet_filepaths'))
+
+    krea2_cn_accordion = components.get(key('krea2_controlnet_accordion'))
+    krea2_cn_series_list = components.get(key('krea2_controlnet_series'))
+    krea2_cn_types_list = components.get(key('krea2_controlnet_types'))
+    krea2_cn_filepaths_list = components.get(key('krea2_controlnet_filepaths'))
+    krea2_cn_images_list = components.get(key('krea2_controlnet_images'))
     
     ipadapter_accordion = components.get(key('ipadapter_accordion'))
     flux1_ipadapter_accordion = components.get(key('flux1_ipadapter_accordion'))
@@ -149,6 +155,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
 
         chain_map = {
             'lora': lora_accordion,
+            'krea2_controlnet': krea2_cn_accordion,
             'controlnet_model_patch': diffsynth_controlnet_accordion,
             'ipadapter': ipadapter_accordion,
             'flux1_ipadapter': flux1_ipadapter_accordion,
@@ -248,6 +255,23 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
                 for filepath_state in diffsynth_controlnet_filepaths_list:
                     updates[filepath_state] = "None"
 
+        if krea2_cn_accordion and 'krea2_controlnet' in enabled_chains:
+            updates[krea2_cn_accordion] = gr.update(visible=True)
+            krea2_cn_types, default_krea2_type, krea2_cn_series, default_krea2_series, krea2_filepath = get_krea2_cn_defaults()
+            
+            if krea2_cn_types_list:
+                for type_dd in krea2_cn_types_list:
+                    updates[type_dd] = gr.update(choices=krea2_cn_types, value=default_krea2_type)
+            if krea2_cn_series_list:
+                for series_dd in krea2_cn_series_list:
+                    updates[series_dd] = gr.update(choices=krea2_cn_series, value=default_krea2_series)
+            if krea2_cn_filepaths_list:
+                for filepath_state in krea2_cn_filepaths_list:
+                    updates[filepath_state] = krea2_filepath
+        elif krea2_cn_accordion:
+            updates[krea2_cn_accordion] = gr.update(visible=False)
+
+
         if ipadapter_accordion and 'ipadapter' in enabled_chains:
             ipadapter_visible = model_type in ["sdxl", "sd15", "sd35"]
             updates[ipadapter_accordion] = gr.update(visible=ipadapter_visible)
@@ -301,6 +325,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "sampler": sampler_dropdown, "scheduler": scheduler_dropdown, "lora": lora_accordion,
         "embedding": embedding_accordion, "gallery": gallery_component, "cn_accordion": controlnet_accordion,
         "anima_cn_accordion": anima_cn_accordion,
+        "krea2_cn_accordion": krea2_cn_accordion,
         "diffsynth_cn_accordion": diffsynth_controlnet_accordion,
         "ipa_accordion": ipadapter_accordion, "flux1_ipa_accordion": flux1_ipadapter_accordion, "sd3_ipa_accordion": sd3_ipadapter_accordion, "ipa_final_preset": ipadapter_final_preset,
         "ipa_final_lora_slider": ipadapter_final_lora_strength_slider,
@@ -335,6 +360,13 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         for i, cn_series in enumerate(diffsynth_controlnet_series_list): on_model_change_outputs[f'diffsynth_cn_series_{i}'] = cn_series
     if diffsynth_controlnet_filepaths_list:
         for i, cn_filepath in enumerate(diffsynth_controlnet_filepaths_list): on_model_change_outputs[f'diffsynth_cn_filepath_{i}'] = cn_filepath
+
+    if krea2_cn_types_list:
+        for i, cn_type in enumerate(krea2_cn_types_list): on_model_change_outputs[f'krea2_cn_type_{i}'] = cn_type
+    if krea2_cn_series_list:
+        for i, cn_series in enumerate(krea2_cn_series_list): on_model_change_outputs[f'krea2_cn_series_{i}'] = cn_series
+    if krea2_cn_filepaths_list:
+        for i, cn_filepath in enumerate(krea2_cn_filepaths_list): on_model_change_outputs[f'krea2_cn_filepath_{i}'] = cn_filepath
 
     if ipadapter_presets_list:
         for i, ipa_preset in enumerate(ipadapter_presets_list): on_model_change_outputs[f'ipa_preset_{i}'] = ipa_preset
@@ -529,6 +561,51 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
                 show_progress=False,
                 show_api=False
             )
+
+    def on_krea2_cn_type_change(selected_type):
+        cn_config = load_krea2_controlnet_models()
+        series_choices = []
+        if selected_type:
+            series_choices = sorted(list(set(
+                model.get("Series", "Default") for model in cn_config
+                if selected_type in model.get("Type", [])
+            )))
+        default_series = series_choices[0] if series_choices else None
+        filepath = "None"
+        if default_series:
+            for model in cn_config:
+                if model.get("Series") == default_series and selected_type in model.get("Type", []):
+                    filepath = model.get("Filepath")
+                    break
+        return gr.update(choices=series_choices, value=default_series), filepath
+
+    def on_krea2_cn_series_change(selected_series, selected_type):
+        cn_config = load_krea2_controlnet_models()
+        filepath = "None"
+        if selected_series and selected_type:
+            for model in cn_config:
+                if model.get("Series") == selected_series and selected_type in model.get("Type", []):
+                    filepath = model.get("Filepath")
+                    break
+        return filepath
+
+    if krea2_cn_series_list and krea2_cn_types_list and krea2_cn_filepaths_list:
+        for i in range(constants.get('MAX_CONTROLNETS', 5)):
+            krea2_cn_types_list[i].change(
+                fn=on_krea2_cn_type_change,
+                inputs=[krea2_cn_types_list[i]],
+                outputs=[krea2_cn_series_list[i], krea2_cn_filepaths_list[i]],
+                show_progress=False,
+                show_api=False
+            )
+            krea2_cn_series_list[i].change(
+                fn=on_krea2_cn_series_change,
+                inputs=[krea2_cn_series_list[i], krea2_cn_types_list[i]],
+                outputs=[krea2_cn_filepaths_list[i]],
+                show_progress=False,
+                show_api=False
+            )
+
 
     if controlnet_accordion and controlnet_images_list:
         def on_accordion_expand(*images):

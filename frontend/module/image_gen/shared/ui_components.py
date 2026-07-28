@@ -145,6 +145,40 @@ def create_anima_controlnet_lllite_ui(components, prefix):
             components[key('delete_anima_controlnet_lllite_button')] = gr.Button("➖ Delete Lllite", visible=False)
         components[key('anima_controlnet_lllite_count_state')] = gr.State(1)
 
+def create_krea2_controlnet_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
+    with gr.Accordion("Krea2 ControlNet Settings", open=False) as krea2_cn_accordion:
+        components[key('krea2_controlnet_accordion')] = krea2_cn_accordion
+        gr.Markdown("💡 **Tip:** Processed using the [facok/comfyui-krea2-controlnet](https://github.com/facok/comfyui-krea2-controlnet) node.")
+        
+        cn_rows, images, series, types, strengths, filepaths = [], [], [], [], [], []
+        components.update({
+            key('krea2_controlnet_rows'): cn_rows,
+            key('krea2_controlnet_images'): images,
+            key('krea2_controlnet_series'): series,
+            key('krea2_controlnet_types'): types,
+            key('krea2_controlnet_strengths'): strengths,
+            key('krea2_controlnet_filepaths'): filepaths
+        })
+        
+        for i in range(max_controlnets):
+            with gr.Row(visible=(i < 1)) as row:
+                with gr.Column(scale=1):
+                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources=["upload"], height=256))
+                with gr.Column(scale=2):
+                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True, allow_custom_value=True))
+                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True, allow_custom_value=True))
+                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
+                    filepaths.append(gr.State(None))
+                cn_rows.append(row)
+
+        with gr.Row():
+            components[key('add_krea2_controlnet_button')] = gr.Button("✚ Add Krea2 ControlNet")
+            components[key('delete_krea2_controlnet_button')] = gr.Button("➖ Delete Krea2 ControlNet", visible=False)
+        components[key('krea2_controlnet_count_state')] = gr.State(1)
+
+
 def create_flux1_ipadapter_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
     max_ipadapters = constants.get('MAX_IPADAPTERS', 5)

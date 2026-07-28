@@ -519,6 +519,9 @@ def register_ui_chain_events(components, prefix):
 
     _add_row_factory(key('diffsynth_controlnet_count_state'), key('add_diffsynth_controlnet_button'), key('delete_diffsynth_controlnet_button'), key('diffsynth_controlnet_rows'), constants.get('MAX_CONTROLNETS', 5))
     _delete_row_factory(key('diffsynth_controlnet_count_state'), key('add_diffsynth_controlnet_button'), key('delete_diffsynth_controlnet_button'), key('diffsynth_controlnet_rows'), constants.get('MAX_CONTROLNETS', 5), reset_keys=[key('diffsynth_controlnet_images'), key('diffsynth_controlnet_strengths')])
+
+    _add_row_factory(key('krea2_controlnet_count_state'), key('add_krea2_controlnet_button'), key('delete_krea2_controlnet_button'), key('krea2_controlnet_rows'), constants.get('MAX_CONTROLNETS', 5))
+    _delete_row_factory(key('krea2_controlnet_count_state'), key('add_krea2_controlnet_button'), key('delete_krea2_controlnet_button'), key('krea2_controlnet_rows'), constants.get('MAX_CONTROLNETS', 5), reset_keys=[key('krea2_controlnet_images'), key('krea2_controlnet_strengths')])
     
     _add_row_factory(key('ipadapter_count_state'), key('add_ipadapter_button'), key('delete_ipadapter_button'), key('ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5))
     _delete_row_factory(key('ipadapter_count_state'), key('add_ipadapter_button'), key('delete_ipadapter_button'), key('ipadapter_rows'), constants.get('MAX_IPADAPTERS', 5), reset_keys=[key('ipadapter_images'), key('ipadapter_weights')])
