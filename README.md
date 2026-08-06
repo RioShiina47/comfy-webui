@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**English** | [简体中文](README_CN.md)
+
 Comfy web UI is more than a modular, mobile-first frontend for ComfyUI — it's a powerful workflow-as-a-service platform. Built on Gradio, it communicates with ComfyUI backends via a dynamic workflow-assembly API. In addition to an intuitive graphical interface, it exposes higher-level APIs and MCP functions so developers can encapsulate complex multi-node workflows into simple, callable functions for automation and integration.
 
 ---
@@ -28,9 +30,25 @@ This project integrates many popular AI generation models and utilities into a s
   - **[Professional creation panel](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageGen/txt2img.png) (ImageGen):** Parameter-rich design offering full creative control. **[HF spaces](https://huggingface.co/spaces/RioShiina/ImageGen)** 🤗
   - **[One-tap compact panels](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/UI/ImageEdit/Instruction%20%26%20Reference%20Edit/FLUX-2.png) (ImageEdit, VideoGen, AudioGen, 3DGen):** Use best-practice fixed parameters to maximize simplicity, optimized for mobile.
 
-- **🤖 [API & MCP ready](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/API_MCP/API_MCP.png) — Workflow as a Service**
+- **🤖 [High-Level Semantic API/MCP](https://github.com/RioShiina47/comfy-webui/blob/main/Screenshot/API_MCP/API_MCP.png) — Workflow as a Service** **[Live MCP Server](https://rioshiina-imagegen.hf.space/gradio_api/mcp/)** 🔗
   - The project not only provides a UI, but also exposes complex workflow recipes as simple, high-level Python functions via Gradio's API and MCP mechanisms.
   - This makes Comfy web UI a powerful backend for "Workflow as a Service" — any AI client or application that supports the Gradio MCP standard can call these functions to automate and integrate generation tasks.
+  - **High-Level Semantic API/MCP**
+    - Our WaaS architecture adopts **High-Level Semantic API/MCP** to replace low-level atomic node API/MCP, aiming to:
+    - **Reduced Cognitive Load for LLMs:** Eliminates the need for LLMs to reason over complex topological links and micro-node details, preventing failures caused by broken links, node version conflicts, or topological hallucinations.
+    - **Unshakable Contract Stability:** All dynamic node graph construction, multi-chain injection, and VRAM management are handled transparently server-side. Even if underlying custom nodes undergo breaking updates or structural rewrites, the agent-facing MCP API contract remains rock-solid.
+    - **Intent-Driven Orchestration:** Frees AI agents from being "node wirers", allowing them to focus purely on high-level creative intent and task orchestration.
+  - **API/MCP design & practice in the ImageGen module:**
+    - **7 High-Level Abstract Endpoints Explained:**
+      1. `ImageGen_get_task_list`: **Task Type Probe.** Returns all supported image generation tasks (`txt2img`, `img2img`, `inpaint`, `outpaint`, `hires_fix`) along with required/optional parameter definitions.
+      2. `ImageGen_get_model_architecture_list`: **Architecture Probe.** Lists supported model families (`SD1.5`, `SDXL`, `FLUX.1`, `FLUX.2`, `Anima`, etc.) and recommended default resolutions.
+      3. `ImageGen_get_model_list`: **Model Query.** Retrieves available model checkpoints with optional architecture filtering, returning display names, categories, and default prompts.
+      4. `ImageGen_get_feature_list`: **Feature & Schema Discovery.** Queries supported chain injectors (LoRA, ControlNet, IP-Adapter, Reference Latent, etc.). Returns token-optimized summaries when unparameterized, or full parameter schemas when requested.
+      5. `ImageGen_get_model_features`: **Model Metadata & Hyperparam Probe.** Returns a model's supported tasks, active feature chains, and official recommended hyperparameters (`steps`, `cfg`, `sampler`, `scheduler`).
+      6. `ImageGen_run`: **Unified Execution Interface.** Accepts basic generation tasks stacked with multi-layer chain injectors; supports Minimal Mode (auto-injecting default hyperparams) and synchronous/asynchronous execution.
+      7. `ImageGen_get_task_status`: **Async Status Polling.** Polls task progress (`queued`, `processing`, `completed`, `failed`), percentage, and generated output URLs via `task_id`.
+    - **Progressive discovery flow for AI Agents:** Designed with a self-describing exploration pipeline (`Task Discovery → Architecture Filter → Model Query → Feature & Default Hyperparam Discovery → Execution → Async Status Polling`), enabling LLM Agents to dynamically inspect available models and chainable capabilities on the fly.
+    - **Zero-guessing hyperparameter engine:** Eliminates AI hyperparameter hallucination with **Minimal Mode** (server automatically applies official recommended defaults) and **Explicit Alignment Mode** (query via `get_model_features` before passing).
 
 - **⚡ Asynchronous tasks & history**
   - All generation tasks run asynchronously on the server. Tasks continue even if the browser is closed or the network connection drops.
