@@ -32,6 +32,9 @@ main_tabs_order:
       - "Qwen-Image Layered"
 
   - "VideoGen":
+    - "H3":
+      - "H3 FL2VA"
+      - "H3 REF2VA"
     - "LTX-2.3":
       - "LTX-2.3 T2V"
       - "LTX-2.3 I2V"

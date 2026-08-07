@@ -1,0 +1,174 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "minimax_h3_fl2va_pruned_int8_convrot.safetensors"
+      weight_dtype: "default"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      clip_name: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+      type: "minimax"
+      device: "default"
+  video_vae_loader:
+    class_type: VAELoader
+    title: "Load Video VAE"
+    params:
+      vae_name: "minimax_h3_video_vae_fp16.safetensors"
+  audio_vae_loader:
+    class_type: VAELoader
+    title: "Load Audio VAE"
+    params:
+      vae_name: "minimax_h3_audio_vae_fp32.safetensors"
+  minimax_h3:
+    class_type: MiniMaxH3ImageToVideo
+    title: "MiniMax H3 Image to Video"
+    params:
+      width: 1344
+      height: 768
+      length: 73
+  basic_guider:
+    class_type: BasicGuider
+    title: "Basic Guider"
+  ksampler_select:
+    class_type: KSamplerSelect
+    title: "KSamplerSelect"
+    params:
+      sampler_name: "res_multistep"
+  basic_scheduler:
+    class_type: BasicScheduler
+    title: "BasicScheduler"
+    params:
+      scheduler: "simple"
+      steps: 20
+      denoise: 1.0
+  random_noise:
+    class_type: RandomNoise
+    title: "RandomNoise"
+    params:
+      noise_seed: 1
+  sampler_custom_advanced:
+    class_type: SamplerCustomAdvanced
+    title: "SamplerCustomAdvanced"
+  vae_decode:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  vae_decode_audio:
+    class_type: VAEDecodeAudio
+    title: "VAE Decode Audio"
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+    params:
+      fps: 24
+      bit_depth: 8
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params:
+      filename_prefix: "video/MiniMax_H3"
+      format: "auto"
+      codec: "auto"
+
+  first_frame_loader:
+    class_type: "{{ first_frame_loader_class }}"
+    title: "Load Image"
+  first_frame_scale:
+    class_type: "{{ first_frame_scale_class }}"
+    title: "Upscale Image"
+    params:
+      upscale_method: "nearest-exact"
+      crop: "center"
+
+  last_frame_loader:
+    class_type: "{{ last_frame_loader_class }}"
+    title: "Load Image"
+  last_frame_scale:
+    class_type: "{{ last_frame_scale_class }}"
+    title: "Upscale Image"
+    params:
+      upscale_method: "nearest-exact"
+      crop: "center"
+
+dynamic_lora_chains:
+  loras:
+    template: LoraLoader
+    output_map:
+      "unet_loader:0": model
+      "clip_loader:0": clip
+    input_map:
+      model: model
+      clip: clip
+    template_output_map:
+      "0": model
+      "1": clip
+    end_input_map:
+      model:
+        - "basic_guider:model"
+        - "basic_scheduler:model"
+      clip:
+        - "minimax_h3:clip"
+
+connections:
+  - from: "clip_loader:0"
+    to: "minimax_h3:clip"
+  - from: "video_vae_loader:0"
+    to: "minimax_h3:vae"
+  - from: "unet_loader:0"
+    to: "basic_guider:model"
+  - from: "minimax_h3:0"
+    to: "basic_guider:conditioning"
+  - from: "unet_loader:0"
+    to: "basic_scheduler:model"
+  - from: "random_noise:0"
+    to: "sampler_custom_advanced:noise"
+  - from: "basic_guider:0"
+    to: "sampler_custom_advanced:guider"
+  - from: "ksampler_select:0"
+    to: "sampler_custom_advanced:sampler"
+  - from: "basic_scheduler:0"
+    to: "sampler_custom_advanced:sigmas"
+  - from: "minimax_h3:1"
+    to: "sampler_custom_advanced:latent_image"
+  - from: "sampler_custom_advanced:0"
+    to: "vae_decode:samples"
+  - from: "video_vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "sampler_custom_advanced:0"
+    to: "vae_decode_audio:samples"
+  - from: "audio_vae_loader:0"
+    to: "vae_decode_audio:vae"
+  - from: "vae_decode:0"
+    to: "create_video:images"
+  - from: "vae_decode_audio:0"
+    to: "create_video:audio"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+  - from: "first_frame_loader:0"
+    to: "first_frame_scale:image"
+  - from: "first_frame_scale:0"
+    to: "minimax_h3:first_frame"
+
+  - from: "last_frame_loader:0"
+    to: "last_frame_scale:image"
+  - from: "last_frame_scale:0"
+    to: "minimax_h3:last_frame"
+
+ui_map:
+  prompt: "minimax_h3:prompt"
+  width:
+    - "minimax_h3:width"
+    - "first_frame_scale:width"
+    - "last_frame_scale:width"
+  height:
+    - "minimax_h3:height"
+    - "first_frame_scale:height"
+    - "last_frame_scale:height"
+  length: "minimax_h3:length"
+  seed: "random_noise:noise_seed"
+  filename_prefix: "save_video:filename_prefix"
+  first_frame_image: "first_frame_loader:image"
+  last_frame_image: "last_frame_loader:image"

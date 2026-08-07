@@ -1,0 +1,20 @@
+file: 
+  diffusion_models: 
+    - filename: "minimax_h3_ref2va_pruned_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3"
+      repository_file_path: "diffusion_models/minimax_h3_ref2va_pruned_int8_convrot.safetensors" 
+  text_encoders: 
+    - filename: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3"
+      repository_file_path: "text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+  vae: 
+    - filename: "minimax_h3_audio_vae_fp32.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3"
+      repository_file_path: "vae/minimax_h3_audio_vae_fp32.safetensors"
+    - filename: "minimax_h3_video_vae_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3"
+      repository_file_path: "vae/minimax_h3_video_vae_fp16.safetensors"
