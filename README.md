@@ -2,8 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**English** | [简体中文](README_CN.md)
-
 Comfy web UI is more than a modular, mobile-first frontend for ComfyUI — it's a powerful workflow-as-a-service platform. Built on Gradio, it communicates with ComfyUI backends via a dynamic workflow-assembly API. In addition to an intuitive graphical interface, it exposes higher-level APIs and MCP functions so developers can encapsulate complex multi-node workflows into simple, callable functions for automation and integration.
 
 ---
@@ -84,7 +82,7 @@ This project integrates many popular AI generation models and utilities into a s
   - **Instruction & Reference editing:** `FLUX.2`
   - **Instruction editing:** `Qwen-Image-Edit`, `FireRed-Image-Edit`, `LongCat-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev`, `OmniGen2-Image-Edit` etc.
   - **Reference editing:** `ByteDance USO`
-  - **Video generation:** `LTX-2.3`, `LTX-2`, `Wan-2.2`, `Wan-2.1`, `HunyuanVideo-1.5`, `HuMo`, `Kandinsky`
+  - **Video generation:** `H3`, `LTX-2.3`, `LTX-2`, `Wan-2.2`, `Wan-2.1`, `HunyuanVideo-1.5`, `HuMo`, `Kandinsky`
   - **Audio generation:** `ACE-Step 1.5`, `ACE-Step`
   - **3D generation (Hunyuan3D-2):** `Image-to-3D`, `Multi-view-to-3D`
 
