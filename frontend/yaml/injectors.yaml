@@ -37,6 +37,8 @@ injector_definitions:
     module: "chain_injectors.joyai_reference_injector"
   dynamic_reference_image_chains:
     module: "chain_injectors.reference_image_injector"
+  dynamic_boogu_image_edit_chains:
+    module: "chain_injectors.boogu_image_edit_injector"
   dynamic_pid_chains:
     module: "chain_injectors.pid_injector"
   
@@ -60,4 +62,5 @@ injector_order:
   - dynamic_hidream_o1_reference_chains
   - dynamic_joyai_reference_chains
   - dynamic_reference_image_chains
+  - dynamic_boogu_image_edit_chains
   - dynamic_pid_chains

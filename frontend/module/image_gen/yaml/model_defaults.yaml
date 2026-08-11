@@ -52,6 +52,11 @@ Boogu-Image:
     cfg: 1.0
     sampler_name: "lcm"
     scheduler: "sgm_uniform"
+  "Boogu-Image-Edit-Turbo":
+    steps: 4
+    cfg: 1.0
+    sampler_name: "lcm"
+    scheduler: "sgm_uniform"
 
 PixelDiT:
   _defaults:
