@@ -61,6 +61,16 @@ Checkpoints:
           unet: "boogu_image_base_nvfp4.safetensors"
           clip: "qwen3vl_8b_nvfp4.safetensors"
           vae: "ae.safetensors"
+      - display_name: "Boogu-Image-Edit-Turbo"
+        components:
+          unet: "boogu_image_edit_turbo_hotfix_1k_20260708_int8_convrot.safetensors"
+          clip: "qwen3vl_8b_nvfp4.safetensors"
+          vae: "ae.safetensors"
+      - display_name: "Boogu-Image-Edit"
+        components:
+          unet: "boogu_image_edit_nvfp4.safetensors"
+          clip: "qwen3vl_8b_nvfp4.safetensors"
+          vae: "ae.safetensors"
   PixelDiT:
     latent_type: chroma_radiance_latent
     models:
