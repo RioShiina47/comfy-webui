@@ -94,6 +94,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     hidream_o1_reference_accordion = components.get(key('hidream_o1_reference_accordion'))
     joyai_reference_accordion = components.get(key('joyai_reference_accordion'))
     reference_image_accordion = components.get(key('reference_image_accordion'))
+    boogu_image_edit_accordion = components.get(key('boogu_image_edit_accordion'))
     vae_accordion = components.get(key('vae_accordion'))
 
 
@@ -169,6 +170,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'hidream_o1_reference': hidream_o1_reference_accordion,
             'joyai_reference': joyai_reference_accordion,
             'reference_image': reference_image_accordion,
+            'boogu_image_edit': boogu_image_edit_accordion,
             'vae': vae_accordion,
             'pid': pid_accordion
         }
@@ -338,6 +340,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "hidream_o1_reference_accordion": hidream_o1_reference_accordion,
         "joyai_reference_accordion": joyai_reference_accordion,
         "reference_image_accordion": reference_image_accordion,
+        "boogu_image_edit_accordion": boogu_image_edit_accordion,
         "vae_accordion": vae_accordion, "pid_accordion": pid_accordion
     }
     

@@ -26,6 +26,7 @@ joyai-image:
 boogu-image:
   enabled_chains:
   - lora
+  - boogu_image_edit
   - conditioning
   - pid
 

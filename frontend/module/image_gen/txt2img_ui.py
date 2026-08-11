@@ -7,7 +7,7 @@ from .sd_shared import (
     create_style_ui, create_conditioning_ui, create_vae_override_ui,
     create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
     create_reference_latent_ui, create_hidream_o1_reference_ui, create_joyai_reference_ui,
-    create_reference_image_ui,
+    create_reference_image_ui, create_boogu_image_edit_ui,
     register_shared_events,
     create_run_generation_logic, create_pid_ui
 )
@@ -51,6 +51,7 @@ def create_ui():
         create_hidream_o1_reference_ui(components, PREFIX)
         create_joyai_reference_ui(components, PREFIX)
         create_reference_image_ui(components, PREFIX)
+        create_boogu_image_edit_ui(components, PREFIX)
         create_vae_override_ui(components, PREFIX)
         create_style_ui(components, PREFIX)
         create_pid_ui(components, PREFIX)

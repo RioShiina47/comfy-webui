@@ -21,7 +21,8 @@ from core.input_processors import (
     process_reference_latent_inputs,
     process_hidream_o1_reference_inputs,
     process_joyai_reference_inputs,
-    process_reference_image_inputs
+    process_reference_image_inputs,
+    process_boogu_image_edit_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -32,7 +33,7 @@ from .shared.vae_utils import process_vae_override_input
 
 def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     """
-    Generic input processor for all image generation tasks based on sd_unified_recipe.yaml.
+    Generic input processor for all image generation tasks based on unified_recipe.yaml.
     """
     prefix = task_type
     
@@ -97,7 +98,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         if vals['latent_type'] == 'latent':
             vals['latent_generator_template'] = 'EmptyLatentImage'
     
-    recipe_path = "workflow_recipes/sd_unified_recipe.yaml"
+    recipe_path = "workflow_recipes/unified_recipe.yaml"
     dynamic_values = {'task_type': task_type, 'model_type': model_type}
     if 'latent_type' in vals:
         dynamic_values['latent_type'] = vals['latent_type']
@@ -144,6 +145,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'hidream_o1_reference_chain': hidream_o1_ref_inputs,
         'joyai_reference_chain': joyai_ref_inputs,
         'reference_image_chain': reference_img_inputs,
+        'boogu_image_edit_chain': process_boogu_image_edit_inputs(ui_values, prefix),
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
         'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],

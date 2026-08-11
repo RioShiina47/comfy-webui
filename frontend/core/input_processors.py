@@ -405,3 +405,17 @@ def process_reference_image_inputs(all_ui_values: dict, prefix: str):
             references.append(image_filename)
             
     return references
+
+def process_boogu_image_edit_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    references = []
+    ref_images = all_ui_values.get(key('boogu_image_edit_images'), [])
+    if not ref_images:
+        return []
+    
+    for image_pil in ref_images:
+        if image_pil is not None:
+            image_filename = save_temp_image(image_pil)
+            references.append(image_filename)
+            
+    return references
