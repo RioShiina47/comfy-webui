@@ -1,0 +1,417 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "ltx-2.5-22b-distilled-transformer-nvfp4.safetensors"
+      weight_dtype: "default"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      clip_name: "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+      type: "ltxv"
+      device: "default"
+  video_vae_loader:
+    class_type: VAELoader
+    title: "Load Video VAE"
+    params:
+      vae_name: "ltx-2.5-video-vae-bf16.safetensors"
+  audio_vae_loader:
+    class_type: VAELoader
+    title: "Load Audio VAE"
+    params:
+      vae_name: "ltx-2.5-audio-vae-bf16.safetensors"
+
+  load_start_image:
+    class_type: LoadImage
+    title: "Load First Frame"
+  load_end_image:
+    class_type: LoadImage
+    title: "Load Last Frame"
+
+  resize_start_image:
+    class_type: ResizeImageMaskNode
+    title: "Resize Start Image"
+    params:
+      resize_type: "scale longer dimension"
+      resize_type.longer_size: 1536
+      scale_method: "lanczos"
+
+  resize_end_image:
+    class_type: ResizeImageMaskNode
+    title: "Resize End Image"
+    params:
+      resize_type: "scale longer dimension"
+      resize_type.longer_size: 1536
+      scale_method: "lanczos"
+
+  preprocess_start:
+    class_type: LTXVPreprocess
+    title: "Preprocess Start Image"
+    params:
+      img_compression: 18
+
+  preprocess_end:
+    class_type: LTXVPreprocess
+    title: "Preprocess End Image"
+    params:
+      img_compression: 18
+
+  pos_prompt:
+    class_type: CLIPTextEncode
+    title: "Positive Prompt"
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "Negative Prompt"
+
+  conditioning:
+    class_type: LTXVConditioning
+    title: "LTXV Conditioning"
+    params:
+      frame_rate: 24
+
+  empty_latent_video:
+    class_type: EmptyLTXVLatentVideo
+    title: "Empty Video Latent"
+    params:
+      batch_size: 1
+  empty_latent_audio:
+    class_type: LTXVEmptyLatentAudio
+    title: "Empty Audio Latent"
+    params:
+      batch_size: 1
+      frame_rate: 24
+  
+  guide_first_frame:
+    class_type: LTXVAddGuide
+    title: "Add First Frame Guide"
+    params:
+      frame_idx: 0
+      strength: 0.7
+  guide_last_frame:
+    class_type: LTXVAddGuide
+    title: "Add Last Frame Guide"
+    params:
+      frame_idx: -1
+      strength: 0.7
+
+  latent_combiner_1:
+    class_type: LTXVConcatAVLatent
+    title: "Combine A/V Latents 1"
+
+  sigmas_1:
+    class_type: ManualSigmas
+    title: "Sigmas 1"
+    params:
+      sigmas: "1.0, 0.99375, 0.9875, 0.98125, 0.975, 0.909375, 0.725, 0.421875, 0.0"
+  noise_1:
+    class_type: RandomNoise
+    title: "Noise 1"
+  guider_1:
+    class_type: LTXVDualCFGGuider
+    title: "LTXV Dual CFG Guider 1"
+    params:
+      video_cfg: 1.0
+      audio_cfg: 1.0
+  sampler_select_1:
+    class_type: KSamplerSelect
+    title: "Sampler Select 1"
+    params:
+      sampler_name: "euler_ancestral"
+  sampler_1:
+    class_type: SamplerCustomAdvanced
+    title: "Sampler 1"
+  latent_separator_1:
+    class_type: LTXVSeparateAVLatent
+    title: "Separate A/V Latents 1"
+
+  latent_upscaler_loader_spatial:
+    class_type: LatentUpscaleModelLoader
+    title: "Load Spatial Upscale Model"
+    params:
+      model_name: "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+  latent_upscaler_spatial:
+    class_type: LTXVLatentUpsampler
+    title: "Spatial Latent Upsampler"
+  latent_combiner_2:
+    class_type: LTXVConcatAVLatent
+    title: "Combine A/V Latents 2"
+  
+  crop_guides:
+    class_type: LTXVCropGuides
+    title: "Crop Guides"
+
+  sigmas_2:
+    class_type: ManualSigmas
+    title: "Sigmas 2"
+    params:
+      sigmas: "0.85, 0.7250, 0.4219, 0.0"
+  noise_2:
+    class_type: RandomNoise
+    title: "Noise 2"
+  guider_2:
+    class_type: LTXVDualCFGGuider
+    title: "LTXV Dual CFG Guider 2"
+    params:
+      video_cfg: 1.0
+      audio_cfg: 1.0
+  sampler_select_2:
+    class_type: KSamplerSelect
+    title: "Sampler Select 2"
+    params:
+      sampler_name: "euler_ancestral"
+  sampler_2:
+    class_type: SamplerCustomAdvanced
+    title: "Sampler 2"
+  latent_separator_2:
+    class_type: LTXVSeparateAVLatent
+    title: "Separate A/V Latents 2"
+
+  latent_upscaler_loader_temporal:
+    class_type: LatentUpscaleModelLoader
+    title: "Load Temporal Upscale Model"
+    params:
+      model_name: "ltx-2.5-latent-temporal-upscaler-x2-bf16-1.0.safetensors"
+  latent_upscaler_temporal:
+    class_type: LTXVLatentUpsampler
+    title: "Temporal Latent Upsampler"
+  latent_combiner_3:
+    class_type: LTXVConcatAVLatent
+    title: "Combine A/V Latents 3"
+  
+  sigmas_3:
+    class_type: ManualSigmas
+    title: "Sigmas 3"
+    params:
+      sigmas: "0.85, 0.7250, 0.4219, 0.0"
+  noise_3:
+    class_type: RandomNoise
+    title: "Noise 3"
+  guider_3:
+    class_type: LTXVDualCFGGuider
+    title: "LTXV Dual CFG Guider 3"
+    params:
+      video_cfg: 1.0
+      audio_cfg: 1.0
+  sampler_select_3:
+    class_type: KSamplerSelect
+    title: "Sampler Select 3"
+    params:
+      sampler_name: "euler_ancestral"
+  sampler_3:
+    class_type: SamplerCustomAdvanced
+    title: "Sampler 3"
+  latent_separator_3:
+    class_type: LTXVSeparateAVLatent
+    title: "Separate A/V Latents 3"
+  
+  video_decoder:
+    class_type: VAEDecode
+    title: "VAE Decode"
+  audio_decoder:
+    class_type: LTXVAudioVAEDecode
+    title: "Audio VAE Decode"
+
+  create_video:
+    class_type: CreateVideo
+    title: "Create Video"
+    params:
+      fps: 24
+      bit_depth: 8
+  save_video:
+    class_type: SaveVideo
+    title: "Save Video"
+    params:
+      filename_prefix: "video/LTX_2.5_flf2v"
+      format: "auto"
+      codec: "auto"
+
+dynamic_lora_chains:
+  loras:
+    template: LoraLoader
+    output_map:
+      "unet_loader:0": model
+      "clip_loader:0": clip
+    input_map:
+      model: model
+      clip: clip
+    template_output_map:
+      "0": model
+      "1": clip
+    end_input_map:
+      model:
+        - "guider_1:model"
+        - "guider_2:model"
+        - "guider_3:model"
+      clip:
+        - "pos_prompt:clip"
+        - "neg_prompt:clip"
+
+connections:
+  - from: "unet_loader:0"
+    to: "guider_1:model"
+  - from: "unet_loader:0"
+    to: "guider_2:model"
+  - from: "unet_loader:0"
+    to: "guider_3:model"
+  - from: "clip_loader:0"
+    to: "pos_prompt:clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "video_vae_loader:0"
+    to: "guide_first_frame:vae"
+  - from: "video_vae_loader:0"
+    to: "guide_last_frame:vae"
+  - from: "video_vae_loader:0"
+    to: "latent_upscaler_spatial:vae"
+  - from: "video_vae_loader:0"
+    to: "latent_upscaler_temporal:vae"
+  - from: "video_vae_loader:0"
+    to: "video_decoder:vae"
+  - from: "audio_vae_loader:0"
+    to: "empty_latent_audio:audio_vae"
+  - from: "audio_vae_loader:0"
+    to: "audio_decoder:audio_vae"
+
+  - from: "load_start_image:0"
+    to: "resize_start_image:input"
+  - from: "load_end_image:0"
+    to: "resize_end_image:input"
+  - from: "resize_start_image:0"
+    to: "preprocess_start:image"
+  - from: "resize_end_image:0"
+    to: "preprocess_end:image"
+
+  - from: "pos_prompt:0"
+    to: "conditioning:positive"
+  - from: "neg_prompt:0"
+    to: "conditioning:negative"
+  
+  - from: "conditioning:0"
+    to: "guide_first_frame:positive"
+  - from: "conditioning:1"
+    to: "guide_first_frame:negative"
+  - from: "empty_latent_video:0"
+    to: "guide_first_frame:latent"
+  - from: "preprocess_start:0"
+    to: "guide_first_frame:image"
+
+  - from: "guide_first_frame:0"
+    to: "guide_last_frame:positive"
+  - from: "guide_first_frame:1"
+    to: "guide_last_frame:negative"
+  - from: "guide_first_frame:2"
+    to: "guide_last_frame:latent"
+  - from: "preprocess_end:0"
+    to: "guide_last_frame:image"
+
+  - from: "guide_last_frame:2"
+    to: "latent_combiner_1:video_latent"
+  - from: "empty_latent_audio:0"
+    to: "latent_combiner_1:audio_latent"
+
+  - from: "guide_last_frame:0"
+    to: "guider_1:positive"
+  - from: "guide_last_frame:1"
+    to: "guider_1:negative"
+  - from: "guider_1:0"
+    to: "sampler_1:guider"
+  - from: "noise_1:0"
+    to: "sampler_1:noise"
+  - from: "sigmas_1:0"
+    to: "sampler_1:sigmas"
+  - from: "sampler_select_1:0"
+    to: "sampler_1:sampler"
+  - from: "latent_combiner_1:0"
+    to: "sampler_1:latent_image"
+  - from: "sampler_1:0"
+    to: "latent_separator_1:av_latent"
+
+  - from: "latent_separator_1:0"
+    to: "latent_upscaler_spatial:samples"
+  - from: "latent_upscaler_loader_spatial:0"
+    to: "latent_upscaler_spatial:upscale_model"
+  - from: "latent_upscaler_spatial:0"
+    to: "latent_combiner_2:video_latent"
+  - from: "latent_separator_1:1"
+    to: "latent_combiner_2:audio_latent"
+
+  - from: "latent_separator_1:0"
+    to: "crop_guides:latent"
+  - from: "conditioning:0"
+    to: "crop_guides:positive"
+  - from: "conditioning:1"
+    to: "crop_guides:negative"
+  - from: "crop_guides:0"
+    to: "guider_2:positive"
+  - from: "crop_guides:0"
+    to: "guider_3:positive"
+  - from: "crop_guides:1"
+    to: "guider_2:negative"
+  - from: "crop_guides:1"
+    to: "guider_3:negative"
+
+  - from: "guider_2:0"
+    to: "sampler_2:guider"
+  - from: "noise_2:0"
+    to: "sampler_2:noise"
+  - from: "sigmas_2:0"
+    to: "sampler_2:sigmas"
+  - from: "sampler_select_2:0"
+    to: "sampler_2:sampler"
+  - from: "latent_combiner_2:0"
+    to: "sampler_2:latent_image"
+  - from: "sampler_2:0"
+    to: "latent_separator_2:av_latent"
+
+  - from: "latent_separator_2:0"
+    to: "latent_upscaler_temporal:samples"
+  - from: "latent_upscaler_loader_temporal:0"
+    to: "latent_upscaler_temporal:upscale_model"
+  - from: "latent_upscaler_temporal:0"
+    to: "latent_combiner_3:video_latent"
+  - from: "latent_separator_2:1"
+    to: "latent_combiner_3:audio_latent"
+
+  - from: "guider_3:0"
+    to: "sampler_3:guider"
+  - from: "noise_3:0"
+    to: "sampler_3:noise"
+  - from: "sigmas_3:0"
+    to: "sampler_3:sigmas"
+  - from: "sampler_select_3:0"
+    to: "sampler_3:sampler"
+  - from: "latent_combiner_3:0"
+    to: "sampler_3:latent_image"
+  - from: "sampler_3:0"
+    to: "latent_separator_3:av_latent"
+  
+  - from: "latent_separator_3:0"
+    to: "video_decoder:samples"
+  - from: "latent_separator_3:1"
+    to: "audio_decoder:samples"
+  - from: "video_decoder:0"
+    to: "create_video:images"
+  - from: "audio_decoder:0"
+    to: "create_video:audio"
+  - from: "create_video:0"
+    to: "save_video:video"
+
+ui_map:
+  start_image: "load_start_image:image"
+  end_image: "load_end_image:image"
+  positive_prompt: "pos_prompt:text"
+  negative_prompt: "neg_prompt:text"
+  aspect_ratio:
+    width: "empty_latent_video:width"
+    height: "empty_latent_video:height"
+  video_length:
+    - "empty_latent_video:length"
+    - "empty_latent_audio:frames_number"
+  frame_rate:
+    - "conditioning:frame_rate"
+    - "empty_latent_audio:frame_rate"
+    - "create_video:fps"
+  seed: ["noise_1:noise_seed", "noise_2:noise_seed", "noise_3:noise_seed"]
+  filename_prefix: "save_video:filename_prefix"
