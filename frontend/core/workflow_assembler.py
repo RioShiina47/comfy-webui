@@ -170,6 +170,13 @@ class WorkflowAssembler:
         for name, details in all_inputs.items():
             config = details[1] if len(details) > 1 and isinstance(details[1], dict) else {}
             template["inputs"][name] = config.get("default", None)
+            if isinstance(details, list) and len(details) > 0 and details[0] == "COMFY_DYNAMICCOMBO_V3" and isinstance(config, dict):
+                for option in config.get("options", []):
+                    opt_inputs = option.get("inputs", {})
+                    for group in [opt_inputs.get("required", {}), opt_inputs.get("optional", {})]:
+                        for sub_name, sub_details in group.items():
+                            sub_cfg = sub_details[1] if len(sub_details) > 1 and isinstance(sub_details[1], dict) else {}
+                            template["inputs"][f"{name}.{sub_name}"] = sub_cfg.get("default", None)
         return template
 
     def assemble(self, ui_values):
@@ -192,8 +199,10 @@ class WorkflowAssembler:
             if 'title' in details: node_data['_meta']['title'] = details['title']
             if 'params' in details:
                 for param, value in details['params'].items():
-                    if param in node_data['inputs']: node_data['inputs'][param] = value
-                    else: print(f"Warning: Param '{param}' in recipe for node '{name}' does not exist in '{class_type}'. Skipping.")
+                    node_data['inputs'][param] = value
+                    for input_key in list(node_data['inputs'].keys()):
+                        if input_key.endswith(f".{param}"):
+                            node_data['inputs'][input_key] = value
             self.workflow[unique_id] = node_data
 
         for ui_key, target in self.recipe.get('ui_map', {}).items():
