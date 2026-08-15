@@ -1,0 +1,29 @@
+file: 
+  diffusion_models: 
+    - filename: "ltx-2.5-22b-distilled-transformer-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.5"
+      repository_file_path: "diffusion_models/ltx-2.5-22b-distilled-transformer-nvfp4.safetensors"
+  text_encoders: 
+    - filename: "gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.5"
+      repository_file_path: "text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+  vae: 
+    - filename: "ltx-2.5-audio-vae-bf16.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.5"
+      repository_file_path: "vae/ltx-2.5-audio-vae-bf16.safetensors"
+    - filename: "ltx-2.5-video-vae-bf16.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.5"
+      repository_file_path: "vae/ltx-2.5-video-vae-bf16.safetensors"
+  latent_upscale_models: 
+    - filename: "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.5"
+      repository_file_path: "latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+    - filename: "ltx-2.5-latent-temporal-upscaler-x2-bf16-1.0.safetensors"
+      source: "hf"
+      repo_id: "Lightricks/LTX-2.5"
+      repository_file_path: "latent_upscale_models/ltx-2.5-latent-temporal-upscaler-x2-bf16-1.0.safetensors"

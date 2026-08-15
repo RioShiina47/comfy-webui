@@ -35,6 +35,12 @@ main_tabs_order:
     - "H3":
       - "H3 FL2VA"
       - "H3 REF2VA"
+    - "LTX-2.5":
+      - "LTX-2.5 T2V"
+      - "LTX-2.5 I2V"
+      - "LTX-2.5 TA2V"
+      - "LTX-2.5 IA2V"
+      - "LTX-2.5 FLF2V"
     - "LTX-2.3":
       - "LTX-2.3 T2V"
       - "LTX-2.3 I2V"
