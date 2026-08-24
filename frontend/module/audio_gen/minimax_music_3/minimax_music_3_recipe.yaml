@@ -1,0 +1,105 @@
+nodes:
+  load_unet:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "minimax_music3_dit_int8_convrot.safetensors"
+      weight_dtype: "default"
+
+  load_clip:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      clip_name: "minimax_music3_text_encoder_pruned_int8_convrot.safetensors"
+      type: "minimax"
+      device: "default"
+
+  load_vae:
+    class_type: VAELoader
+    title: "Load VAE"
+    params:
+      vae_name: "minimax_music3_dav.safetensors"
+
+  text_encoder:
+    class_type: MiniMaxMusic3TextEncode
+    title: "MiniMax Music3 Text Encode"
+    params:
+      top_k: 50
+      max_duration: 60
+      cfg_scale: 1.7
+
+  negative_conditioning:
+    class_type: ConditioningZeroOut
+    title: "Conditioning Zero Out"
+
+  empty_latent:
+    class_type: EmptyMiniMaxMusic3LatentAudio
+    title: "Empty MiniMax Music3 Latent Audio"
+    params:
+      batch_size: 1
+
+  sampler:
+    class_type: KSampler
+    title: "KSampler"
+    params:
+      steps: 30
+      cfg: 1.7
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
+
+  vae_decode_audio:
+    class_type: VAEDecodeAudioTiled
+    title: "VAE Decode Audio (Tiled)"
+    params:
+      tile_size: 1536
+      overlap: 64
+
+  save_audio:
+    class_type: SaveAudioAdvanced
+    title: "Save Audio (Advanced)"
+    params:
+      filename_prefix: "audio/audio_minimax_music3"
+      format: "mp3"
+      format.quality: "V0"
+
+connections:
+  - from: "load_clip:0"
+    to: "text_encoder:clip"
+  - from: "text_encoder:0"
+    to: "negative_conditioning:conditioning"
+  - from: "text_encoder:1"
+    to: "empty_latent:seconds"
+  - from: "load_unet:0"
+    to: "sampler:model"
+  - from: "text_encoder:0"
+    to: "sampler:positive"
+  - from: "negative_conditioning:0"
+    to: "sampler:negative"
+  - from: "empty_latent:0"
+    to: "sampler:latent_image"
+  - from: "sampler:0"
+    to: "vae_decode_audio:samples"
+  - from: "load_vae:0"
+    to: "vae_decode_audio:vae"
+  - from: "vae_decode_audio:0"
+    to: "save_audio:audio"
+
+ui_map:
+  caption: "text_encoder:caption"
+  lyrics: "text_encoder:lyrics"
+  max_duration: "text_encoder:max_duration"
+  cfg_scale:
+    - "text_encoder:cfg_scale"
+    - "sampler:cfg"
+  top_k: "text_encoder:top_k"
+  seed:
+    - "text_encoder:seed"
+    - "sampler:seed"
+  steps: "sampler:steps"
+  sampler_name: "sampler:sampler_name"
+  scheduler: "sampler:scheduler"
+  batch_size: "empty_latent:batch_size"
+  tile_size: "vae_decode_audio:tile_size"
+  overlap: "vae_decode_audio:overlap"
+  filename_prefix: "save_audio:filename_prefix"
