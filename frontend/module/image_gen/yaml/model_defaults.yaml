@@ -130,6 +130,12 @@ Qwen-Image:
     cfg: 4.0
     sampler_name: "euler"
     scheduler: "simple"
+  "lightx2v/Qwen-Image-2512-Lightning":
+    steps: 4
+    cfg: 1.0
+  "lightx2v/Qwen-Image-Edit-2511-Lightning":
+    steps: 4
+    cfg: 1.0
 
 LongCat-Image:
   _defaults:

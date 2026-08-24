@@ -508,6 +508,34 @@ def create_boogu_image_edit_ui(components, prefix, max_units=None):
         
         components[key('all_boogu_image_edit_components_flat')] = ref_image_inputs
 
+def create_qwen_image_edit_ui(components, prefix, max_units=None):
+    if max_units is None:
+        constants = get_ui_constants()
+        max_units = constants.get('MAX_QWEN_IMAGE_EDITS', 3)
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("Qwen-Image Edit Settings", open=False) as ref_accordion:
+        components[key('qwen_image_edit_accordion')] = ref_accordion
+        gr.Markdown("💡 **Tip:** (lightx2v/Qwen-Image-Edit-2511-Lightning recommended) In txt2img mode, adding a single reference image performs an **Image Edit**, while adding multiple images performs an **Image Combine**.")
+        
+        ref_image_groups = []
+        ref_image_inputs = []
+        with gr.Row():
+            for i in range(max_units):
+                with gr.Column(visible=(i < 1), min_width=160) as img_col:
+                    img_comp = gr.Image(type="pil", label=f"Ref. {i+1}", sources=["upload"], height=150)
+                    ref_image_groups.append(img_col)
+                    ref_image_inputs.append(img_comp)
+        
+        components[key('qwen_image_edit_rows')] = ref_image_groups
+        components[key('qwen_image_edit_images')] = ref_image_inputs
+
+        with gr.Row():
+            components[key('add_qwen_image_edit_button')] = gr.Button("✚ Add Reference Image")
+            components[key('delete_qwen_image_edit_button')] = gr.Button("➖ Delete Reference Image", visible=False)
+        components[key('qwen_image_edit_count_state')] = gr.State(1)
+        
+        components[key('all_qwen_image_edit_components_flat')] = ref_image_inputs
+
 def register_ui_chain_events(components, prefix):
     """
     Registers event handlers for all dynamic chain UIs (add/delete buttons).
@@ -636,6 +664,10 @@ def register_ui_chain_events(components, prefix):
     max_boogu_imgs = constants.get('MAX_BOOGU_IMAGE_EDITS', 10)
     _add_row_factory(key('boogu_image_edit_count_state'), key('add_boogu_image_edit_button'), key('delete_boogu_image_edit_button'), key('boogu_image_edit_rows'), max_boogu_imgs)
     _delete_row_factory(key('boogu_image_edit_count_state'), key('add_boogu_image_edit_button'), key('delete_boogu_image_edit_button'), key('boogu_image_edit_rows'), max_boogu_imgs, reset_keys=[key('boogu_image_edit_images')])
+
+    max_qwen_imgs = constants.get('MAX_QWEN_IMAGE_EDITS', 3)
+    _add_row_factory(key('qwen_image_edit_count_state'), key('add_qwen_image_edit_button'), key('delete_qwen_image_edit_button'), key('qwen_image_edit_rows'), max_qwen_imgs)
+    _delete_row_factory(key('qwen_image_edit_count_state'), key('add_qwen_image_edit_button'), key('delete_qwen_image_edit_button'), key('qwen_image_edit_rows'), max_qwen_imgs, reset_keys=[key('qwen_image_edit_images')])
 
     if all(k in components for k in [key('conditioning_count_state'), key('add_conditioning_button'), key('delete_conditioning_button'), key('conditioning_rows')]):
         add_cond_btn = components[key('add_conditioning_button')]

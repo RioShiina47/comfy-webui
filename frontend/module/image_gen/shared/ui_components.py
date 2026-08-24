@@ -5,7 +5,7 @@ from core.shared_ui import (
     create_diffsynth_controlnet_ui, create_ipadapter_ui, 
     create_style_ui, create_conditioning_ui, create_reference_latent_ui,
     create_hidream_o1_reference_ui, create_joyai_reference_ui, create_reference_image_ui,
-    create_boogu_image_edit_ui
+    create_boogu_image_edit_ui, create_qwen_image_edit_ui
 )
 from .config_loader import load_constants_config, load_model_config, load_architectures_config
 from .vae_utils import on_vae_upload
@@ -101,9 +101,6 @@ def create_generation_parameters_ui(prefix: str):
         components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True, scale=1)
         components[key('guidance')] = gr.Slider(
             label="Guidance", minimum=1.0, maximum=10.0, step=0.1, value=3.5, visible=False, interactive=True, scale=1
-        )
-        components[key('clip_skip')] = gr.Slider(
-            label="Clip Skip", minimum=1, maximum=4, step=1, value=1, visible=False, interactive=True, scale=1
         )
     with gr.Row():
         components[key('batch_count')] = gr.Slider(label="Batch Count", minimum=1, maximum=50, step=1, value=1, interactive=True)

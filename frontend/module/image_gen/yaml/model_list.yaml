@@ -166,6 +166,11 @@ Checkpoints:
   Qwen-Image:
     latent_type: sd3_latent
     models:
+      - display_name: "lightx2v/Qwen-Image-2512-Lightning"
+        components:
+          unet: "qwen_image_2512_fp8_e4m3fn_scaled_comfyui_4steps_v1.0.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
       - display_name: "Qwen-Image-2512"
         components:
           unet: "qwen_image_2512_fp8_e4m3fn.safetensors"
@@ -174,6 +179,26 @@ Checkpoints:
       - display_name: "Qwen-Image"
         components:
           unet: "qwen_image_nvfp4.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+      - display_name: "lightx2v/Qwen-Image-Edit-2511-Lightning"
+        components:
+          unet: "qwen_image_edit_2511_fp8_e4m3fn_scaled_lightning_comfyui_4steps_v1.0.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+      - display_name: "Qwen-Image-Edit-2511"
+        components:
+          unet: "qwen_image_edit_2511_int8_convrot.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+      - display_name: "Qwen-Image-Edit-2509"
+        components:
+          unet: "qwen_image_edit_2509_fp8mixed.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
+      - display_name: "Qwen-Image-Edit"
+        components:
+          unet: "qwen_image_edit_fp8_e4m3fn.safetensors"
           vae: "qwen_image_vae.safetensors"
           clip: "qwen_2.5_vl_7b_nvfp4.safetensors"
   LongCat-Image:

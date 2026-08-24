@@ -1,10 +1,10 @@
 nodes:
   pos_prompt:
-    class_type: CLIPTextEncode
-    title: "CLIP Text Encode (Positive)"
+    class_type: TextEncodeQwenImageEditPlus
+    title: "Text Encode Qwen Image Edit Plus (Positive)"
   neg_prompt:
-    class_type: CLIPTextEncode
-    title: "CLIP Text Encode (Negative)"
+    class_type: TextEncodeQwenImageEditPlus
+    title: "Text Encode Qwen Image Edit Plus (Negative)"
   unet_loader:
     class_type: UNETLoader
     title: "Load Qwen UNET"
@@ -71,13 +71,21 @@ dynamic_conditioning_chains:
     ksampler_node: "ksampler"
     clip_source: "clip_loader:0"
 
+dynamic_qwen_image_edit_chains:
+  qwen_image_edit_chain:
+    ksampler_node: "ksampler"
+    pos_prompt_node: "pos_prompt"
+    neg_prompt_node: "neg_prompt"
+    vae_loader_node: "vae_loader"
+    model_sampler_node: "model_sampler"
+
 dynamic_pid_chains:
   pid_chain:
     ksampler_node: "ksampler"
 
 ui_map:
-  positive_prompt: "pos_prompt:text"
-  negative_prompt: "neg_prompt:text"
+  positive_prompt: "pos_prompt:prompt"
+  negative_prompt: "neg_prompt:prompt"
   unet_name: "unet_loader:unet_name"
   vae_name: "vae_loader:vae_name"
   clip_name: "clip_loader:clip_name"
