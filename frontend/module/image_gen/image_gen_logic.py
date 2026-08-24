@@ -22,7 +22,8 @@ from core.input_processors import (
     process_hidream_o1_reference_inputs,
     process_joyai_reference_inputs,
     process_reference_image_inputs,
-    process_boogu_image_edit_inputs
+    process_boogu_image_edit_inputs,
+    process_qwen_image_edit_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -106,9 +107,6 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
     module_path = os.path.dirname(os.path.abspath(__file__))
     assembler = WorkflowAssembler(recipe_path, dynamic_values, base_path=module_path)
 
-    if 'clip_skip' in vals and vals['clip_skip'] is not None and model_type == 'sd15':
-        vals['clip_skip'] = int(vals['clip_skip']) * -1
-
     embedding_files = process_embedding_inputs(ui_values, prefix)
     embedding_prompt_text = " ".join([f"embedding:{f.replace(os.path.sep, '/')}" for f in embedding_files])
     
@@ -146,6 +144,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'joyai_reference_chain': joyai_ref_inputs,
         'reference_image_chain': reference_img_inputs,
         'boogu_image_edit_chain': process_boogu_image_edit_inputs(ui_values, prefix),
+        'qwen_image_edit_chain': process_qwen_image_edit_inputs(ui_values, prefix),
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
         'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],

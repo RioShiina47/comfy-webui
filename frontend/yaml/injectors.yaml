@@ -39,6 +39,8 @@ injector_definitions:
     module: "chain_injectors.reference_image_injector"
   dynamic_boogu_image_edit_chains:
     module: "chain_injectors.boogu_image_edit_injector"
+  dynamic_qwen_image_edit_chains:
+    module: "chain_injectors.qwen_image_edit_injector"
   dynamic_pid_chains:
     module: "chain_injectors.pid_injector"
   
@@ -63,4 +65,5 @@ injector_order:
   - dynamic_joyai_reference_chains
   - dynamic_reference_image_chains
   - dynamic_boogu_image_edit_chains
+  - dynamic_qwen_image_edit_chains
   - dynamic_pid_chains
