@@ -77,6 +77,7 @@ qwen-image:
   enabled_chains:
   - lora
   - controlnet
+  - qwen_image_edit
   - conditioning
   - vae
   - pid

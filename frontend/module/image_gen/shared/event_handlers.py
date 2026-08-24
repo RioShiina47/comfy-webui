@@ -44,7 +44,6 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     sdxl_category_filter = components.get(key('sdxl_category_filter'))
     model_dropdown = components[key("model_name")]
     model_type_state = components[key('model_type_state')]
-    clip_skip_slider = components.get(key('clip_skip'))
     guidance_slider = components.get(key('guidance'))
     aspect_ratio_dropdown = components.get(key('aspect_ratio_dropdown'))
     width_num = components.get(key('width'))
@@ -95,6 +94,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     joyai_reference_accordion = components.get(key('joyai_reference_accordion'))
     reference_image_accordion = components.get(key('reference_image_accordion'))
     boogu_image_edit_accordion = components.get(key('boogu_image_edit_accordion'))
+    qwen_image_edit_accordion = components.get(key('qwen_image_edit_accordion'))
     vae_accordion = components.get(key('vae_accordion'))
 
 
@@ -171,6 +171,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'joyai_reference': joyai_reference_accordion,
             'reference_image': reference_image_accordion,
             'boogu_image_edit': boogu_image_edit_accordion,
+            'qwen_image_edit': qwen_image_edit_accordion,
             'vae': vae_accordion,
             'pid': pid_accordion
         }
@@ -185,9 +186,6 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         
         if guidance_slider:
             updates[guidance_slider] = gr.update(visible=is_flux)
-        
-        if clip_skip_slider:
-            updates[clip_skip_slider] = gr.update(visible=is_sd15, maximum=2 if is_sd15 else 4)
 
         defaults = get_model_generation_defaults(selected_model_name, model_type, model_defaults)
         arch_key = get_controlnet_key_for_model_type(model_type)
@@ -326,7 +324,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         return updates
 
     on_model_change_outputs = {
-        "state": model_type_state, "clip_skip": clip_skip_slider, "guidance": guidance_slider, "style_accordion": style_accordion, "aspect": aspect_ratio_dropdown,
+        "state": model_type_state, "guidance": guidance_slider, "style_accordion": style_accordion, "aspect": aspect_ratio_dropdown,
         "w": width_num, "h": height_num, "steps": steps_slider, "cfg": cfg_slider,
         "sampler": sampler_dropdown, "scheduler": scheduler_dropdown, "lora": lora_accordion,
         "embedding": embedding_accordion, "gallery": gallery_component, "cn_accordion": controlnet_accordion,
@@ -341,6 +339,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "joyai_reference_accordion": joyai_reference_accordion,
         "reference_image_accordion": reference_image_accordion,
         "boogu_image_edit_accordion": boogu_image_edit_accordion,
+        "qwen_image_edit_accordion": qwen_image_edit_accordion,
         "vae_accordion": vae_accordion, "pid_accordion": pid_accordion
     }
     

@@ -1,5 +1,5 @@
 import random
-from module.image_gen.shared.config_loader import load_model_config, load_pid_config
+from module.image_gen.shared.config_loader import load_model_config, load_pid_config, load_architectures_config
 
 def inject(assembler, chain_definition, chain_items):
     if not chain_items:
@@ -60,9 +60,11 @@ def inject(assembler, chain_definition, chain_items):
             if node_data.get('class_type') == 'CLIPTextEncode':
                 title = node_data.get('_meta', {}).get('title', '')
                 if 'Positive' in title:
-                    original_pos_prompt_id = node_id
+                    if not original_pos_prompt_id:
+                        original_pos_prompt_id = node_id
                 elif 'Negative' in title:
-                    original_neg_prompt_id = node_id
+                    if not original_neg_prompt_id:
+                        original_neg_prompt_id = node_id
                     
     pos_text = ""
     if original_pos_prompt_id and original_pos_prompt_id in assembler.workflow:
@@ -107,8 +109,13 @@ def inject(assembler, chain_definition, chain_items):
     if active_model_file:
         try:
             model_config = load_model_config()
-            checkpoints = model_config.get("Checkpoints", {})
+            checkpoints = {}
+            for k, v in model_config.items():
+                if isinstance(v, dict):
+                    checkpoints.update(v)
             for arch_name, arch_data in checkpoints.items():
+                if not isinstance(arch_data, dict):
+                    continue
                 models_list = arch_data.get("models", [])
                 for model_entry in models_list:
                     if model_entry.get('path') == active_model_file:
@@ -124,7 +131,16 @@ def inject(assembler, chain_definition, chain_items):
             print(f"Error looking up model architecture in PiD injector: {e}")
 
         if architecture:
-            architecture = architecture.lower().replace(" ", "-").replace(".", "")
+            try:
+                architectures_cfg = load_architectures_config() or {}
+                arch_info = architectures_cfg.get('architectures', {}).get(architecture, {})
+                mapped_arch = arch_info.get("model_type")
+                if mapped_arch:
+                    architecture = mapped_arch
+                else:
+                    architecture = architecture.lower().replace(" ", "-").replace(".", "")
+            except Exception:
+                architecture = architecture.lower().replace(" ", "-").replace(".", "")
         else:
             file_lower = active_model_file.lower().replace("-", "").replace("_", "").replace(".", "")
             for arch in sorted(architectures_settings.keys(), key=len, reverse=True):
@@ -135,6 +151,12 @@ def inject(assembler, chain_definition, chain_items):
                     candidates.append(arch.replace("-i1", ""))
                 if "-kv" in arch:
                     candidates.append(arch.replace("-kv", ""))
+                if arch == "sdxl":
+                    candidates.append("xl")
+                if arch == "sd35":
+                    candidates.append("sd3")
+                if arch == "flux1":
+                    candidates.append("flux")
                 
                 matched = False
                 for cand in candidates:
@@ -256,7 +278,20 @@ def inject(assembler, chain_definition, chain_items):
                         if input_val[0] == original_vae_decode_id:
                             node_data['inputs'][input_name] = [pid_vae_decode_id, 0]
 
-    if original_vae_loader_id in assembler.workflow:
+    is_vae_loader_referenced = False
+    if original_vae_loader_id:
+        for node_id, node_data in assembler.workflow.items():
+            if node_id == original_vae_loader_id:
+                continue
+            for input_val in node_data.get('inputs', {}).values():
+                if isinstance(input_val, list) and len(input_val) == 2:
+                    if input_val[0] == original_vae_loader_id:
+                        is_vae_loader_referenced = True
+                        break
+            if is_vae_loader_referenced:
+                break
+
+    if original_vae_loader_id in assembler.workflow and not is_vae_loader_referenced:
         del assembler.workflow[original_vae_loader_id]
     if original_vae_decode_id in assembler.workflow:
         del assembler.workflow[original_vae_decode_id]
