@@ -79,6 +79,8 @@ main_tabs_order:
       - "Kandinsky I2V"
       
   - "AudioGen":
+    - "MiniMax Music 3":
+      - "txt2music(music3)"
     - "ACE-Step 1.5":
       - "txt2music (v1.5)"
       - "music2music (v1.5)"

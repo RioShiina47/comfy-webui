@@ -1,0 +1,16 @@
+file: 
+  diffusion_models: 
+    - filename: "minimax_music3_dit_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-Music-3"
+      repository_file_path: "diffusion_models/minimax_music3_dit_int8_convrot.safetensors"
+  text_encoders:
+    - filename: "minimax_music3_text_encoder_pruned_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-Music-3"
+      repository_file_path: "text_encoders/minimax_music3_text_encoder_pruned_int8_convrot.safetensors"
+  vae:
+    - filename: "minimax_music3_dav.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-Music-3"
+      repository_file_path: "vae/minimax_music3_dav.safetensors"
