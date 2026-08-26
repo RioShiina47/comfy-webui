@@ -8,18 +8,13 @@ nodes:
   ckpt_loader:
     class_type: CheckpointLoaderSimple
     title: "Load Checkpoint"
-  clip_set_last_layer:
-    class_type: CLIPSetLastLayer
-    title: "CLIP Set Last Layer"
 
 connections:
   - from: "ckpt_loader:0"
     to: "ksampler:model"
   - from: "ckpt_loader:1"
-    to: "clip_set_last_layer:clip"
-  - from: "clip_set_last_layer:0"
     to: "pos_prompt:clip"
-  - from: "clip_set_last_layer:0"
+  - from: "ckpt_loader:1"
     to: "neg_prompt:clip"
   - from: "pos_prompt:0"
     to: "ksampler:positive"
@@ -39,10 +34,10 @@ dynamic_vae_chains:
 dynamic_lora_chains:
   lora_chain:
     template: "LoraLoader"
-    start: "clip_set_last_layer"
+    start: "ckpt_loader"
     output_map:
-      "ckpt_loader:0": "model" 
-      "0": "clip"             
+      "0": "model" 
+      "1": "clip"             
     input_map:
       "model": "model"
       "clip": "clip"
@@ -68,10 +63,9 @@ dynamic_ipadapter_chains:
 dynamic_conditioning_chains:
   conditioning_chain:
     ksampler_node: "ksampler"
-    clip_source: "clip_set_last_layer:0"
+    clip_source: "ckpt_loader:1"
 
 ui_map:
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
   model_name: "ckpt_loader:ckpt_name"
-  clip_skip: "clip_set_last_layer:stop_at_clip_layer"

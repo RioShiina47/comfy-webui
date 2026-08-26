@@ -10,7 +10,8 @@ from .sd_shared import (
     create_conditioning_ui, create_vae_override_ui,
     create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
     create_reference_latent_ui, create_hidream_o1_reference_ui, create_joyai_reference_ui,
-    create_reference_image_ui, create_boogu_image_edit_ui, create_qwen_image_edit_ui
+    create_reference_image_ui, create_boogu_image_edit_ui, create_qwen_image_edit_ui,
+    create_krea2_identity_edit_ui
 )
 from .image_gen_logic import process_inputs as process_inputs_logic
 
@@ -71,10 +72,7 @@ def create_ui():
                     components[key('steps')] = gr.Slider(label="Steps", minimum=1, maximum=50, step=1, value=25, interactive=True)
                     components[key('cfg')] = gr.Slider(label="CFG Scale", minimum=1.0, maximum=15.0, step=0.5, value=7.0, interactive=True)
                 with gr.Row():
-                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True, scale=1)
-                    components[key('guidance')] = gr.Slider(
-                        label="Guidance", minimum=1.0, maximum=10.0, step=0.1, value=3.5, visible=False, interactive=True, scale=1
-                    )
+                    components[key('seed')] = gr.Number(label="Seed (-1 for random)", value=-1, precision=0, interactive=True)
                 with gr.Row():
                     components[key('batch_count')] = gr.Slider(label="Batch Count", minimum=1, maximum=50, step=1, value=1, interactive=True)
                     components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=8, step=1, value=1, interactive=True)
@@ -100,6 +98,7 @@ def create_ui():
         create_reference_image_ui(components, PREFIX)
         create_boogu_image_edit_ui(components, PREFIX)
         create_qwen_image_edit_ui(components, PREFIX)
+        create_krea2_identity_edit_ui(components, PREFIX)
         create_vae_override_ui(components, PREFIX)
         create_style_ui(components, PREFIX)
                 
