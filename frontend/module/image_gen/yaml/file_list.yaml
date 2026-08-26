@@ -556,7 +556,16 @@ file:
       repo_id: "black-forest-labs/FLUX.1-Redux-dev"
       repository_file_path: "flux1-redux-dev.safetensors"
   loras: 
+    # Krea2 Identity Edit
+    - filename: "krea2_identity_edit_v1_2.safetensors"
+      source: "hf"
+      repo_id: "conradlocke/krea2-identity-edit"
+      repository_file_path: "krea2_identity_edit_v1_2.safetensors"
     # Krea2 ControlNet
+    - filename: "krea2-anythng_step_007000.safetensors"
+      source: "hf"
+      repo_id: "tori29umai/krea2-controlnet"
+      repository_file_path: "krea2-anythng_step_007000.safetensors"
     - filename: "depth-control-lora.safetensors"
       source: "hf"
       repo_id: "Patil/Krea-2-depth-controlnet"

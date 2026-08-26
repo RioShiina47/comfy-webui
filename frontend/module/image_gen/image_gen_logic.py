@@ -23,7 +23,8 @@ from core.input_processors import (
     process_joyai_reference_inputs,
     process_reference_image_inputs,
     process_boogu_image_edit_inputs,
-    process_qwen_image_edit_inputs
+    process_qwen_image_edit_inputs,
+    process_krea2_identity_edit_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -141,10 +142,11 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
         'reference_latent_chain': ref_latent_inputs,
         'hidream_o1_reference_chain': hidream_o1_ref_inputs,
-        'joyai_reference_chain': joyai_ref_inputs,
+        'joyai_image_chain': joyai_ref_inputs,
         'reference_image_chain': reference_img_inputs,
         'boogu_image_edit_chain': process_boogu_image_edit_inputs(ui_values, prefix),
         'qwen_image_edit_chain': process_qwen_image_edit_inputs(ui_values, prefix),
+        'krea2_identity_edit_chain': process_krea2_identity_edit_inputs(ui_values, prefix),
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
         'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],
