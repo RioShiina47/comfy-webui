@@ -22,6 +22,8 @@ nodes:
   flux_guidance:
     class_type: FluxGuidance
     title: "FluxGuidance"
+    params:
+      guidance: 3.5
 
 connections:
   - from: "unet_loader:0"
@@ -73,4 +75,3 @@ ui_map:
   vae_name: "vae_loader:vae_name"
   clip1_name: "clip_loader:clip_name1"
   clip2_name: "clip_loader:clip_name2"
-  guidance: "flux_guidance:guidance"

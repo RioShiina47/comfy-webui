@@ -1,4 +1,7 @@
 Krea2_ControlNet:
+  - Filepath: "krea2-anythng_step_007000.safetensors"
+    Series: "tori29umai"
+    Type: ["Anythng"]
   - Filepath: "depth-control-lora.safetensors"
     Series: "Patil"
     Type: ["Depth"]

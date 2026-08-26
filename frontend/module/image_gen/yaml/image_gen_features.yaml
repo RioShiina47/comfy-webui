@@ -12,7 +12,7 @@ krea-2:
   enabled_chains:
     - lora
     - krea2_controlnet
-    - conditioning
+    - krea2_identity_edit
     - pid
 
 mage-flow:
@@ -21,7 +21,7 @@ mage-flow:
 
 joyai-image:
   enabled_chains:
-  - joyai_reference
+  - joyai_image
 
 boogu-image:
   enabled_chains:
