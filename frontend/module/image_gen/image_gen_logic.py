@@ -24,7 +24,8 @@ from core.input_processors import (
     process_reference_image_inputs,
     process_boogu_image_edit_inputs,
     process_qwen_image_edit_inputs,
-    process_krea2_identity_edit_inputs
+    process_krea2_identity_edit_inputs,
+    process_krea2_style_reference_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -147,6 +148,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None):
         'boogu_image_edit_chain': process_boogu_image_edit_inputs(ui_values, prefix),
         'qwen_image_edit_chain': process_qwen_image_edit_inputs(ui_values, prefix),
         'krea2_identity_edit_chain': process_krea2_identity_edit_inputs(ui_values, prefix),
+        'krea2_style_reference_chain': process_krea2_style_reference_inputs(ui_values, prefix),
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
         'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],

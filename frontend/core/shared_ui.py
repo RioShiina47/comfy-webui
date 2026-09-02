@@ -564,6 +564,34 @@ def create_krea2_identity_edit_ui(components, prefix, max_units=None):
         
         components[key('all_krea2_identity_edit_components_flat')] = ref_image_inputs
 
+def create_krea2_style_reference_ui(components, prefix, max_units=None):
+    if max_units is None:
+        constants = get_ui_constants()
+        max_units = constants.get('MAX_KREA2_STYLE_REFERENCES', 3)
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("Krea2 Style Reference Edit Settings", open=False) as ref_accordion:
+        components[key('krea2_style_reference_accordion')] = ref_accordion
+        gr.Markdown("💡 **Tip:** (Krea-2-Turbo recommended) Add style reference images to perform style reference editing.")
+        
+        ref_image_groups = []
+        ref_image_inputs = []
+        with gr.Row():
+            for i in range(max_units):
+                with gr.Column(visible=(i < 1), min_width=160) as img_col:
+                    img_comp = gr.Image(type="pil", label=f"Ref. {i+1}", sources=["upload"], height=150)
+                    ref_image_groups.append(img_col)
+                    ref_image_inputs.append(img_comp)
+        
+        components[key('krea2_style_reference_rows')] = ref_image_groups
+        components[key('krea2_style_reference_images')] = ref_image_inputs
+
+        with gr.Row():
+            components[key('add_krea2_style_reference_button')] = gr.Button("✚ Add Reference Image")
+            components[key('delete_krea2_style_reference_button')] = gr.Button("➖ Delete Reference Image", visible=False)
+        components[key('krea2_style_reference_count_state')] = gr.State(1)
+        
+        components[key('all_krea2_style_reference_components_flat')] = ref_image_inputs
+
 def register_ui_chain_events(components, prefix):
     """
     Registers event handlers for all dynamic chain UIs (add/delete buttons).
@@ -700,6 +728,10 @@ def register_ui_chain_events(components, prefix):
     max_krea2_identity_imgs = constants.get('MAX_KREA2_IDENTITY_EDITS', 2)
     _add_row_factory(key('krea2_identity_edit_count_state'), key('add_krea2_identity_edit_button'), key('delete_krea2_identity_edit_button'), key('krea2_identity_edit_rows'), max_krea2_identity_imgs)
     _delete_row_factory(key('krea2_identity_edit_count_state'), key('add_krea2_identity_edit_button'), key('delete_krea2_identity_edit_button'), key('krea2_identity_edit_rows'), max_krea2_identity_imgs, reset_keys=[key('krea2_identity_edit_images')])
+
+    max_krea2_style_ref_imgs = constants.get('MAX_KREA2_STYLE_REFERENCES', 3)
+    _add_row_factory(key('krea2_style_reference_count_state'), key('add_krea2_style_reference_button'), key('delete_krea2_style_reference_button'), key('krea2_style_reference_rows'), max_krea2_style_ref_imgs)
+    _delete_row_factory(key('krea2_style_reference_count_state'), key('add_krea2_style_reference_button'), key('delete_krea2_style_reference_button'), key('krea2_style_reference_rows'), max_krea2_style_ref_imgs, reset_keys=[key('krea2_style_reference_images')])
 
     if all(k in components for k in [key('conditioning_count_state'), key('add_conditioning_button'), key('delete_conditioning_button'), key('conditioning_rows')]):
         add_cond_btn = components[key('add_conditioning_button')]

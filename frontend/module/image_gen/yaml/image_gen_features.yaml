@@ -13,6 +13,7 @@ krea-2:
     - lora
     - krea2_controlnet
     - krea2_identity_edit
+    - krea2_style_reference
     - pid
 
 mage-flow:
