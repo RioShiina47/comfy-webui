@@ -62,6 +62,14 @@ dynamic_krea2_identity_edit_chains:
     clip_loader_node: "clip_loader"
     vae_loader_node: "vae_loader"
 
+dynamic_krea2_style_reference_chains:
+  krea2_style_reference_chain:
+    ksampler_node: "ksampler"
+    pos_prompt_node: "pos_prompt"
+    neg_prompt_node: "neg_prompt"
+    clip_loader_node: "clip_loader"
+    vae_loader_node: "vae_loader"
+
 dynamic_conditioning_chains:
   conditioning_chain:
     ksampler_node: "ksampler"

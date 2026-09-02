@@ -225,7 +225,17 @@ Checkpoints:
   Anima:
     latent_type: latent
     models:
-      - display_name: "circlestone-labs/Anima-base-v1.0"
+      - display_name: "circlestone-labs/Anima-Turbo-v1.0"
+        components:
+          unet: "anima-turbo-v1.0.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
+      - display_name: "circlestone-labs/Anima-Aesthetic-v1.1"
+        components:
+          unet: "anima-aesthetic-v1.1.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
+      - display_name: "circlestone-labs/Anima-Base-v1.0"
         components:
           unet: "anima-base-v1.0.safetensors"
           vae: "qwen_image_vae.safetensors"

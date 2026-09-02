@@ -95,6 +95,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     boogu_image_edit_accordion = components.get(key('boogu_image_edit_accordion'))
     qwen_image_edit_accordion = components.get(key('qwen_image_edit_accordion'))
     krea2_identity_edit_accordion = components.get(key('krea2_identity_edit_accordion'))
+    krea2_style_reference_accordion = components.get(key('krea2_style_reference_accordion'))
     vae_accordion = components.get(key('vae_accordion'))
 
 
@@ -173,6 +174,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'boogu_image_edit': boogu_image_edit_accordion,
             'qwen_image_edit': qwen_image_edit_accordion,
             'krea2_identity_edit': krea2_identity_edit_accordion,
+            'krea2_style_reference': krea2_style_reference_accordion,
             'vae': vae_accordion,
             'pid': pid_accordion
         }
@@ -339,6 +341,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "boogu_image_edit_accordion": boogu_image_edit_accordion,
         "qwen_image_edit_accordion": qwen_image_edit_accordion,
         "krea2_identity_edit_accordion": krea2_identity_edit_accordion,
+        "krea2_style_reference_accordion": krea2_style_reference_accordion,
         "vae_accordion": vae_accordion, "pid_accordion": pid_accordion
     }
     
