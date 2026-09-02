@@ -447,3 +447,17 @@ def process_krea2_identity_edit_inputs(all_ui_values: dict, prefix: str):
             references.append(image_filename)
             
     return references
+
+def process_krea2_style_reference_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    references = []
+    ref_images = all_ui_values.get(key('krea2_style_reference_images'), [])
+    if not ref_images:
+        return []
+    
+    for image_pil in ref_images:
+        if image_pil is not None:
+            image_filename = save_temp_image(image_pil)
+            references.append(image_filename)
+            
+    return references
