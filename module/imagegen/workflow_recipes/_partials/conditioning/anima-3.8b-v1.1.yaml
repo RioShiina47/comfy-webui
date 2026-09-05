@@ -1,0 +1,81 @@
+nodes:
+  unet_loader:
+    class_type: Anima38BV2Loader
+    title: "anima.3-8B-v2"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "stable_diffusion"
+      device: "default"
+  qwen35_loader:
+    class_type: AnimaQwen35Loader
+    title: "Load Qwen3.5 4B (Anima)"
+  pos_prompt:
+    class_type: Anima38BV2Prompt
+    title: "anima.3-8B-v2 Prompt (Positive)"
+  neg_prompt:
+    class_type: Anima38BV2Prompt
+    title: "anima.3-8B-v2 Prompt (Negative)"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+
+connections:
+  - from: "unet_loader:0"
+    to: "ksampler:model"
+  - from: "unet_loader:0"
+    to: "pos_prompt:model"
+  - from: "unet_loader:0"
+    to: "neg_prompt:model"
+  - from: "clip_loader:0"
+    to: "pos_prompt:native_clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:native_clip"
+  - from: "qwen35_loader:0"
+    to: "pos_prompt:qwen35_clip"
+  - from: "qwen35_loader:0"
+    to: "neg_prompt:qwen35_clip"
+  - from: "pos_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "unet_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["ksampler:model", "pos_prompt:model", "neg_prompt:model"]
+      "clip": ["pos_prompt:native_clip", "neg_prompt:native_clip"]
+
+dynamic_anima_controlnet_lllite_chains:
+  anima_controlnet_lllite_chain:
+    ksampler_node: "ksampler"
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    ksampler_node: "ksampler"
+    clip_source: "clip_loader:0"
+
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
+ui_map:
+  positive_prompt: "pos_prompt:prompt"
+  negative_prompt: "neg_prompt:prompt"
+  model_name: "unet_loader:model_name"
+  unet_name: "unet_loader:model_name"
+  clip_name: "clip_loader:clip_name"
+  qwen35_model: "qwen35_loader:qwen35_model"
+  vae_name: "vae_loader:vae_name"

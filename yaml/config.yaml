@@ -1,0 +1,19 @@
+comfyui_path: "E:/symbolic_link/github.com/comfyanonymous/ComfyUI"
+
+comfyui_backends:
+  default: http://127.0.0.1:8188
+  3d_backend: http://127.0.0.1:8189
+
+wait_for_all_backends: false
+
+save_workflow_to_json: false
+
+civitai_api_key: ""
+huggingface_token: ""
+
+enable_login: false
+login_credentials:
+  - username: 
+    password: 
+
+auto_download_models: false
