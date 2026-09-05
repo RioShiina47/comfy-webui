@@ -1,0 +1,4 @@
+gradio[mcp]
+requests
+websocket-client
+imageio

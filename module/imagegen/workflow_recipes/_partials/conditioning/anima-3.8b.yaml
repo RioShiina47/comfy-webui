@@ -1,0 +1,83 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      weight_dtype: "default"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "stable_diffusion"
+      device: "default"
+  qwen35_loader:
+    class_type: AnimaQwen35Loader
+    title: "Load Anima Qwen35"
+  unified_prompt:
+    class_type: AnimaQwen35UnifiedPrompt
+    title: "Anima Qwen35 Unified Prompt"
+    params:
+      adapter_name: "Anima-3.8B-expanded_adapter.safetensors"
+      adapter_strength: 1.0
+  neg_prompt:
+    class_type: CLIPTextEncode
+    title: "CLIP Text Encode (Negative)"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+
+connections:
+  - from: "unet_loader:0"
+    to: "ksampler:model"
+  - from: "unet_loader:0"
+    to: "unified_prompt:model"
+  - from: "clip_loader:0"
+    to: "unified_prompt:native_clip"
+  - from: "qwen35_loader:0"
+    to: "unified_prompt:qwen35_clip"
+  - from: "clip_loader:0"
+    to: "neg_prompt:clip"
+  - from: "unified_prompt:0"
+    to: "ksampler:positive"
+  - from: "neg_prompt:0"
+    to: "ksampler:negative"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "unet_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["ksampler:model", "unified_prompt:model"]
+      "clip": ["unified_prompt:native_clip", "neg_prompt:clip"]
+
+dynamic_anima_controlnet_lllite_chains:
+  anima_controlnet_lllite_chain:
+    ksampler_node: "ksampler"
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    ksampler_node: "ksampler"
+    clip_source: "clip_loader:0"
+
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
+ui_map:
+  positive_prompt: "unified_prompt:prompt"
+  negative_prompt: "neg_prompt:text"
+  unet_name: "unet_loader:unet_name"
+  clip_name: "clip_loader:clip_name"
+  qwen35_model: "qwen35_loader:qwen35_model"
+  adapter_name: "unified_prompt:adapter_name"
+  adapter_strength: "unified_prompt:adapter_strength"
+  vae_name: "vae_loader:vae_name"

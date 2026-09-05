@@ -24,7 +24,4 @@ gradio_cached_examples/
 Thumbs.db
 
 # Comfy web UI
-ComfyUI/
-ComfyUI_3D/
-frontend/custom/
 output/

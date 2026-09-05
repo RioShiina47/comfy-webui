@@ -1,0 +1,23 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Input Image"
+  
+  mask_to_image_converter:
+    class_type: MaskToImage
+    title: "Convert Mask to Image"
+
+  save_image_1:
+    class_type: SaveImage
+    title: "Save Image (Output 1)"
+    params: {}
+      
+  save_image_2:
+    class_type: SaveImage
+    title: "Save Image (Output 2)"
+    params: {}
+
+connections: []
+
+ui_map:
+  input_image_filename: "load_image:image"
