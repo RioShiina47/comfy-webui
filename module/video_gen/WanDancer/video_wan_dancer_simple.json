@@ -1,0 +1,663 @@
+{
+  "1": {
+    "inputs": {
+      "image": "blue_dancer.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image: Start image"
+    }
+  },
+  "2": {
+    "inputs": {
+      "audio": "wan_dancer_reference_audio.mp3"
+    },
+    "class_type": "LoadAudio",
+    "_meta": {
+      "title": "Load Audio"
+    }
+  },
+  "3": {
+    "inputs": {
+      "unet_name": "wan2.2_dancer_14b_global_fp8_scaled.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model (Global)"
+    }
+  },
+  "4": {
+    "inputs": {
+      "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "strength_model": 3.0,
+      "model": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA (Global)"
+    }
+  },
+  "5": {
+    "inputs": {
+      "unet_name": "wan2.2_dancer_14b_local_fp8_scaled.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model (Local)"
+    }
+  },
+  "6": {
+    "inputs": {
+      "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "strength_model": 1.03,
+      "model": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Load LoRA (Local)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "clip_name": "umt5_xxl_fp16.safetensors",
+      "type": "wan",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load CLIP"
+    }
+  },
+  "8": {
+    "inputs": {
+      "clip_name": "clip_vision_h.safetensors"
+    },
+    "class_type": "CLIPVisionLoader",
+    "_meta": {
+      "title": "Load CLIP Vision"
+    }
+  },
+  "9": {
+    "inputs": {
+      "vae_name": "Wan2_1_VAE_bf16.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "10": {
+    "inputs": {
+      "start_index": 0,
+      "duration": 25,
+      "audio": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "TrimAudioDuration",
+    "_meta": {
+      "title": "Trim Audio Duration"
+    }
+  },
+  "11": {
+    "inputs": {
+      "resize_type": "scale dimensions",
+      "resize_type.width": 720,
+      "resize_type.height": 1280,
+      "resize_type.crop": "center",
+      "scale_method": "lanczos",
+      "input": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "ResizeImageMaskNode",
+    "_meta": {
+      "title": "Resize Image/Mask"
+    }
+  },
+  "12": {
+    "inputs": {
+      "text": "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走\n",
+      "clip": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "13": {
+    "inputs": {
+      "video_frames": 149,
+      "audio_inject_scale": 1,
+      "audio": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "WanDancerEncodeAudio",
+    "_meta": {
+      "title": "WanDancerEncodeAudio (Global)"
+    }
+  },
+  "14": {
+    "inputs": {
+      "string_a": "一个人正在跳舞，舞蹈种类是拉丁舞",
+      "string_b": [
+        "13",
+        1
+      ],
+      "delimiter": " "
+    },
+    "class_type": "StringConcatenate",
+    "_meta": {
+      "title": "Concatenate Text (Global Prompt)"
+    }
+  },
+  "15": {
+    "inputs": {
+      "text": [
+        "14",
+        0
+      ],
+      "clip": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Global Prompt)"
+    }
+  },
+  "16": {
+    "inputs": {
+      "crop": "none",
+      "clip_vision": [
+        "8",
+        0
+      ],
+      "image": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "CLIPVisionEncode",
+    "_meta": {
+      "title": "CLIP Vision Encode (Global)"
+    }
+  },
+  "17": {
+    "inputs": {
+      "shift": 5,
+      "model": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingSD3",
+    "_meta": {
+      "title": "ModelSamplingSD3"
+    }
+  },
+  "18": {
+    "inputs": {
+      "double_layers": "9",
+      "single_layers": "",
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "17",
+        0
+      ]
+    },
+    "class_type": "SkipLayerGuidanceDiTSimple",
+    "_meta": {
+      "title": "SkipLayerGuidanceDiTSimple"
+    }
+  },
+  "19": {
+    "inputs": {
+      "width": 720,
+      "height": 1280,
+      "length": 149,
+      "positive": [
+        "15",
+        0
+      ],
+      "negative": [
+        "12",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ],
+      "clip_vision_output": [
+        "16",
+        0
+      ],
+      "clip_vision_output_ref": [
+        "16",
+        0
+      ],
+      "start_image": [
+        "11",
+        0
+      ],
+      "audio_encoder_output": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "WanDancerVideo",
+    "_meta": {
+      "title": "WanDancerVideo (Global)"
+    }
+  },
+  "20": {
+    "inputs": {
+      "cfg": 1.0,
+      "model": [
+        "18",
+        0
+      ],
+      "positive": [
+        "19",
+        0
+      ],
+      "negative": [
+        "19",
+        1
+      ]
+    },
+    "class_type": "CFGGuider",
+    "_meta": {
+      "title": "CFG Guider"
+    }
+  },
+  "21": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "22": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 6,
+      "denoise": 1,
+      "model": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "BasicScheduler (Global)"
+    }
+  },
+  "23": {
+    "inputs": {
+      "noise_seed": 0
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "24": {
+    "inputs": {
+      "noise": [
+        "23",
+        0
+      ],
+      "guider": [
+        "20",
+        0
+      ],
+      "sampler": [
+        "21",
+        0
+      ],
+      "sigmas": [
+        "22",
+        0
+      ],
+      "latent_image": [
+        "19",
+        2
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced (Global)"
+    }
+  },
+  "25": {
+    "inputs": {
+      "dim": "t",
+      "slice_size": 1,
+      "samples": [
+        "24",
+        0
+      ]
+    },
+    "class_type": "LatentCutToBatch",
+    "_meta": {
+      "title": "LatentCutToBatch"
+    }
+  },
+  "26": {
+    "inputs": {
+      "samples": [
+        "25",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode (Global)"
+    }
+  },
+  "27": {
+    "inputs": {
+      "fps": 8,
+      "bit_depth": 8,
+      "images": [
+        "26",
+        0
+      ]
+    },
+    "class_type": "CreateVideo",
+    "_meta": {
+      "title": "Create Video (Preview)"
+    }
+  },
+  "28": {
+    "inputs": {
+      "filename_prefix": "video/WanDancer_preview",
+      "format": "auto",
+      "codec": "auto",
+      "video": [
+        "27",
+        0
+      ]
+    },
+    "class_type": "SaveVideo",
+    "_meta": {
+      "title": "Save Video (Preview)"
+    }
+  },
+  "29": {
+    "inputs": {
+      "segment_length": 149,
+      "num_segments": 1,
+      "images": [
+        "26",
+        0
+      ],
+      "audio": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "WanDancerPadKeyframesList",
+    "_meta": {
+      "title": "WanDancerPadKeyframesList"
+    }
+  },
+  "30": {
+    "inputs": {
+      "batch_index": 0,
+      "length": 1,
+      "image": [
+        "29",
+        0
+      ]
+    },
+    "class_type": "ImageFromBatch",
+    "_meta": {
+      "title": "Get Image from Batch"
+    }
+  },
+  "31": {
+    "inputs": {
+      "crop": "none",
+      "clip_vision": [
+        "8",
+        0
+      ],
+      "image": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "CLIPVisionEncode",
+    "_meta": {
+      "title": "CLIP Vision Encode (Local)"
+    }
+  },
+  "32": {
+    "inputs": {
+      "video_frames": 149,
+      "audio_inject_scale": 1,
+      "audio": [
+        "29",
+        2
+      ]
+    },
+    "class_type": "WanDancerEncodeAudio",
+    "_meta": {
+      "title": "WanDancerEncodeAudio (Local)"
+    }
+  },
+  "33": {
+    "inputs": {
+      "text": "一个人正在跳舞，舞蹈种类是拉丁舞,图像清晰程度高,人物动作幅度低",
+      "clip": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Local Prompt)"
+    }
+  },
+  "34": {
+    "inputs": {
+      "conditioning": [
+        "33",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "ConditioningZeroOut"
+    }
+  },
+  "35": {
+    "inputs": {
+      "width": 720,
+      "height": 1280,
+      "length": 149,
+      "positive": [
+        "33",
+        0
+      ],
+      "negative": [
+        "34",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ],
+      "clip_vision_output": [
+        "31",
+        0
+      ],
+      "clip_vision_output_ref": [
+        "16",
+        0
+      ],
+      "start_image": [
+        "29",
+        0
+      ],
+      "mask": [
+        "29",
+        1
+      ],
+      "audio_encoder_output": [
+        "32",
+        0
+      ]
+    },
+    "class_type": "WanDancerVideo",
+    "_meta": {
+      "title": "WanDancerVideo (Local)"
+    }
+  },
+  "36": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 6,
+      "denoise": 1,
+      "model": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "BasicScheduler (Local)"
+    }
+  },
+  "37": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "38": {
+    "inputs": {
+      "add_noise": true,
+      "noise_seed": 1,
+      "cfg": 1.0,
+      "model": [
+        "6",
+        0
+      ],
+      "positive": [
+        "35",
+        0
+      ],
+      "negative": [
+        "35",
+        1
+      ],
+      "sampler": [
+        "37",
+        0
+      ],
+      "sigmas": [
+        "36",
+        0
+      ],
+      "latent_image": [
+        "35",
+        2
+      ]
+    },
+    "class_type": "SamplerCustom",
+    "_meta": {
+      "title": "SamplerCustom (Local)"
+    }
+  },
+  "39": {
+    "inputs": {
+      "samples": [
+        "38",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode (Local)"
+    }
+  },
+  "40": {
+    "inputs": {
+      "batch_size": 4096,
+      "images": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "RebatchImages",
+    "_meta": {
+      "title": "Rebatch Images"
+    }
+  },
+  "41": {
+    "inputs": {
+      "fps": 30,
+      "bit_depth": 8,
+      "images": [
+        "40",
+        0
+      ],
+      "audio": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "CreateVideo",
+    "_meta": {
+      "title": "Create Video"
+    }
+  },
+  "42": {
+    "inputs": {
+      "filename_prefix": "video/WanDancer",
+      "format": "auto",
+      "codec": "auto",
+      "video": [
+        "41",
+        0
+      ]
+    },
+    "class_type": "SaveVideo",
+    "_meta": {
+      "title": "Save Video"
+    }
+  }
+}
