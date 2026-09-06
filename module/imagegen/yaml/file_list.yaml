@@ -299,6 +299,11 @@ file:
       source: "hf"
       repo_id: "nvidia/Cosmos-Predict2-14B-Text2Image"
       repository_file_path: "model.pt"
+    # Anima-3.8B-v1.1
+    - filename: "Anima-3.8B-v1.1.safetensors"
+      source: "hf"
+      repo_id: "lylogummy/Anima-3.8B"
+      repository_file_path: "difussion_models/Anima-3.8B-v1.1.safetensors"
     # Anima-3.8B
     - filename: "Anima-3.8B.safetensors"
       source: "hf"

@@ -94,6 +94,22 @@ cosmos-predict2:
   - conditioning
   - vae
 
+anima-3.8b-v1.1:
+  enabled_chains:
+  - lora
+  - anima_controlnet_lllite
+  - conditioning
+  - vae
+  - pid
+
+anima-3.8b:
+  enabled_chains:
+  - lora
+  - anima_controlnet_lllite
+  - conditioning
+  - vae
+  - pid
+
 anima:
   enabled_chains:
   - lora

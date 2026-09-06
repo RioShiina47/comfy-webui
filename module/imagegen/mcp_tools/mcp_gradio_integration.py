@@ -15,7 +15,7 @@ from .get_model_architecture_list import ImageGen_get_model_architecture_list
 from .get_model_list import ImageGen_get_model_list
 from .get_feature_list import ImageGen_get_feature_list
 from .get_model_features import ImageGen_get_model_features
-from .get_chain_schema import ImageGen_get_chain_schema
+from .get_sampler_scheduler_list import ImageGen_get_sampler_scheduler_list
 from .run_imagegen import ImageGen_run_imagegen
 from .get_task_status import ImageGen_get_task_status
 
@@ -25,9 +25,17 @@ HIGH_LEVEL_MCP_API_NAMES = {
     "ImageGen_get_model_list",
     "ImageGen_get_feature_list",
     "ImageGen_get_model_features",
+    "ImageGen_get_sampler_scheduler_list",
     "ImageGen_run_imagegen",
     "ImageGen_get_task_status",
-    "ImageGen_get_chain_schema",
+    "get_task_list",
+    "get_model_architecture_list",
+    "get_model_list",
+    "get_feature_list",
+    "get_model_features",
+    "get_sampler_scheduler_list",
+    "run_imagegen",
+    "get_task_status",
 }
 
 
@@ -95,13 +103,19 @@ def register_high_level_mcp_apis(demo):
         arch = model_architecture.strip() if model_architecture else None
         return sanitize_keys(ImageGen_get_model_list(arch))
 
-    def get_feature_list() -> list:
-        """Get the list of supported advanced features along with their usage constraints and parameter schemas."""
-        return sanitize_keys(ImageGen_get_feature_list())
+    def get_feature_list(feature_name: str = "") -> list | dict:
+        """Get supported advanced features (LoRA, ControlNet, IPAdapter, etc.). Each feature includes ready-to-run example_chain_item and example_json_params. If feature_name is empty, returns summary of ALL features. Pass specific feature_name to retrieve complete parameters_schema."""
+        if isinstance(feature_name, dict):
+            feature_name = feature_name.get("feature_name") or feature_name.get("name") or ""
+        return sanitize_keys(ImageGen_get_feature_list(feature_name.strip() if isinstance(feature_name, str) else feature_name))
 
     def get_model_features(model: str = "") -> dict:
         """Query metadata for the specified model, including supported task types, extended features, and official default inference parameters (steps, cfg, sampler, scheduler). This tool MUST be called when explicitly obtaining a model's optimal default hyperparameters (Path 2). Guessing or fabricating hyperparameters without querying is strictly prohibited."""
         return sanitize_keys(ImageGen_get_model_features(model.strip()))
+
+    def get_sampler_scheduler_list() -> dict:
+        """Query all supported Sampler algorithms and Noise Schedulers available for image generation tasks."""
+        return sanitize_keys(ImageGen_get_sampler_scheduler_list())
 
     def run_imagegen(json_params: str = "{}") -> dict:
         """[Recommended Discovery Flow Step 4] Unified image generation task execution interface. Supports txt2img, img2img, and other tasks with chainable extended features. [IMPORTANT PARAMETER RULES] Do NOT guess or fabricate inference hyperparameters such as steps, cfg, sampler, scheduler! Path 1 (Recommended): Pass only required parameters (task_type, model, prompt, width, height), leave optional hyperparams empty (server uses optimal defaults). Path 2: If explicit hyperparams are needed, you MUST first call get_model_features to obtain official defaults before passing them."""
@@ -118,19 +132,15 @@ def register_high_level_mcp_apis(demo):
         """Query the progress, status, and final generated results of an async image generation task."""
         return sanitize_keys(ImageGen_get_task_status(task_id.strip()))
 
-    def get_chain_schema(chain_type: str = "") -> dict:
-        """Get the complete parameter schema and usage examples for a specified chain/injector type."""
-        return sanitize_keys(ImageGen_get_chain_schema(chain_type.strip()))
-
     funcs = [
         get_task_list,
         get_model_architecture_list,
         get_model_list,
         get_feature_list,
         get_model_features,
+        get_sampler_scheduler_list,
         run_imagegen,
         get_task_status,
-        get_chain_schema,
     ]
 
     for func in funcs:

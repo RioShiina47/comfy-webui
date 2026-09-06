@@ -152,14 +152,44 @@ Cosmos-Predict2:
     sampler_name: "euler"
     scheduler: "karras"
 
+Anima-3.8B-v1.1:
+  _defaults:
+    steps: 40
+    cfg: 6.0
+    sampler_name: "res_multistep"
+    scheduler: "beta"
+    positive_prompt: "masterpiece, best quality, high quality, newest, year 2025, year 2024, \nDescription:\n"
+    negative_prompt: "worst quality, low quality, score_1, score_2, score_3, blurry, jpeg artifacts, sepia"
+
+Anima-3.8B:
+  _defaults:
+    steps: 32
+    cfg: 7.5
+    sampler_name: "res_multistep"
+    scheduler: "beta"
+    positive_prompt: "masterpiece, best quality, high quality, newest, year 2025, year 2024, \nDescription:\n"
+    negative_prompt: "worst quality, low quality, score_1, score_2, score_3, blurry, jpeg artifacts, sepia"
+
 Anima:
   _defaults:
     steps: 30
     cfg: 4.0
     sampler_name: "er_sde"
     scheduler: "simple"
-    positive_prompt: "masterpiece, best quality, score_7, safe. "
+    positive_prompt: "masterpiece, best quality, score_7, safe, "
     negative_prompt: "worst quality, low quality, score_1, score_2, score_3, blurry, jpeg artifacts, sepia"
+  "circlestone-labs/Anima-Turbo-v1.0":
+    steps: 10
+    cfg: 1.0
+    sampler_name: "er_sde"
+    scheduler: "simple"
+  "Gazingstars123/Anima-2.9B-preview-v1":
+    steps: 30
+    cfg: 4.0
+    sampler_name: "er_sde"
+    scheduler: "sgm_uniform"
+    positive_prompt: "masterpiece, best quality, highres, absurdres, newest, score_7, safe, "
+    negative_prompt: "lowres, bad quality, worst quality, score_1, score_2, score_3, jpeg artifacts, signature, watermark"
 
 NewBie-Image:
   _defaults:

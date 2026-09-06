@@ -21,7 +21,7 @@ from .imagegen_logic import process_inputs as process_inputs_logic
 UI_INFO = {
     "main_tab": "ImageGen",
     "sub_tab": "ImageGen",
-    "run_button_text": "🚀 Generate"
+    "run_button_text": "Run"
 }
 PREFIX = "imagegen"
 TYPE_CHOICES = ["Txt2Img", "Img2Img", "Inpaint", "Outpaint", "Hires. Fix"]
@@ -44,7 +44,18 @@ def create_ui():
     
     from core import node_info_manager
     sampler_choices = node_info_manager.get_node_input_options("KSampler", "sampler_name")
+    if not sampler_choices:
+        sampler_choices = [
+            "euler", "euler_ancestral", "heun", "heunpp2", "dpm_2", "dpm_2_ancestral",
+            "lms", "dpm_fast", "dpm_adaptive", "dpmpp_2s_ancestral", "dpmpp_sde", "dpmpp_sde_gpu",
+            "dpmpp_2m", "dpmpp_2m_sde", "dpmpp_2m_sde_gpu", "dpmpp_3m_sde", "dpmpp_3m_sde_gpu",
+            "ddpm", "lcm", "ddim", "uni_pc", "uni_pc_bh2", "res_multistep", "er_sde"
+        ]
     scheduler_choices = node_info_manager.get_node_input_options("KSampler", "scheduler")
+    if not scheduler_choices:
+        scheduler_choices = [
+            "normal", "karras", "exponential", "sgm_uniform", "simple", "ddim_uniform", "beta"
+        ]
     constants = load_constants_config()
     resolution_presets = constants.get('RESOLUTION_MAP', {}).get("sdxl", {})
     default_ratio = list(resolution_presets.keys())[0] if resolution_presets else "1:1 (Square)"
@@ -63,19 +74,17 @@ def create_ui():
             components.update(create_model_architecture_filter_ui(PREFIX))
         components[key('arch_row')] = arch_row
         
-        with gr.Row(equal_height=True) as model_and_run_row:
-            with gr.Column(scale=4):
-                with gr.Row():
-                    components[key('sdxl_category_filter')] = create_sdxl_category_filter_ui(prefix=PREFIX, scale=1)
-                    components[key('model_name')] = gr.Dropdown(
-                        label="Base Model",
-                        choices=[],
-                        value=None,
-                        interactive=True,
-                        scale=3
-                    )
-            with gr.Column(scale=1, min_width=120):
-                components[key('run_button')] = gr.Button("🚀 Generate", variant="primary", elem_classes=["run-shortcut"])
+        with gr.Row() as model_and_run_row:
+            components[key('sdxl_category_filter')] = create_sdxl_category_filter_ui(prefix=PREFIX, scale=1)
+            components[key('model_name')] = gr.Dropdown(
+                label="Base Model",
+                choices=[],
+                value=None,
+                interactive=True,
+                scale=3
+            )
+            with gr.Column(scale=1):
+                components[key('run_button')] = gr.Button("Run", variant="primary", elem_classes=["run-shortcut"])
         components[key('model_and_run_rows')] = [arch_row, model_and_run_row]
 
         with gr.Row() as inputs_prompts_row:
@@ -141,7 +150,7 @@ def create_ui():
                         minimum=0.0,
                         maximum=1.0,
                         step=0.05,
-                        value=0.75
+                        value=1.0
                     )
                     components[key('grow_mask_by')] = gr.Slider(
                         label="Grow Mask By",
@@ -182,8 +191,8 @@ def create_ui():
 
                 # Common parameters
                 with gr.Row():
-                    components[key('sampler_name')] = gr.Dropdown(label="Sampler", choices=sampler_choices, value="euler", interactive=True)
-                    components[key('scheduler')] = gr.Dropdown(label="Scheduler", choices=scheduler_choices, value="simple", interactive=True)
+                    components[key('sampler_name')] = gr.Dropdown(label="Sampler", choices=sampler_choices, value="euler", interactive=True, allow_custom_value=True)
+                    components[key('scheduler')] = gr.Dropdown(label="Scheduler", choices=scheduler_choices, value="simple", interactive=True, allow_custom_value=True)
                 with gr.Row():
                     components[key('steps')] = gr.Slider(label="Steps", minimum=1, maximum=50, step=1, value=25, interactive=True)
                     components[key('cfg')] = gr.Slider(label="CFG Scale", minimum=1.0, maximum=15.0, step=0.5, value=7.0, interactive=True)
@@ -256,8 +265,8 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
         is_outpaint = (type_val == "Outpaint")
         is_hires_fix = (type_val == "Hires. Fix")
         
-        denoise_val = 0.75 if is_img2img else (1.0 if is_inpaint else (0.55 if is_hires_fix else 0.75))
-        run_text = "🎨 Inpaint" if is_inpaint else ("🎨 Outpaint" if is_outpaint else ("🚀 Hires Fix" if is_hires_fix else "🚀 Generate"))
+        denoise_val = 1.0 if is_txt2img else (0.75 if is_img2img else (1.0 if is_inpaint else (0.55 if is_hires_fix else 1.0)))
+        run_text = "Run Inpaint" if is_inpaint else ("Run Outpaint" if is_outpaint else ("Run Hires. Fix" if is_hires_fix else "Run"))
         
         prompt_lines = 6 if is_inpaint else 3
         gallery_cols = 2 if is_txt2img else 1

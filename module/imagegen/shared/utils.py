@@ -33,11 +33,16 @@ def get_model_path(display_name):
     return None
 
 def get_model_type(selected_model_name: str, model_config: dict) -> str:
-    checkpoints = model_config.get("Checkpoints", {})
+    checkpoints = model_config.get("Checkpoints", {}) or model_config.get("Checkpoint", {})
+    from .config_loader import load_architectures_config
+    arch_configs = load_architectures_config().get("architectures", {})
+
     for arch_name, arch_data in checkpoints.items():
         for model in arch_data.get("models", []):
             if model.get("display_name") == selected_model_name:
-                return arch_name.lower().replace(" ", "-").replace(".", "")
+                if arch_name in arch_configs and "model_type" in arch_configs[arch_name]:
+                    return arch_configs[arch_name]["model_type"]
+                return arch_name.lower().replace(" ", "-")
         
     return "sdxl"
 
@@ -61,7 +66,20 @@ def get_model_generation_defaults(model_display_name: str, model_type: str, defa
     if 'Default' in defaults_config:
         final_defaults.update(defaults_config['Default'])
 
-    model_type_key = next((key for key in defaults_config if key.lower().replace(" ", "-").replace(".", "") == model_type.lower()), None)
+    from .config_loader import load_architectures_config
+    arch_configs = load_architectures_config().get("architectures", {})
+
+    model_type_key = None
+    for arch_name, arch_data in arch_configs.items():
+        if arch_data.get("model_type") == model_type and arch_name in defaults_config:
+            model_type_key = arch_name
+            break
+
+    if not model_type_key:
+        model_type_key = next((key for key in defaults_config if key.lower().replace(" ", "-") == model_type.lower()), None)
+    if not model_type_key:
+        model_type_key = next((key for key in defaults_config if key.lower().replace(" ", "-").replace(".", "") == model_type.lower().replace(".", "")), None)
+
     if model_type_key:
         model_type_config = defaults_config[model_type_key]
         if '_defaults' in model_type_config:
