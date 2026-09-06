@@ -76,6 +76,8 @@ def create_simple_run_generation(process_inputs_func, get_ui_updates_func):
     from core.comfy_api import run_workflow_and_get_output
     def run_generation(ui_values):
         final_files = []
+        last_status = "Status: Initializing..."
+        has_error = False
         try:
             yield get_ui_updates_func("Status: Preparing...", final_files)
             
@@ -85,7 +87,9 @@ def create_simple_run_generation(process_inputs_func, get_ui_updates_func):
             for status, output_files in run_workflow_and_get_output(workflow_package):
                 if output_files and isinstance(output_files, list):
                     final_files = output_files
-                
+                if status.startswith("Error:"):
+                    has_error = True
+                last_status = status
                 yield get_ui_updates_func(status, final_files)
 
         except Exception as e:
@@ -93,7 +97,10 @@ def create_simple_run_generation(process_inputs_func, get_ui_updates_func):
             yield get_ui_updates_func(f"Error: {e}", final_files)
             return
 
-        yield get_ui_updates_func("Status: Loaded successfully!", final_files)
+        if not has_error and final_files:
+            yield get_ui_updates_func("Status: Loaded successfully!", final_files)
+        elif not final_files and not has_error:
+            yield get_ui_updates_func(last_status if "Error:" in last_status else "Error: No output files received.", final_files)
     
     return run_generation
 
@@ -101,6 +108,8 @@ def create_batched_run_generation(process_inputs_func, get_ui_updates_func):
     from core.comfy_api import run_workflow_and_get_output
     def run_generation(ui_values):
         all_output_files = []
+        last_status = "Status: Initializing..."
+        has_error = False
         try:
             batch_count_key = 'batch_count'
             seed_key = 'seed'
@@ -119,12 +128,15 @@ def create_batched_run_generation(process_inputs_func, get_ui_updates_func):
                 
                 for status, output_path in run_workflow_and_get_output(workflow_package):
                     status_msg = f"Status: {status.replace('Status: ', '')}{batch_msg}"
+                    if status.startswith("Error:"):
+                        has_error = True
                     
                     if output_path and isinstance(output_path, list):
                         new_files = [f for f in output_path if f not in all_output_files]
                         if new_files:
                             all_output_files.extend(new_files)
 
+                    last_status = status_msg
                     yield get_ui_updates_func(status_msg, all_output_files)
 
         except Exception as e:
@@ -132,7 +144,10 @@ def create_batched_run_generation(process_inputs_func, get_ui_updates_func):
             yield get_ui_updates_func(f"Error: {e}", all_output_files)
             return
 
-        yield get_ui_updates_func("Status: Loaded successfully!", all_output_files)
+        if not has_error and all_output_files:
+            yield get_ui_updates_func("Status: Loaded successfully!", all_output_files)
+        elif not all_output_files and not has_error:
+            yield get_ui_updates_func(last_status if "Error:" in last_status else "Error: No output files received.", all_output_files)
         
     return run_generation
 
