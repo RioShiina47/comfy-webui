@@ -14,14 +14,13 @@ def inject(assembler, chain_definition, chain_items):
 
     minimax_h3_node = assembler.workflow[target_node_id]
 
-    valid_audios = [aud for aud in chain_items if aud]
-    for idx, audio_file in enumerate(valid_audios):
-        load_id = assembler._get_unique_id()
-        load_node = assembler._get_node_template_from_api("LoadAudio")
-        load_node['inputs']['audio'] = audio_file
-        assembler.workflow[load_id] = load_node
+    valid_audios = [a for a in chain_items if a]
+    for idx, aud_file in enumerate(valid_audios):
+        load_aud_id = assembler._get_unique_id()
+        load_aud_node = assembler._get_node_template_from_api("LoadAudio")
+        load_aud_node['inputs']['audio'] = aud_file
+        assembler.workflow[load_aud_id] = load_aud_node
 
-        param_name = f"ref_audios.ref_audio_{idx}"
-        minimax_h3_node['inputs'][param_name] = [load_id, 0]
+        minimax_h3_node['inputs'][f"ref_audio.ref_audio_{idx}"] = [load_aud_id, 0]
 
     print(f"[H3 RefAudio Injector] Successfully injected {len(valid_audios)} reference audio(s).")
