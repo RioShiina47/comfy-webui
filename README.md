@@ -27,7 +27,7 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
 - **🔗 Image Generation: Matrix-Style Dynamic Workflow System** **[HF spaces](https://huggingface.co/spaces/RioShiina/ImageGen)** 🤗
   - The image generation features are built around a matrix-style dynamic workflow assembly mechanism. You can freely combine "task dimensions" and "model dimensions" to form dozens of base generation modes.
     - **Task dimension (`task_type`)**: supports `txt2img`, `img2img`, `Inpaint`, `Outpaint`, `Hires. fix`.
-    - **Model dimension (`model_type`)**: supports a wide range of model families such as `Krea-2`, `Mage-Flow`, `JoyAI-Image`, `Boogu-Image`, `PixelDiT`, `ideogram-4`, `Lens`, `FLUX.2`, `Z-Image`, `Qwen-Image`, `ERNIE-Image`, `LongCat-Image`, `Cosmos-Predict2`, `Anima`, `NewBie-Image`, `Kandinsky-5`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream-O1`, `HiDream-I1`, `FLUX.1`, `AuraFlow`, `SD3.5`, `SDXL`, `SD1.5`, etc.
+    - **Model dimension (`model_type`)**: supports a wide range of model families such as `Krea-2`, `Mage-Flow`, `JoyAI-Image`, `Boogu-Image`, `PixelDiT`, `ideogram-4`, `Lens`, `FLUX.2`, `Z-Image`, `Qwen-Image`, `ERNIE-Image`, `LongCat-Image`, `Cosmos-Predict2`, `Anima-3.8B-v1.1`, `Anima-3.8B`, `Anima`, `NewBie-Image`, `Kandinsky-5`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream-O1`, `HiDream-I1`, `FLUX.1`, `AuraFlow`, `SD3.5`, `SDXL`, `SD1.5`, etc.
   - After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
     - **Dynamic LoRA chains:** Load multiple LoRAs from Civitai, Hugging Face, direct URLs, uploaded files, or local paths and chain them; each LoRA's weight is independently controllable.
     - **Dynamic ControlNet/Krea-2 ControlNet/DiffSynth ControlNet/Anima ControlNet LLLite chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
@@ -52,15 +52,16 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     - **Reduced Cognitive Load for LLMs:** Eliminates the need for LLMs to reason over complex topological links and micro-node details, preventing failures caused by broken links, node version conflicts, or topological hallucinations.
     - **Unshakable Contract Stability:** All dynamic node graph construction, multi-chain injection, and VRAM management are handled transparently server-side. Even if underlying custom nodes undergo breaking updates or structural rewrites, the agent-facing MCP API contract remains rock-solid.
     - **Intent-Driven Orchestration:** Frees AI agents from being "node wirers", allowing them to focus purely on high-level creative intent and task orchestration.
-  - **7 High-Level Semantic Tools in the ImageGen Module:**
+  - **8 High-Level Semantic Tools in the ImageGen Module:**
     1. `ImageGen_get_task_list`: **Task Type Probe.** Returns all supported image generation tasks (`txt2img`, `img2img`, `inpaint`, `outpaint`, `hires_fix`) along with required/optional parameter definitions.
-    2. `ImageGen_get_model_architecture_list`: **Architecture Probe.** Lists supported model families (`SD1.5`, `SDXL`, `FLUX.1`, `FLUX.2`, `Anima`, etc.) and recommended default resolutions.
+    2. `ImageGen_get_model_architecture_list`: **Architecture Probe.** Lists supported model families (`SD1.5`, `SDXL`, `FLUX.1`, `FLUX.2`, `Anima-3.8B`, `Anima-3.8B-v1.1`, etc.), default resolutions, and available resolution presets.
     3. `ImageGen_get_model_list`: **Model Query.** Retrieves available model checkpoints with optional architecture filtering, returning display names, categories, and default trigger prompts.
-    4. `ImageGen_get_feature_list`: **Feature & Schema Discovery.** Queries supported chain injectors (LoRA, ControlNet, IP-Adapter, Reference Latent, etc.). Returns token-optimized summaries when unparameterized, or full parameter schemas when requested.
+    4. `ImageGen_get_feature_list`: **Feature & Schema Discovery.** Queries supported chain injectors (LoRA, ControlNet, IP-Adapter, Reference Latent, etc.). Returns token-optimized compact summaries when unparameterized, or full parameter schemas with dynamic model enums and paste-and-run examples when requested (`feature_name`).
     5. `ImageGen_get_model_features`: **Model Metadata & Hyperparam Probe.** Returns a model's supported tasks, active feature chains, and official recommended hyperparameters (`steps`, `cfg`, `sampler`, `scheduler`).
-    6. `ImageGen_run`: **Unified Execution Interface.** Accepts basic generation tasks stacked with multi-layer chain injectors; supports Minimal Mode (auto-injecting default hyperparams) and synchronous/asynchronous execution.
-    7. `ImageGen_get_task_status`: **Async Status Polling.** Polls task progress (`queued`, `processing`, `completed`, `failed`), percentage, and generated output URLs via `task_id`.
-  - **Progressive Exploration Pipeline for Agents**: Built with a self-describing discovery flow (`Discover Tasks → Filter Architectures → Retrieve Models → Probe Recommended Hyperparameters → Submit Execution → Async Status Polling`), enabling Agents to autonomously perceive and utilize platform capabilities.
+    6. `ImageGen_get_sampler_scheduler_list`: **Sampler & Scheduler Catalog.** Returns all supported samplers and schedulers, organized by general availability and model-architecture-specific support.
+    7. `ImageGen_run_imagegen`: **Unified Execution Interface.** Accepts basic generation tasks stacked with multi-layer chain injectors; supports Minimal Mode (auto-injecting default hyperparams) and synchronous/asynchronous execution.
+    8. `ImageGen_get_task_status`: **Async Status Polling.** Polls task progress (`queued`, `processing`, `completed`, `failed`), percentage, and generated output URLs via `task_id`.
+  - **Progressive Exploration Pipeline for Agents**: Built with a self-describing discovery flow (`Discover Tasks → Filter Architectures → Retrieve Models → Probe Recommended Hyperparameters & Samplers → Submit Execution → Async Status Polling`), enabling Agents to autonomously perceive and utilize platform capabilities.
   - **Zero-Guessing Hyperparameter Engine**: Supports **Minimal Mode** (server automatically applies expert presets) and **Explicit Alignment Mode** (query before passing), completely eliminating hyperparameter hallucination.
   - **Full-Modality Native MCP Tool Suite:**
     1. `ModelGen_img2model`: **Single Image to 3D**. Generates 3D assets from a single input image using Hunyuan3D-2. Accepts `image_url` or `image_data`, returning accessible 3D model files (`shape_model_url` and `textured_model_url`).
@@ -252,6 +253,9 @@ Each functional module (such as `module/imagegen/`, `module/video_gen/`) encapsu
 
 - `controlnet_models.yaml` & `ipadapter.yaml`: **Adapter Model Registries**
   - Defines available ControlNet, T2I-Adapter, and IP-Adapter presets, associated preprocessor types, and weights.
+
+- `task_features.yaml` & `chain_features.yaml` (in `module/imagegen/yaml/`): **Task & Chain Feature Schemas (MCP / Semantic API)**
+  - Declaratively defines schemas, argument types, dynamic enum sources (e.g. available ControlNet/IP-Adapter models), and runnable example payloads for all tasks and chain injectors exposed via MCP.
 
 - `constants.yaml`: **Module Constants**
   - Defines fixed domain presets, such as resolution options (`RESOLUTION_MAP`), aspect ratios, and maximum LoRA stack limits.

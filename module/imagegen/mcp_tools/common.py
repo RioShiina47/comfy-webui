@@ -23,7 +23,21 @@ _MODEL_LIST_PATH = os.path.join(_YAML_DIR, "model_list.yaml")
 _MODEL_DEFAULTS_PATH = os.path.join(_YAML_DIR, "model_defaults.yaml")
 _IMAGE_GEN_FEATURES_PATH = os.path.join(_YAML_DIR, "image_gen_features.yaml")
 _CHAIN_FEATURES_PATH = os.path.join(_YAML_DIR, "chain_features.yaml")
+_TASK_FEATURES_PATH = os.path.join(_YAML_DIR, "task_features.yaml")
 _CONSTANTS_PATH = os.path.join(_YAML_DIR, "constants.yaml")
+
+
+def _get_ipadapter_presets_by_arch() -> Dict[str, list]:
+    """Load IPAdapter presets from yaml/ipadapter.yaml for SD1.5 and SDXL."""
+    ipadapter_yaml_path = os.path.join(_YAML_DIR, "ipadapter.yaml")
+    data = _load_yaml(ipadapter_yaml_path)
+    res = {}
+    for arch in ("SD1.5", "SDXL"):
+        std = data.get("IPAdapter_presets", {}).get(arch, [])
+        face = data.get("IPAdapter_FaceID_presets", {}).get(arch, [])
+        res[arch] = list(std) + list(face)
+    return res
+
 
 
 def _parse_image_param(image_param: Any) -> Any:

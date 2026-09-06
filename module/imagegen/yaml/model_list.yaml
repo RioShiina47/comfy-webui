@@ -222,6 +222,25 @@ Checkpoints:
           unet: "cosmos_predict2_14B_t2i.pt"
           clip: "oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
           vae: "wan_2.1_vae.safetensors"
+  Anima-3.8B-v1.1:
+    latent_type: sd3_latent
+    models:
+      - display_name: "lylogummy/Anima-3.8B-v1.1"
+        components:
+          unet: "Anima-3.8B-v1.1.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
+          qwen35_model: "qwen35_4b.safetensors"
+          vae: "qwen_image_vae.safetensors"
+  Anima-3.8B:
+    latent_type: sd3_latent
+    models:
+      - display_name: "lylogummy/Anima-3.8B"
+        components:
+          unet: "Anima-3.8B.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
+          qwen35_model: "qwen35_4b.safetensors"
+          adapter_name: "Anima-3.8B-expanded_adapter.safetensors"
+          vae: "qwen_image_vae.safetensors"
   Anima:
     latent_type: latent
     models:
@@ -238,6 +257,11 @@ Checkpoints:
       - display_name: "circlestone-labs/Anima-Base-v1.0"
         components:
           unet: "anima-base-v1.0.safetensors"
+          vae: "qwen_image_vae.safetensors"
+          clip: "qwen_3_06b_base.safetensors"
+      - display_name: "Gazingstars123/Anima-2.9B-preview-v1"
+        components:
+          unet: "Anima-2.9B-preview-v1.safetensors"
           vae: "qwen_image_vae.safetensors"
           clip: "qwen_3_06b_base.safetensors"
   NewBie-Image:

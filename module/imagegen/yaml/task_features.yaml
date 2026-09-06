@@ -1,0 +1,130 @@
+# Task-level feature support configuration
+# Defines which chains (features) are available for each task type.
+# A feature is visible in the UI only when BOTH the task AND the model architecture support it.
+# pid only supports txt2img; all other features support all 5 tasks.
+
+txt2img:
+  enabled_chains:
+  - lora
+  - controlnet
+  - anima_controlnet_lllite
+  - diffsynth_controlnet
+  - krea2_controlnet
+  - ipadapter
+  - flux1_ipadapter
+  - sd3_ipadapter
+  - style
+  - embedding
+  - conditioning
+  - reference_latent
+  - hidream_o1_reference
+  - hidream_o1_smoothing
+  - sensenova_reference
+  - joyai_image
+  - krea2_identity_edit
+  - krea2_style_reference
+  - qwen_image_edit
+  - boogu_image_edit
+  - reference_image
+  - pid
+  - vae
+
+img2img:
+  enabled_chains:
+  - lora
+  - controlnet
+  - anima_controlnet_lllite
+  - diffsynth_controlnet
+  - krea2_controlnet
+  - ipadapter
+  - flux1_ipadapter
+  - sd3_ipadapter
+  - style
+  - embedding
+  - conditioning
+  - reference_latent
+  - hidream_o1_reference
+  - hidream_o1_smoothing
+  - sensenova_reference
+  - joyai_image
+  - krea2_identity_edit
+  - krea2_style_reference
+  - qwen_image_edit
+  - boogu_image_edit
+  - reference_image
+  - vae
+
+inpaint:
+  enabled_chains:
+  - lora
+  - controlnet
+  - anima_controlnet_lllite
+  - diffsynth_controlnet
+  - krea2_controlnet
+  - ipadapter
+  - flux1_ipadapter
+  - sd3_ipadapter
+  - style
+  - embedding
+  - conditioning
+  - reference_latent
+  - hidream_o1_reference
+  - hidream_o1_smoothing
+  - sensenova_reference
+  - joyai_image
+  - krea2_identity_edit
+  - krea2_style_reference
+  - qwen_image_edit
+  - boogu_image_edit
+  - reference_image
+  - vae
+
+outpaint:
+  enabled_chains:
+  - lora
+  - controlnet
+  - anima_controlnet_lllite
+  - diffsynth_controlnet
+  - krea2_controlnet
+  - ipadapter
+  - flux1_ipadapter
+  - sd3_ipadapter
+  - style
+  - embedding
+  - conditioning
+  - reference_latent
+  - hidream_o1_reference
+  - hidream_o1_smoothing
+  - sensenova_reference
+  - joyai_image
+  - krea2_identity_edit
+  - krea2_style_reference
+  - qwen_image_edit
+  - boogu_image_edit
+  - reference_image
+  - vae
+
+hires_fix:
+  enabled_chains:
+  - lora
+  - controlnet
+  - anima_controlnet_lllite
+  - diffsynth_controlnet
+  - krea2_controlnet
+  - ipadapter
+  - flux1_ipadapter
+  - sd3_ipadapter
+  - style
+  - embedding
+  - conditioning
+  - reference_latent
+  - hidream_o1_reference
+  - hidream_o1_smoothing
+  - sensenova_reference
+  - joyai_image
+  - krea2_identity_edit
+  - krea2_style_reference
+  - qwen_image_edit
+  - boogu_image_edit
+  - reference_image
+  - vae

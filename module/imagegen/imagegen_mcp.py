@@ -12,7 +12,7 @@ from .mcp_tools import (
     ImageGen_get_model_features,
     ImageGen_run_imagegen,
     ImageGen_get_task_status,
-    ImageGen_get_chain_schema,
+    ImageGen_get_sampler_scheduler_list,
 )
 
 __all__ = ["MCP_FUNCTIONS"]

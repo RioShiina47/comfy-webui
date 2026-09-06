@@ -8,17 +8,26 @@ from .config_loader import load_model_config, load_model_defaults, load_controln
 
 constants = load_constants_config()
 
-def update_model_list(architecture_filter: str, category_filter: str):
+def get_categories_for_architecture(arch_filter: str):
     model_config = load_model_config()
     checkpoints = model_config.get("Checkpoints", {})
     arch_config = load_architectures_config()
     ordered_architectures = arch_config.get("architecture_order", [])
 
-    if category_filter != "ALL" and architecture_filter == "SDXL":
-        sdxl_models_data = checkpoints.get("SDXL", {}).get("models", [])
-        choices = [m['display_name'] for m in sdxl_models_data if m.get("category") == category_filter]
-        default_value = choices[0] if choices else None
-        return gr.update(choices=choices, value=default_value)
+    architectures = ordered_architectures if arch_filter == "ALL" else [arch_filter]
+    categories = set()
+    for arch in architectures:
+        if arch in checkpoints:
+            for m in checkpoints[arch].get("models", []):
+                if isinstance(m, dict) and m.get("category"):
+                    categories.add(m["category"])
+    return ["ALL"] + sorted(list(categories))
+
+def update_model_list(architecture_filter: str, category_filter: str):
+    model_config = load_model_config()
+    checkpoints = model_config.get("Checkpoints", {})
+    arch_config = load_architectures_config()
+    ordered_architectures = arch_config.get("architecture_order", [])
 
     choices = []
     architectures_to_load = ordered_architectures if architecture_filter == "ALL" else [architecture_filter]
@@ -26,7 +35,11 @@ def update_model_list(architecture_filter: str, category_filter: str):
     for arch_name in architectures_to_load:
         if arch_name in checkpoints:
             models_data = checkpoints[arch_name].get("models", [])
-            choices.extend([m['display_name'] for m in models_data])
+            for m in models_data:
+                m_cat = m.get("category")
+                cat_match = (category_filter == "ALL" or m_cat == category_filter)
+                if cat_match:
+                    choices.append(m['display_name'])
     
     default_value = choices[0] if choices else None
     return gr.update(choices=choices, value=default_value)
@@ -101,16 +114,17 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     vae_accordion = components.get(key('vae_accordion'))
 
 
-    def on_architecture_filter_change(arch_filter):
-        sdxl_filter_visibility = arch_filter in ["SDXL", "ALL"]
-        updated_model_list = update_model_list(arch_filter, "ALL")
-        return gr.update(visible=sdxl_filter_visibility), gr.update(value="ALL"), updated_model_list
+    def on_architecture_filter_change(arch_filter, current_cat="ALL"):
+        cat_choices = get_categories_for_architecture(arch_filter)
+        new_cat = current_cat if current_cat in cat_choices else "ALL"
+        updated_model_list = update_model_list(arch_filter, new_cat)
+        return gr.update(choices=cat_choices, value=new_cat, visible=True), updated_model_list
 
     if sdxl_category_filter:
         model_filter.change(
             fn=on_architecture_filter_change,
-            inputs=[model_filter],
-            outputs=[sdxl_category_filter, sdxl_category_filter, model_dropdown],
+            inputs=[model_filter, sdxl_category_filter],
+            outputs=[sdxl_category_filter, model_dropdown],
             show_progress=False,
             api_name=False
         )
@@ -123,8 +137,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         )
         demo.load(
             fn=on_architecture_filter_change,
-            inputs=[model_filter],
-            outputs=[sdxl_category_filter, sdxl_category_filter, model_dropdown],
+            inputs=[model_filter, sdxl_category_filter],
+            outputs=[sdxl_category_filter, model_dropdown],
             api_name=False
         )
     else:

@@ -36,12 +36,14 @@ def create_sdxl_category_filter_ui(prefix: str, **kwargs):
     key = lambda name: f"{prefix}_{name}"
     
     model_config = load_model_config()
-    sdxl_models = model_config.get("Checkpoints", {}).get("SDXL", {}).get("models", [])
+    checkpoints = model_config.get("Checkpoints", {})
     
     categories = set()
-    for model in sdxl_models:
-        if "category" in model and model["category"]:
-            categories.add(model["category"])
+    for arch, arch_data in checkpoints.items():
+        if isinstance(arch_data, dict):
+            for model in arch_data.get("models", []):
+                if isinstance(model, dict) and model.get("category"):
+                    categories.add(model["category"])
             
     choices = ["ALL"] + sorted(list(categories))
 
@@ -53,6 +55,8 @@ def create_sdxl_category_filter_ui(prefix: str, **kwargs):
         visible=True,
         **kwargs
     )
+
+create_category_filter_ui = create_sdxl_category_filter_ui
     
 def create_base_ui_components(prefix: str):
     key = lambda name: f"{prefix}_{name}"
@@ -60,19 +64,17 @@ def create_base_ui_components(prefix: str):
     
     components.update(create_model_architecture_filter_ui(prefix))
     
-    with gr.Row(equal_height=True):
-        with gr.Column(scale=4):
-            with gr.Row():
-                components[key('sdxl_category_filter')] = create_sdxl_category_filter_ui(prefix, scale=1)
-                components[key('model_name')] = gr.Dropdown(
-                    label="Base Model", 
-                    choices=[], 
-                    value=None, 
-                    interactive=True,
-                    scale=3
-                )
-        with gr.Column(scale=1, min_width=120):
-            components[key('run_button')] = gr.Button("🚀 Generate", variant="primary", elem_classes=["run-shortcut"])
+    with gr.Row():
+        components[key('sdxl_category_filter')] = create_sdxl_category_filter_ui(prefix, scale=1)
+        components[key('model_name')] = gr.Dropdown(
+            label="Base Model", 
+            choices=[], 
+            value=None, 
+            interactive=True,
+            scale=3
+        )
+        with gr.Column(scale=1):
+            components[key('run_button')] = gr.Button("Run", variant="primary", elem_classes=["run-shortcut"])
     
     components[key('positive_prompt')] = gr.Textbox(label="Prompt", lines=3, placeholder="Enter your prompt or paste generation info here...", interactive=True)
     components[key('negative_prompt')] = gr.Textbox(label="Negative Prompt", lines=3, interactive=True)

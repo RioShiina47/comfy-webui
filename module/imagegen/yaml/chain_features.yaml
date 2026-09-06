@@ -1,0 +1,540 @@
+# Complete Feature & Chain Definitions Configuration for MCP Tools
+# Every chain injector in chain_injectors/ corresponds 1-to-1 with an entry here (21 injectors total).
+
+lora:
+  chains: lora
+  display_name: "LoRA Fine-tuning Injector"
+  description: "Injects LoRA weights into UNet/DiT model and CLIP text encoder for custom style, character, or domain adaptation. Note: For Civitai, specify the Version ID (modelVersionId) instead of the main Model ID."
+  max_count: 5
+  usage_guideline: "Specify source ('Civitai', 'Hugging Face', or 'Upload File'). For Civitai, provide lora_value as the Version ID (modelVersionId). For Hugging Face, provide HF repo file path. For Upload File, provide uploaded filename. Scale (0.0~2.0) controls weight strength."
+  parameters_schema:
+    type: object
+    properties:
+      source:
+        type: string
+        enum: ["Civitai", "Hugging Face", "Upload File"]
+        description: "Download/upload source for the LoRA model. Use 'Civitai' to download by Version ID (modelVersionId), 'Hugging Face' to download by repo file path, or 'Upload File' for uploaded files."
+      lora_value:
+        type: string
+        description: "For Civitai: the Version ID (modelVersionId). For Hugging Face: repo_id/filename.extension or repo_id/folder_path/filename.extension. For Upload File: uploaded filename."
+      scale:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Unified strength applied to both the UNet/DiT model and CLIP text encoder (0.0 to 2.0)."
+    required:
+      - source
+      - lora_value
+
+ipadapter:
+  chains: ipadapter
+  display_name: "IP-Adapter Image Prompt"
+  description: "Uses reference images to guide generation style, composition, structure, or face appearance without prompt text restrictions (SD1.5 & SDXL)."
+  max_count: 5
+  usage_guideline: "Supply global settings (preset, embeds_scaling, combine_method, final_weight) and up to 5 reference images with individual weights. Preset must match the target model architecture (SD1.5 or SDXL)."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI (e.g., data:image/png;base64,...) or HTTP/HTTPS URL."
+      weight:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Influence weight of the individual image prompt (0.0 to 2.0)."
+      preset:
+        type: string
+        default: "STANDARD (medium strength)"
+        description: "IPAdapter preset model variant loaded from ipadapter.yaml. Must match model architecture (SD1.5 vs SDXL)."
+      embeds_scaling:
+        type: string
+        default: "V only"
+        enum:
+          - "V only"
+          - "K+V"
+          - "K+V w/ C penalty"
+          - "K+mean(V) w/ C penalty"
+        description: "Embedding scaling method for IPAdapter."
+      combine_method:
+        type: string
+        default: "concat"
+        enum:
+          - "concat"
+          - "add"
+          - "subtract"
+          - "average"
+          - "norm average"
+          - "max"
+          - "min"
+        description: "Combination method for multiple reference images."
+      final_weight:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Global weight multiplier for IPAdapter conditioning (0.0 to 2.0)."
+      lora_strength:
+        type: number
+        default: 0.6
+        description: "LoRA weight strength for FaceID adapter variants."
+    required:
+      - image
+
+controlnet:
+  chains: controlnet
+  display_name: "ControlNet Spatial Guidance"
+  description: "Applies structural and spatial conditioning (depth, pose, lineart, tile, scribble, canny) to guide output composition."
+  max_count: 5
+  usage_guideline: "Specify ControlNet type and series (must match requested model architecture e.g., SD1.5, SDXL, SD3.5, FLUX.1, Qwen-Image), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and guidance strength."
+  parameters_schema:
+    type: object
+    properties:
+      type:
+        type: string
+        description: "ControlNet conditioning type (must match model architecture)."
+      series:
+        type: string
+        description: "ControlNet model series (must match model architecture)."
+      image:
+        type: string
+        description: "Pre-processed control image (e.g., Depth, Canny, Pose, Lineart map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
+      strength:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Control influence strength (0.0 to 2.0)."
+    required:
+      - type
+      - series
+      - image
+
+conditioning:
+  chains: conditioning
+  display_name: "Regional Conditioning / Area Prompt"
+  description: "Defines rectangular areas (X, Y, Width, Height) and assigns specific text prompts and conditioning strengths to them."
+  max_count: 10
+  usage_guideline: "Define rectangular spatial areas (X, Y, width, height) and assign specific prompts and strengths to them. Supports up to 10 area prompts."
+  parameters_schema:
+    type: object
+    properties:
+      prompt:
+        type: string
+        description: "Text prompt for this specific rectangular area."
+      x:
+        type: integer
+        default: 0
+        description: "Top-left X coordinate of the rectangular area."
+      y:
+        type: integer
+        default: 0
+        description: "Top-left Y coordinate of the rectangular area."
+      width:
+        type: integer
+        default: 512
+        description: "Width of the rectangular area."
+      height:
+        type: integer
+        default: 512
+        description: "Height of the rectangular area."
+      strength:
+        type: number
+        default: 1.0
+        minimum: 0.1
+        maximum: 2.0
+        description: "Conditioning strength for this area (0.1 to 2.0)."
+    required:
+      - prompt
+
+vae:
+  chains: vae
+  display_name: "Custom VAE Loader"
+  description: "Overrides default VAE model used for latent space encoding and final image decoding."
+  max_count: 1
+  usage_guideline: "Specify source ('Civitai', 'Hugging Face', or 'Upload File'), then provide the vae_value (Civitai Version ID, HF file path, or uploaded filename)."
+  parameters_schema:
+    type: object
+    properties:
+      source:
+        type: string
+        enum: ["Civitai", "Hugging Face", "Upload File"]
+        description: "Download/upload source for the VAE model. Use 'Civitai' to download by Version ID, 'Hugging Face' to download by repo path, or 'Upload File' for uploaded file."
+      vae_value:
+        type: string
+        description: "For Civitai: the Version ID (e.g., '456' from civitai.com/models/123?modelVersionId=456). For Hugging Face: repo_id/filename.extension or repo_id/folder_path/filename.extension (e.g., 'madebyollin/sdxl-vae-fp16-fix/sdxl_vae.safetensors'). For Upload File: uploaded file name."
+    required:
+      - source
+      - vae_value
+
+pid:
+  chains: pid
+  display_name: "PiD High-Resolution Refinement"
+  description: "Progressive Detail (PiD) upscale injector for fine detail enhancement and resolution upscaling."
+  max_count: 1
+  usage_guideline: "Enables PiD detail refinement pipeline using a boolean switch ('enabled': true/false)."
+  parameters_schema:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        default: true
+        description: "Enable or disable PiD High-Resolution Refinement."
+    required:
+      - enabled
+
+flux1_style:
+  chains: style
+  display_name: "FLUX.1 Style Reference"
+  description: "Applies artistic style conditioning from reference images onto FLUX.1 model generated outputs."
+  max_count: 5
+  usage_guideline: "Supply style reference image(s) (up to 5) encoded as Base64 Data URI or HTTP/HTTPS URL and optional strength."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Style reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+      strength:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Style influence strength (0.0 to 2.0)."
+    required:
+      - image
+
+reference_edit:
+  chains: reference_latent
+  display_name: "Reference Edit"
+  description: "For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 10
+  usage_guideline: "Supply reference image(s) encoded as Base64 Data URI or HTTP/HTTPS URL. Passing a single reference image performs an Image Edit, while passing multiple images (up to 10) performs an Image Combine."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+mage_flow_reference_edit:
+  chains: reference_image
+  display_name: "Mage-Flow Reference Edit"
+  description: " (Mage-Flow-Edit-Turbo/Mage-Flow-Edit recommended) For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 10
+  usage_guideline: "Supply reference image as Base64 Data URI or HTTP/HTTPS URL."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+krea2_identity_edit:
+  chains: krea2_identity_edit
+  display_name: "KREA2 Identity Edit"
+  description: "Processed using the lbouaraba/comfyui-krea2edit node. (Krea-2-Turbo recommended, Krea-2-Raw need set ZeroGPU Duration (s) to 120 ) In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 2
+  usage_guideline: "Supply reference image as Base64 Data URI or HTTP/HTTPS URL."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+krea2_style_reference:
+  chains: krea2_style_reference
+  display_name: "KREA2 Style Reference"
+  description: "(Krea-2-Turbo recommended) Add style reference images to perform style reference editing."
+  max_count: 3
+  usage_guideline: "Supply style reference image as Base64 Data URI or HTTP/HTTPS URL."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Style reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+diffsynth_controlnet:
+  chains: diffsynth_controlnet
+  display_name: "DiffSynth ControlNet"
+  description: "DiffSynth optimized ControlNet injector for Z-Image models."
+  max_count: 5
+  usage_guideline: "Supply ControlNet type (e.g., 'Canny'), series (e.g., 'alibaba-pai Controlnet Union 2.1 8steps'), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and optional strength."
+  parameters_schema:
+    type: object
+    properties:
+      type:
+        type: string
+        description: "ControlNet conditioning type."
+      series:
+        type: string
+        description: "ControlNet model series name."
+      image:
+        type: string
+        description: "Pre-processed control image (e.g., Depth map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
+      strength:
+        type: number
+        default: 1.0
+        description: "Control influence strength."
+    required:
+      - type
+      - series
+      - image
+
+boogu_image_edit:
+  chains: boogu_image_edit
+  display_name: "Boogu-Image Edit"
+  description: " (Boogu-Image-Edit-Turbo/Boogu-Image-Edit recommended, Boogu-Image-Edit need set ZeroGPU Duration (s) to 120 ) In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 2
+  usage_guideline: "Supply reference image as Base64 Data URI or HTTP/HTTPS URL."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+joyai_reference_edit:
+  chains: joyai_image
+  display_name: "JoyAI Reference Edit"
+  description: " (JoyAI-Image-Edit recommended) For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit (JoyAI-Image-Edit recommended), while adding multiple images performs an Image Combine (JoyAI-Image-Edit-Plus recommended with ZeroGPU Duration (s) set to 120)."
+  max_count: 2
+  usage_guideline: "Supply JoyAI reference image as Base64 Data URI or HTTP/HTTPS URL."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Input reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+qwen_image_edit:
+  chains: qwen_image_edit
+  display_name: "Qwen-Image Edit"
+  description: " (lightx2v/Qwen-Image-Edit-2511-Lightning recommended) In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 3
+  usage_guideline: "Supply reference image(s) (up to 3) encoded as Base64 Data URI or HTTP/HTTPS URL. Passing a single reference image performs an Image Edit, while passing multiple images performs an Image Combine."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+hidream_o1_smoothing:
+  chains: hidream_o1_smoothing
+  display_name: "HiDream O1 Smoothing Injector"
+  description: "HiDream O1 detail smoothing and artifact reduction injector."
+  max_count: 1
+  usage_guideline: "Configures smoothing factor for HiDream models."
+  parameters_schema:
+    type: object
+    properties:
+      factor:
+        type: number
+        default: 0.5
+        description: "Smoothing intensity (0.0 to 1.0)."
+    required: []
+
+krea2_controlnet:
+  chains: krea2_controlnet
+  display_name: "KREA2 ControlNet"
+  description: "Processed using the facok/comfyui-krea2-controlnet node."
+  max_count: 5
+  usage_guideline: "Supply ControlNet type (e.g., 'Depth'), series (e.g., 'Patil'), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and optional strength."
+  parameters_schema:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - "Depth"
+        description: "ControlNet conditioning type."
+      series:
+        type: string
+        enum:
+          - "Patil"
+        default: "Patil"
+        description: "ControlNet model series."
+      image:
+        type: string
+        description: "Pre-processed control image (e.g., Depth map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
+      strength:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Control influence strength (0.0 to 2.0)."
+    required:
+      - type
+      - series
+      - image
+
+anima_controlnet_lllite:
+  chains: anima_controlnet_lllite
+  display_name: "Anima ControlNet LLLite"
+  description: "Anima model-specific lightweight ControlNet."
+  max_count: 5
+  usage_guideline: "Supply Anima ControlNet LLLite type (e.g., 'Depth'), series (e.g., 'kohya-ss'), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and optional strength."
+  parameters_schema:
+    type: object
+    properties:
+      type:
+        type: string
+        description: "Anima ControlNet LLLite conditioning type."
+      series:
+        type: string
+        description: "Anima ControlNet LLLite model series."
+      image:
+        type: string
+        description: "Pre-processed control image (e.g., Depth, Lineart map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
+      strength:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Control influence strength (0.0 to 2.0)."
+    required:
+      - type
+      - series
+      - image
+
+hidream_o1_reference:
+  chains: hidream_o1_reference
+  display_name: "HiDream-O1 Reference Edit"
+  description: " (HiDream-O1-Image-Dev recommended with resolution set to 4.0MP, e.g., 2048x2048) For HiDream-O1 models, this feature enables reference image editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 9
+  usage_guideline: "Supply reference image(s) (up to 9) encoded as Base64 Data URI or HTTP/HTTPS URL. Passing a single reference image performs an Image Edit, while passing multiple images performs an Image Combine."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+sensenova_reference:
+  chains: sensenova_reference
+  display_name: "SenseNova Reference Edit"
+  description: "For SenseNova models, this feature enables reference image editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 10
+  usage_guideline: "Supply reference image(s) (up to 10) encoded as Base64 Data URI or HTTP/HTTPS URL. Passing a single reference image performs an Image Edit, while passing multiple images performs an Image Combine."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
+flux1_ipadapter:
+  chains: flux1_ipadapter
+  display_name: "Flux1 IP-Adapter"
+  description: "FLUX.1 model-specific IP-Adapter implementation."
+  max_count: 5
+  usage_guideline: "Supply reference image (Base64 Data URI or HTTP/HTTPS URL), optional weight (default 1.0), start_at (default 0.0), and end_at (default 1.0). Up to 5 images supported."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+      weight:
+        type: number
+        default: 1.0
+        description: "Influence weight of the image prompt (0.0 to 2.0)."
+      start_at:
+        type: number
+        default: 0.0
+        description: "Start step percentage for IP-Adapter application (0.0 to 1.0)."
+      end_at:
+        type: number
+        default: 1.0
+        description: "End step percentage for IP-Adapter application (0.0 to 1.0)."
+      start_percent:
+        type: number
+        default: 0.0
+        description: "Alias for start_at."
+      end_percent:
+        type: number
+        default: 1.0
+        description: "Alias for end_at."
+    required:
+      - image
+
+sd3_ipadapter:
+  chains: sd3_ipadapter
+  display_name: "SD3 IP-Adapter"
+  description: "SD3/SD3.5 model-specific IP-Adapter implementation."
+  max_count: 5
+  usage_guideline: "Supply reference image (Base64 Data URI or HTTP/HTTPS URL), optional weight (default 1.0), start_at (default 0.0), and end_at (default 1.0). Up to 5 images supported."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+      weight:
+        type: number
+        default: 1.0
+        description: "Influence weight of the image prompt (0.0 to 2.0)."
+      start_at:
+        type: number
+        default: 0.0
+        description: "Start step percentage for IP-Adapter application (0.0 to 1.0)."
+      end_at:
+        type: number
+        default: 1.0
+        description: "End step percentage for IP-Adapter application (0.0 to 1.0)."
+      start_percent:
+        type: number
+        default: 0.0
+        description: "Alias for start_at."
+      end_percent:
+        type: number
+        default: 1.0
+        description: "Alias for end_at."
+    required:
+      - image
+
+embedding:
+  chains: embedding
+  display_name: "Textual Inversion Embedding Injector"
+  description: "Downloads Textual Inversion embedding files from Civitai, Hugging Face, or uploads to the server. Note: This feature ONLY handles file downloading/preparation. To activate the embedding, manually add 'embedding:<filename>' (e.g. 'embedding:civitai/456' for Civitai ID 456, 'embedding:huggingface/lazypos' for Hugging Face, or 'embedding:upload_file/filename' for uploaded files) into your prompt or negative_prompt."
+  max_count: 5
+  usage_guideline: "Specify source ('Civitai', 'Hugging Face', or 'Upload File'), and embedding_value (Civitai Version ID, HF repo file path, or uploaded filename). The file is stored on server; manually enter 'embedding:<filename>' in prompt or negative_prompt to activate."
+  parameters_schema:
+    type: object
+    properties:
+      source:
+        type: string
+        enum:
+          - "Civitai"
+          - "Hugging Face"
+          - "Upload File"
+        description: "Download source for the Textual Inversion embedding file. Use 'Civitai' to download by Version ID, 'Hugging Face' to download by repo file path, or 'Upload File' for uploaded files."
+      embedding_value:
+        type: string
+        description: "For Civitai: the Version ID (e.g., '456' from civitai.com/models/123?modelVersionId=456, saved as 'civitai/456.safetensors'). For Hugging Face: repo_id/filename.extension (e.g., 'ilikebigturtles/lazypos/lazypos.safetensors', saved as 'huggingface/lazypos.safetensors'). For Upload File: uploaded filename (saved as 'upload_file/filename.safetensors'). Manually reference embedding:<filename> in prompt or negative_prompt."
+    required:
+      - source
+      - embedding_value

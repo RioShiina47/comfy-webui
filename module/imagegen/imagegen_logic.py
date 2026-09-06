@@ -91,7 +91,13 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
             'clip3_name': model_info.get('clip3'),
             'clip4_name': model_info.get('clip4'),
             'lora_name': model_info.get('lora'),
+            'qwen35_model': model_info.get('qwen35_model'),
+            'adapter_name': model_info.get('adapter_name'),
+            'adapter_strength': model_info.get('adapter_strength', 1.0),
         })
+        for comp_k, comp_v in model_info.items():
+            if comp_k not in vals:
+                vals[comp_k] = comp_v
     else:
         vals['model_name'] = model_info
 
@@ -100,6 +106,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
         vals['vae_name'] = vae_override
 
     if task_type == 'txt2img':
+        vals['denoise'] = 1.0
         vals['latent_type'] = get_latent_type_for_model(display_name)
         if vals['latent_type'] == 'latent':
             vals['latent_generator_template'] = 'EmptyLatentImage'
