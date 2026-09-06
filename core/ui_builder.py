@@ -154,7 +154,7 @@ def _collect_module_inputs(components):
     input_keys = []
     for key, comp in components.items():
         is_input_type = isinstance(comp, (gr.State, gr.Textbox, gr.Slider, gr.Dropdown, gr.Number, gr.Checkbox, gr.Radio, gr.Image, gr.Video, gr.Audio, gr.UploadButton, gr.ImageEditor))
-        is_input_list = isinstance(comp, list) and all(isinstance(c, (gr.State, gr.Textbox, gr.Slider, gr.Dropdown, gr.Number, gr.Checkbox, gr.UploadButton, gr.Image)) for c in comp)
+        is_input_list = isinstance(comp, list) and all(isinstance(c, (gr.State, gr.Textbox, gr.Slider, gr.Dropdown, gr.Number, gr.Checkbox, gr.UploadButton, gr.Image, gr.Video, gr.Audio)) for c in comp)
         
         if (is_input_type or is_input_list) and 'output_' not in key and not key.startswith('info_') and key not in ['run_button', 'job_id_state', 'polling_trigger', 'status_bar', 'last_status_message_state']:
             input_keys.append(key)
