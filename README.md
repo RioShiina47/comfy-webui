@@ -68,9 +68,8 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     2. `ModelGen_multiview2model`: **Tri-View to 3D**. Generates high-fidelity 3D assets from front, back, and left view images using Hunyuan3D-2mv, returning public URLs to the 3D model.
     3. `AudioGen_music2music`: **Music Re-arrangement**. Re-arranges music clips based on text descriptions, optional lyrics, and input audio (`audio_url` or `audio_data`), returning public URLs to the generated audio.
     4. `AudioGen_txt2music`: **Text to Music**. Creates high-quality music clips from text prompts and optional lyrics using ACE-Step, returning public audio URLs.
-    5. `Vision_Query`: **Multimodal Visual QA**. Answers questions or follows instructions based on image visual content, acting as the visual perception module for AI Agents.
-    6. `VideoGen_img2video`: **Image to Video**. Generates 16 FPS short video clips from an initial image and motion prompts with customizable aspect ratios, returning public video URLs.
-    7. `VideoGen_txt2video`: **Text to Video**. Generates 16 FPS video clips directly from text prompts across multiple resolutions, returning public video URLs.
+    5. `VideoGen_img2video`: **Image to Video**. Generates 16 FPS short video clips from an initial image and motion prompts with customizable aspect ratios, returning public video URLs.
+    6. `VideoGen_txt2video`: **Text to Video**. Generates 16 FPS video clips directly from text prompts across multiple resolutions, returning public video URLs.
 
 - **🧠 Cross-modal generation & editing**
   - **Instruction editing:** `FireRed-Image-Edit`, `LongCat-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev` etc.
