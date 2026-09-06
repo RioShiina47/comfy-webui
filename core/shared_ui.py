@@ -258,6 +258,9 @@ def register_ui_chain_events(components, prefix):
     _add_row_factory(key('hidream_o1_reference_count_state'), key('add_hidream_o1_reference_button'), key('delete_hidream_o1_reference_button'), key('hidream_o1_reference_rows'), constants.get('MAX_REFERENCE_LATENTS', 10))
     _delete_row_factory(key('hidream_o1_reference_count_state'), key('add_hidream_o1_reference_button'), key('delete_hidream_o1_reference_button'), key('hidream_o1_reference_rows'), constants.get('MAX_REFERENCE_LATENTS', 10), reset_keys=[key('hidream_o1_reference_images')])
 
+    _add_row_factory(key('sensenova_reference_count_state'), key('add_sensenova_reference_button'), key('delete_sensenova_reference_button'), key('sensenova_reference_rows'), constants.get('MAX_REFERENCE_LATENTS', 10))
+    _delete_row_factory(key('sensenova_reference_count_state'), key('add_sensenova_reference_button'), key('delete_sensenova_reference_button'), key('sensenova_reference_rows'), constants.get('MAX_REFERENCE_LATENTS', 10), reset_keys=[key('sensenova_reference_images')])
+
     max_joyai_refs = constants.get('MAX_JOYAI_REFERENCES', 6)
     _add_row_factory(key('joyai_reference_count_state'), key('add_joyai_reference_button'), key('delete_joyai_reference_button'), key('joyai_reference_rows'), max_joyai_refs)
     _delete_row_factory(key('joyai_reference_count_state'), key('add_joyai_reference_button'), key('delete_joyai_reference_button'), key('joyai_reference_rows'), max_joyai_refs, reset_keys=[key('joyai_reference_images')])

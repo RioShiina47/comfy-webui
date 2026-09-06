@@ -103,6 +103,7 @@ def get_output_data(prompt_id, client_id):
     ws = None
     try:
         ws = websocket.create_connection(ws_url, timeout=10)
+        ws.settimeout(None)
         while True:
             out = ws.recv()
             if not isinstance(out, str):
@@ -190,6 +191,7 @@ def run_workflow_and_get_output(workflow_data):
         yield "Status: Connecting to ComfyUI...", None
         try:
             ws = websocket.create_connection(ws_url, timeout=10)
+            ws.settimeout(None)
         except Exception as e:
             yield f"Error: Failed to connect to ComfyUI WebSocket ({ws_url}): {e}", None
             return
@@ -267,6 +269,10 @@ def run_workflow_and_get_output(workflow_data):
 
     outputs_to_download = []
     history = get_history(prompt_id)
+    if not (history and prompt_id in history):
+        import time
+        time.sleep(0.5)
+        history = get_history(prompt_id)
     if history and prompt_id in history:
         history_outputs = history[prompt_id].get('outputs', {})
         for node_id, node_out in history_outputs.items():
@@ -335,6 +341,7 @@ def execute_workflow_and_wait(workflow_data, timeout=300):
     ws = None
     try:
         ws = websocket.create_connection(ws_url, timeout=10)
+        ws.settimeout(timeout if timeout else None)
     except Exception as e:
         raise RuntimeError(f"Failed to connect to ComfyUI WebSocket ({ws_url}): {e}")
 

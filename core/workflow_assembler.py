@@ -121,6 +121,8 @@ class WorkflowAssembler:
             template["inputs"][name] = config.get("default", None)
         return template
 
+    _get_node_template = _get_node_template_from_api
+
     def assemble(self, ui_values):
         for name, details in self.recipe['nodes'].items():
             if 'class_type' not in details:
