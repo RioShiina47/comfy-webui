@@ -38,27 +38,6 @@ nodes:
     title: "Empty Video Latent"
     params:
       batch_size: 1
-  start_image_loader:
-    class_type: LoadImage
-    title: "Load First Frame"
-  resize_start_image:
-    class_type: ResizeImageMaskNode
-    title: "Resize Image/Mask"
-    params:
-      resize_type: "scale longer dimension"
-      resize_type.longer_size: 1536
-      scale_method: "lanczos"
-  preprocess_start_image:
-    class_type: LTXVPreprocess
-    title: "LTXV Preprocess"
-    params:
-      img_compression: 18
-  apply_start_image:
-    class_type: LTXVImgToVideoInplace
-    title: "LTXVImgToVideoInplace"
-    params:
-      bypass: false
-      strength: 0.7
   latent_audio_gen:
     class_type: LTXVEmptyLatentAudio
     title: "Empty Audio Latent"
@@ -94,8 +73,13 @@ nodes:
     class_type: LTXVSeparateAVLatent
     title: "Separate A/V Latents"
   video_decoder:
-    class_type: VAEDecode
-    title: "VAE Decode"
+    class_type: VAEDecodeTiled
+    title: "VAE Decode (Tiled)"
+    params:
+      tile_size: 512
+      overlap: 64
+      temporal_size: 64
+      temporal_overlap: 16
   audio_decoder:
     class_type: LTXVAudioVAEDecode
     title: "Audio VAE Decode"
@@ -109,9 +93,10 @@ nodes:
     class_type: SaveVideo
     title: "Save Video"
     params:
-      filename_prefix: "video/LTX_2.5_i2v"
-      format: "auto"
-      codec: "auto"
+      filename_prefix: "video/LTX_2.5_t2v"
+      format: "mp4"
+      codec:
+        codec: "h264"
 
 dynamic_lora_chains:
   loras:
@@ -140,8 +125,6 @@ connections:
     to: "neg_prompt:clip"
   - from: "video_vae_loader:0"
     to: "video_decoder:vae"
-  - from: "video_vae_loader:0"
-    to: "apply_start_image:vae"
   - from: "audio_vae_loader:0"
     to: "latent_audio_gen:audio_vae"
   - from: "audio_vae_loader:0"
@@ -150,23 +133,12 @@ connections:
     to: "conditioning:positive"
   - from: "neg_prompt:0"
     to: "conditioning:negative"
-
-  - from: "start_image_loader:0"
-    to: "resize_start_image:input"
-  - from: "resize_start_image:0"
-    to: "preprocess_start_image:image"
-  - from: "preprocess_start_image:0"
-    to: "apply_start_image:image"
   - from: "latent_video_gen:0"
-    to: "apply_start_image:latent"
-
-  - from: "apply_start_image:0"
     to: "latent_combiner:video_latent"
   - from: "latent_audio_gen:0"
     to: "latent_combiner:audio_latent"
   - from: "latent_combiner:0"
     to: "sampler:latent_image"
-
   - from: "conditioning:0"
     to: "guider:positive"
   - from: "conditioning:1"
@@ -193,7 +165,6 @@ connections:
     to: "save_video:video"
 
 ui_map:
-  start_image: "start_image_loader:image"
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
   aspect_ratio:

@@ -38,6 +38,27 @@ nodes:
     title: "Empty Video Latent"
     params:
       batch_size: 1
+  load_start_image:
+    class_type: LoadImage
+    title: "Load First Frame"
+  resize_start_image:
+    class_type: ResizeImageMaskNode
+    title: "Resize Image/Mask"
+    params:
+      resize_type: "scale longer dimension"
+      resize_type.longer_size: 1536
+      scale_method: "lanczos"
+  preprocess_start_image:
+    class_type: LTXVPreprocess
+    title: "LTXV Preprocess"
+    params:
+      img_compression: 18
+  start_image_inplace_1:
+    class_type: LTXVImgToVideoInplace
+    title: "Apply Start Image to Latent 1"
+    params:
+      bypass: false
+      strength: 0.7
   empty_latent_audio:
     class_type: LTXVEmptyLatentAudio
     title: "Empty Audio Latent"
@@ -72,7 +93,13 @@ nodes:
   latent_separator_1:
     class_type: LTXVSeparateAVLatent
     title: "Separate A/V Latents 1"
-  
+
+  start_image_inplace_2:
+    class_type: LTXVImgToVideoInplace
+    title: "Apply Start Image to Latent 2"
+    params:
+      bypass: false
+      strength: 0.7
   latent_upscaler_loader_spatial:
     class_type: LatentUpscaleModelLoader
     title: "Load Spatial Upscale Model"
@@ -148,8 +175,13 @@ nodes:
     title: "Separate A/V Latents 3"
 
   video_decoder:
-    class_type: VAEDecode
-    title: "VAE Decode"
+    class_type: VAEDecodeTiled
+    title: "VAE Decode (Tiled)"
+    params:
+      tile_size: 512
+      overlap: 64
+      temporal_size: 64
+      temporal_overlap: 16
   audio_decoder:
     class_type: LTXVAudioVAEDecode
     title: "Audio VAE Decode"
@@ -163,9 +195,10 @@ nodes:
     class_type: SaveVideo
     title: "Save Video"
     params:
-      filename_prefix: "video/LTX_2.5_t2v"
-      format: "auto"
-      codec: "auto"
+      filename_prefix: "video/LTX_2.5_i2v"
+      format: "mp4"
+      codec:
+        codec: "h264"
 
 dynamic_lora_chains:
   loras:
@@ -202,6 +235,10 @@ connections:
   - from: "video_vae_loader:0"
     to: "video_decoder:vae"
   - from: "video_vae_loader:0"
+    to: "start_image_inplace_1:vae"
+  - from: "video_vae_loader:0"
+    to: "start_image_inplace_2:vae"
+  - from: "video_vae_loader:0"
     to: "latent_upscaler_spatial:vae"
   - from: "video_vae_loader:0"
     to: "latent_upscaler_temporal:vae"
@@ -214,7 +251,18 @@ connections:
   - from: "neg_prompt:0"
     to: "conditioning:negative"
 
+  - from: "load_start_image:0"
+    to: "resize_start_image:input"
+  - from: "resize_start_image:0"
+    to: "preprocess_start_image:image"
+  - from: "preprocess_start_image:0"
+    to: "start_image_inplace_1:image"
+  - from: "preprocess_start_image:0"
+    to: "start_image_inplace_2:image"
+
   - from: "empty_latent_video:0"
+    to: "start_image_inplace_1:latent"
+  - from: "start_image_inplace_1:0"
     to: "latent_combiner_1:video_latent"
   - from: "empty_latent_audio:0"
     to: "latent_combiner_1:audio_latent"
@@ -237,6 +285,8 @@ connections:
   - from: "sampler_1:0"
     to: "latent_separator_1:av_latent"
   - from: "latent_separator_1:0"
+    to: "start_image_inplace_2:latent"
+  - from: "start_image_inplace_2:0"
     to: "latent_upscaler_spatial:samples"
   - from: "latent_upscaler_loader_spatial:0"
     to: "latent_upscaler_spatial:upscale_model"
@@ -300,6 +350,7 @@ connections:
     to: "save_video:video"
 
 ui_map:
+  start_image: "load_start_image:image"
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
   aspect_ratio:
