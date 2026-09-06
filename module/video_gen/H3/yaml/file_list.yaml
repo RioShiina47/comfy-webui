@@ -4,6 +4,10 @@ file:
       source: "hf"
       repo_id: "lilcheaty/MiniMax-H3-NVFP4"
       repository_file_path: "minimax_h3_fl2va_pruned_nvfp4.safetensors" 
+    - filename: "minimax_h3_ref2va_pruned_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "lilcheaty/MiniMax-H3-NVFP4"
+      repository_file_path: "minimax_h3_ref2va_pruned_nvfp4.safetensors" 
   text_encoders: 
     - filename: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
       source: "hf"
@@ -18,3 +22,8 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/MiniMax-H3"
       repository_file_path: "vae/minimax_h3_video_vae_fp16.safetensors"
+  model_patches:
+    - filename: "minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Kijai/MiniMax-H3-experimental"
+      repository_file_path: "controlnet/minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors"

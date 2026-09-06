@@ -14,19 +14,21 @@ def inject(assembler, chain_definition, chain_items):
 
     minimax_h3_node = assembler.workflow[target_node_id]
 
-    valid_videos = [vid for vid in chain_items if vid]
-    for idx, video_file in enumerate(valid_videos):
-        load_id = assembler._get_unique_id()
-        load_node = assembler._get_node_template_from_api("LoadVideo")
-        load_node['inputs']['file'] = video_file
-        assembler.workflow[load_id] = load_node
+    valid_videos = [v for v in chain_items if v]
+    for idx, vid_file in enumerate(valid_videos):
+        load_vid_id = assembler._get_unique_id()
+        load_vid_node = assembler._get_node_template_from_api("LoadVideo")
+        load_vid_node['inputs']['file'] = vid_file
+        if 'video-preview' in load_vid_node['inputs']:
+            load_vid_node['inputs']['video-preview'] = ""
+        assembler.workflow[load_vid_id] = load_vid_node
 
         comp_id = assembler._get_unique_id()
         comp_node = assembler._get_node_template_from_api("GetVideoComponents")
-        comp_node['inputs']['video'] = [load_id, 0]
+        comp_node['inputs']['video'] = [load_vid_id, 0]
         assembler.workflow[comp_id] = comp_node
 
         minimax_h3_node['inputs'][f"ref_videos.ref_video_{idx}"] = [comp_id, 0]
-        minimax_h3_node['inputs'][f"ref_video_audios.ref_video_audio_{idx}"] = [comp_id, 1]
+        minimax_h3_node['inputs'][f"ref_audio.ref_audio_{idx}"] = [comp_id, 1]
 
     print(f"[H3 RefVideo Injector] Successfully injected {len(valid_videos)} reference video(s).")

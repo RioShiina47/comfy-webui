@@ -68,9 +68,12 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     2. `ModelGen_multiview2model`: **Tri-View to 3D**. Generates high-fidelity 3D assets from front, back, and left view images using Hunyuan3D-2mv, returning public URLs to the 3D model.
     3. `AudioGen_music2music`: **Music Re-arrangement**. Re-arranges music clips based on text descriptions, optional lyrics, and input audio (`audio_url` or `audio_data`), returning public URLs to the generated audio.
     4. `AudioGen_txt2music`: **Text to Music**. Creates high-quality music clips from text prompts and optional lyrics using ACE-Step, returning public audio URLs.
-    5. `VideoGen_LTX_2_5_run`: **Lightricks LTX-2.5 Video & Audio Generation**. Unified execution interface for 5 task modes (`t2va`, `i2va`, `ta2va`, `ia2va`, `flf2va`) supporting audio-driven generation, keyframe interpolation, 2x spatial/temporal latent upscaling, and dynamic LoRA injection.
-    6. `VideoGen_LTX_2_5_get_task_list`: **LTX-2.5 Task Specifications**. Retrieves schemas, required inputs, and examples for all Lightricks LTX-2.5 tasks.
-    7. `VideoGen_LTX_2_5_get_task_status`: **LTX-2.5 Async Task Polling**. Queries real-time generation progress and public output video URLs.
+    5. `VideoGen_H3_run`: **MiniMax-H3 Video & Audio Generation**. Unified execution interface for 4 task modes (`t2va`, `i2va`, `flf2va`, `ref2va`) supporting multi-modal reference assets, keyframe guides, and ControlNet.
+    6. `VideoGen_H3_get_task_list`: **H3 Task Specifications**. Retrieves schemas, required inputs, and examples for all MiniMax-H3 tasks.
+    7. `VideoGen_H3_get_task_status`: **H3 Async Task Polling**. Queries real-time generation progress and public output video URLs.
+    8. `VideoGen_LTX_2_5_run`: **Lightricks LTX-2.5 Video & Audio Generation**. Unified execution interface for 5 task modes (`t2va`, `i2va`, `ta2va`, `ia2va`, `flf2va`) supporting audio-driven generation, keyframe interpolation, 2x spatial/temporal latent upscaling, and dynamic LoRA injection.
+    9. `VideoGen_LTX_2_5_get_task_list`: **LTX-2.5 Task Specifications**. Retrieves schemas, required inputs, and examples for all Lightricks LTX-2.5 tasks.
+    10. `VideoGen_LTX_2_5_get_task_status`: **LTX-2.5 Async Task Polling**. Queries real-time generation progress and public output video URLs.
 
 - **🧠 Cross-modal generation & editing**
   - **Instruction editing:** `FireRed-Image-Edit`, `LongCat-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev` etc.
