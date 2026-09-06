@@ -13,6 +13,8 @@ architecture_order:
   - "Qwen-Image"
   - "LongCat-Image"
   - "Cosmos-Predict2"
+  - "Anima-3.8B-v1.1"
+  - "Anima-3.8B"
   - "Anima"
   - "NewBie-Image"
   - "Kandinsky-5"
@@ -63,6 +65,12 @@ architectures:
   "Cosmos-Predict2":
     model_type: "cosmos-predict2"
     controlnet_key: "Cosmos-Predict2"
+  "Anima-3.8B-v1.1":
+    model_type: "anima-3.8b-v1.1"
+    controlnet_key: "Anima"
+  "Anima-3.8B":
+    model_type: "anima-3.8b"
+    controlnet_key: "Anima"
   "Anima":
     model_type: "anima"
     controlnet_key: "Anima"

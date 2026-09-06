@@ -17,7 +17,42 @@ from .error_schema import make_validation_error, make_not_found_error
 
 
 def ImageGen_run_imagegen(params: dict) -> dict:
-    """Unified image generation task execution interface."""
+    """
+    Unified image generation task execution interface.
+
+    [OPTIONAL CONTROL PARAMETERS]
+    - seed (int): Random seed for generation. Default: -1 (random seed). Specify >=0 for deterministic reproducibility.
+    - batch_size (int): Number of images generated in a single batch (1 to 16, default: 1).
+    - negative_prompt (str): Text prompt specifying undesirable elements to avoid.
+    - steps (int), cfg (float), sampler (str), scheduler (str): Inference hyperparams (auto-applied from model defaults if omitted).
+    - chain (list): Array of injector objects (LoRA, ControlNet, IP-Adapter, etc.).
+
+    [Paste-and-Run json_params Example (Basic)]
+    {
+        "task_type": "txt2img",
+        "model": "stabilityai/SDXL-Base-1.0",
+        "prompt": "A majestic lion jumping from a big stone at night",
+        "width": 1024,
+        "height": 1024
+    }
+
+    [Paste-and-Run json_params Example (With chain)]
+    {
+        "task_type": "txt2img",
+        "model": "stabilityai/SDXL-Base-1.0",
+        "prompt": "A majestic lion jumping from a big stone at night",
+        "width": 1024,
+        "height": 1024,
+        "chain": [
+            {
+                "injector_type": "lora",
+                "source": "Civitai",
+                "lora_value": "12345",
+                "scale": 1.0
+            }
+        ]
+    }
+    """
     if not isinstance(params, dict):
         return make_validation_error("Request params must be an object.")
 
@@ -38,6 +73,34 @@ def ImageGen_run_imagegen(params: dict) -> dict:
             f"Invalid task_type '{task_type}'. Must be one of {valid_tasks}.",
             invalid_fields={"task_type": f"Must be in {valid_tasks}"},
         )
+
+    if "chain" in params and params["chain"] is not None:
+        chain_val = params["chain"]
+        if isinstance(chain_val, dict):
+            return make_validation_error(
+                "Parameter 'chain' must be a JSON array (list) of injector objects [{'injector_type': 'lora', ...}], but received a dictionary. "
+                "Do NOT structure chain as a dict like {'lora': [...]}. "
+                "Example correct format: [{'injector_type': 'lora', 'source': 'Civitai', 'lora_value': '12345', 'scale': 1.0}]",
+                invalid_fields={"chain": "Expected list of objects, received dict"},
+            )
+        if not isinstance(chain_val, list):
+            return make_validation_error(
+                "Parameter 'chain' must be a JSON array (list) of injector objects.",
+                invalid_fields={"chain": f"Expected list, received {type(chain_val).__name__}"},
+            )
+        for idx, item in enumerate(chain_val):
+            if not isinstance(item, dict):
+                return make_validation_error(
+                    f"Item at chain[{idx}] must be an object (dict) containing 'injector_type'. "
+                    f"Example: {{'injector_type': 'lora', 'source': 'Civitai', 'lora_value': '12345', 'scale': 1.0}}",
+                    invalid_fields={f"chain[{idx}]": f"Expected dict, received {type(item).__name__}"},
+                )
+            if "injector_type" not in item or not item["injector_type"]:
+                return make_validation_error(
+                    f"Item at chain[{idx}] is missing required string field 'injector_type'. "
+                    f"Example: {{'injector_type': 'lora', 'source': 'Civitai', 'lora_value': '12345', 'scale': 1.0}}",
+                    missing_fields=[f"chain[{idx}].injector_type"],
+                )
 
     model_list = _load_yaml(_MODEL_LIST_PATH)
     checkpoints = model_list.get("Checkpoint", {}) or model_list.get("Checkpoints", {})

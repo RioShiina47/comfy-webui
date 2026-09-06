@@ -8,7 +8,7 @@ from .get_model_architecture_list import ImageGen_get_model_architecture_list
 from .get_model_list import ImageGen_get_model_list
 from .get_feature_list import ImageGen_get_feature_list
 from .get_model_features import ImageGen_get_model_features
-from .get_chain_schema import ImageGen_get_chain_schema
+from .get_sampler_scheduler_list import ImageGen_get_sampler_scheduler_list
 from .run_imagegen import ImageGen_run_imagegen
 from .get_task_status import ImageGen_get_task_status
 from .common import (
@@ -24,7 +24,7 @@ __all__ = [
     "ImageGen_get_model_list",
     "ImageGen_get_feature_list",
     "ImageGen_get_model_features",
-    "ImageGen_get_chain_schema",
+    "ImageGen_get_sampler_scheduler_list",
     "ImageGen_run_imagegen",
     "ImageGen_get_task_status",
 ]
