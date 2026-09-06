@@ -52,24 +52,15 @@ def ImageGen_get_model_features(model: str) -> dict:
     enabled_chains = arch_features.get("enabled_chains", [])
 
     supported_features = []
-    for chain_name in enabled_chains:
-        if chain_name in chain_features:
-            chain_data = chain_features[chain_name]
-            visibility = chain_data.get("visibility", "public")
-            if visibility == "public":
-                supported_features.append(chain_name)
-            else:
-                generic_mapping = {
-                    "krea2_controlnet": "controlnet",
-                    "anima_controlnet_lllite": "controlnet",
-                    "controlnet_model_patch": "controlnet",
-                    "flux1_ipadapter": "ipadapter",
-                    "sd3_ipadapter": "ipadapter",
-                    "hidream_o1_reference": "reference_latent",
-                }
-                generic_name = generic_mapping.get(chain_name)
-                if generic_name and generic_name not in supported_features:
-                    supported_features.append(generic_name)
+    for feat_name, feat_data in chain_features.items():
+        feat_chains = feat_data.get("chains")
+        if feat_chains is None:
+            feat_chains = [feat_name]
+        elif isinstance(feat_chains, str):
+            feat_chains = [feat_chains]
+
+        if any(c in enabled_chains for c in feat_chains):
+            supported_features.append(feat_name)
 
     arch_defaults_section = model_defaults.get(found_arch, {})
     arch_level_defaults = arch_defaults_section.get("_defaults", {})

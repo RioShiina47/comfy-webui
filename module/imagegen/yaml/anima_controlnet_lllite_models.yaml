@@ -1,4 +1,7 @@
 Anima_ControlNet_Lllite:
+  - Filepath: "anima-lllite-any-test-like-v2.safetensors"
+    Series: "kohya-ss"
+    Type: ["Any-Test"]
   - Filepath: "anima-lllite-lineart-1.safetensors"
     Series: "kohya-ss"
     Type: ["Lineart"]

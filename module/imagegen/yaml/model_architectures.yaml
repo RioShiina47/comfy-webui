@@ -1,5 +1,6 @@
 architecture_order:
   - "Krea-2"
+  - "SenseNova-U1.5"
   - "Mage-Flow"
   - "JoyAI-Image"
   - "Boogu-Image"
@@ -35,6 +36,8 @@ architecture_order:
 architectures:
   Krea-2:
     model_type: "krea-2"
+  "SenseNova-U1.5":
+    model_type: "sensenova-u1.5"
   "Mage-Flow":
     model_type: "mage-flow"
   "JoyAI-Image":

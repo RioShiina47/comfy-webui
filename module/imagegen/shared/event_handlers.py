@@ -105,6 +105,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     conditioning_accordion = components.get(key('conditioning_accordion'))
     reference_latent_accordion = components.get(key('reference_latent_accordion'))
     hidream_o1_reference_accordion = components.get(key('hidream_o1_reference_accordion'))
+    sensenova_reference_accordion = components.get(key('sensenova_reference_accordion'))
     joyai_reference_accordion = components.get(key('joyai_image_accordion')) or components.get(key('joyai_reference_accordion'))
     reference_image_accordion = components.get(key('reference_image_accordion'))
     boogu_image_edit_accordion = components.get(key('boogu_image_edit_accordion'))
@@ -185,6 +186,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'conditioning': conditioning_accordion,
             'reference_latent': reference_latent_accordion,
             'hidream_o1_reference': hidream_o1_reference_accordion,
+            'sensenova_reference': sensenova_reference_accordion,
             'joyai_image': joyai_reference_accordion,
             'joyai_reference': joyai_reference_accordion,
             'reference_image': reference_image_accordion,
@@ -359,6 +361,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "conditioning_accordion": conditioning_accordion,
         "reference_latent_accordion": reference_latent_accordion,
         "hidream_o1_reference_accordion": hidream_o1_reference_accordion,
+        "sensenova_reference_accordion": sensenova_reference_accordion,
         "joyai_reference_accordion": joyai_reference_accordion,
         "reference_image_accordion": reference_image_accordion,
         "boogu_image_edit_accordion": boogu_image_edit_accordion,

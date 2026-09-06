@@ -1,5 +1,14 @@
 file: 
   checkpoints: 
+    # SenseNova-U1.5
+    - filename: "SenseNova-U1.5-8B-MoT-BF16-T8.safetensors"
+      source: "hf"
+      repo_id: "t8star/SenseNova-U1.5-Comfy"
+      repository_file_path: "SenseNova-U1.5-8B-MoT-BF16-T8.safetensors"
+    - filename: "SenseNova-U1.5-8B-MoT-SFT-T8.safetensors"
+      source: "hf"
+      repo_id: "t8star/SenseNova-U1.5-Comfy"
+      repository_file_path: "SenseNova-U1.5-8B-MoT-SFT-T8.safetensors"
     # HiDream-O1
     - filename: "hidream_o1_image_dev_fp8_scaled.safetensors"
       source: "hf"
@@ -212,6 +221,10 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Mage-Flow"
       repository_file_path: "diffusion_models/mage_flow_int8_convrot.safetensors"
+    - filename: "mage_flow_base_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Mage-Flow"
+      repository_file_path: "diffusion_models/mage_flow_base_bf16.safetensors"
     - filename: "mage_flow_edit_turbo_int8_convrot.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Mage-Flow"
@@ -220,6 +233,10 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Mage-Flow"
       repository_file_path: "diffusion_models/mage_flow_edit_int8_convrot.safetensors"
+    - filename: "mage_flow_edit_base_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Mage-Flow"
+      repository_file_path: "diffusion_models/mage_flow_edit_base_bf16.safetensors"
     # JoyAI-Image
     - filename: "joyai_image_edit_int8_convrot.safetensors"
       source: "hf"
@@ -779,16 +796,7 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/flux2-dev"
       repository_file_path: "split_files/vae/flux2-vae.safetensors"
-    # Mage-Flow
     - filename: "mage_flow_vae_bf16.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Mage-Flow"
       repository_file_path: "vae/mage_flow_vae_bf16.safetensors"
-  loras:
-    # Krea2 ControlNet
-    - filename: "depth-control-lora.safetensors"
-      source: "hf"
-      repo_id: "Patil/Krea-2-depth-controlnet"
-      repository_file_path: "depth-control-lora.safetensors"
-      subfolder: "controlnet"
-
