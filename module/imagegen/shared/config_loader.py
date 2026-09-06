@@ -45,7 +45,12 @@ def load_architectures_config():
 def load_model_config():
     global _model_config
     if _model_config is None:
-        _model_config = _load_local_yaml("model_list.yaml")
+        cfg = _load_local_yaml("model_list.yaml")
+        if "Checkpoint" in cfg and "Checkpoints" not in cfg:
+            cfg["Checkpoints"] = cfg["Checkpoint"]
+        elif "Checkpoints" in cfg and "Checkpoint" not in cfg:
+            cfg["Checkpoint"] = cfg["Checkpoints"]
+        _model_config = cfg
     return _model_config
 
 def load_model_defaults():

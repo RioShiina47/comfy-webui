@@ -44,13 +44,13 @@ def inject(assembler, chain_definition, chain_items):
 
     for i, img_filename in enumerate(valid_images):
         load_id = assembler._get_unique_id()
-        load_node = assembler._get_node_template_from_api("LoadImage")
+        load_node = assembler._get_node_template("LoadImage")
         load_node['inputs']['image'] = img_filename
         load_node['_meta']['title'] = f"Load Reference Image {i+1}"
         assembler.workflow[load_id] = load_node
 
         scale_id = assembler._get_unique_id()
-        scale_node = assembler._get_node_template_from_api("ImageScaleToTotalPixels")
+        scale_node = assembler._get_node_template("ImageScaleToTotalPixels")
         scale_node['inputs']['megapixels'] = 1.0
         scale_node['inputs']['upscale_method'] = "nearest-exact"
         scale_node['inputs']['resolution_steps'] = 1

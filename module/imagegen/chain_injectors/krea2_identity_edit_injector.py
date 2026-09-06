@@ -61,12 +61,17 @@ def inject(assembler, chain_definition, chain_items):
     vae_connection = None
     if vae_loader_name in assembler.node_map:
         vae_connection = [assembler.node_map[vae_loader_name], 0]
+    else:
+        for node_id, node in assembler.workflow.items():
+            if isinstance(node, dict) and node.get('class_type') == 'VAELoader':
+                vae_connection = [node_id, 0]
+                break
 
+    pos_id = assembler.node_map.get(pos_prompt_name)
     clip_connection = None
     if clip_loader_name in assembler.node_map:
         clip_connection = [assembler.node_map[clip_loader_name], 0]
-    elif pos_prompt_name in assembler.node_map:
-        pos_id = assembler.node_map[pos_prompt_name]
+    elif pos_id and 'clip' in assembler.workflow[pos_id]['inputs']:
         clip_connection = assembler.workflow[pos_id]['inputs'].get('clip')
 
     lora_loader_id = assembler._get_unique_id()
@@ -84,11 +89,19 @@ def inject(assembler, chain_definition, chain_items):
         load_node = create_node(assembler, "LoadImage", f"Load Image (Ref {i+1})")
         load_node['inputs']['image'] = img_filename
         assembler.workflow[load_id] = load_node
-        image_ids.append(load_id)
+
+        scale_id = assembler._get_unique_id()
+        scale_node = create_node(assembler, "ImageScaleToTotalPixels", f"Scale Reference {i+1}")
+        scale_node['inputs']['upscale_method'] = "lanczos"
+        scale_node['inputs']['megapixels'] = 1.0
+        scale_node['inputs']['resolution_steps'] = 1
+        scale_node['inputs']['image'] = [load_id, 0]
+        assembler.workflow[scale_id] = scale_node
+        image_ids.append(scale_id)
 
         vae_enc_id = assembler._get_unique_id()
         vae_enc_node = create_node(assembler, "VAEEncode", f"VAE Encode (Ref {i+1})")
-        vae_enc_node['inputs']['pixels'] = [load_id, 0]
+        vae_enc_node['inputs']['pixels'] = [scale_id, 0]
         if vae_connection:
             vae_enc_node['inputs']['vae'] = vae_connection
         assembler.workflow[vae_enc_id] = vae_enc_node

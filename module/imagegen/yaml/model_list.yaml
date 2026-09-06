@@ -12,6 +12,13 @@ Checkpoints:
           unet: "krea2_raw_fp8_scaled.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "qwen_image_vae.safetensors"
+  SenseNova-U1.5:
+    latent_type: hidream_o1_latent
+    models:
+      - display_name: "SenseNova-U1.5-8B-MoT"
+        path: "SenseNova-U1.5-8B-MoT-BF16-T8.safetensors"
+      - display_name: "SenseNova-U1.5-8B-MoT-SFT"
+        path: "SenseNova-U1.5-8B-MoT-SFT-T8.safetensors"
   Mage-Flow:
     latent_type: none
     models:
@@ -25,6 +32,11 @@ Checkpoints:
           unet: "mage_flow_int8_convrot.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "mage_flow_vae_bf16.safetensors"
+      - display_name: "Mage-Flow-Base"
+        components:
+          unet: "mage_flow_base_bf16.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "mage_flow_vae_bf16.safetensors"
       - display_name: "Mage-Flow-Edit-Turbo"
         components:
           unet: "mage_flow_edit_turbo_int8_convrot.safetensors"
@@ -33,6 +45,11 @@ Checkpoints:
       - display_name: "Mage-Flow-Edit"
         components:
           unet: "mage_flow_edit_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "mage_flow_vae_bf16.safetensors"
+      - display_name: "Mage-Flow-Edit-Base"
+        components:
+          unet: "mage_flow_edit_base_bf16.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "mage_flow_vae_bf16.safetensors"
   JoyAI-Image:
@@ -410,9 +427,13 @@ Checkpoints:
     latent_type: latent
     models:
     # SDXL-Base
-      - display_name: "stabilityai/stable-diffusion-xl-base-1.0"
+      - display_name: "stabilityai/SDXL-Base-1.0"
         path: "sd_xl_base_1.0.safetensors"
         category: "Base"
+    # SDXL-Turbo
+      - display_name: "stabilityai/SDXL-Turbo-1.0"
+        path: "sd_xl_turbo_1.0_fp16.safetensors"
+        category: "Turbo"
   SD1.5:
     latent_type: latent
     models:

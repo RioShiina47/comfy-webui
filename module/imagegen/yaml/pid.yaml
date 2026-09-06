@@ -1,11 +1,11 @@
 PiD:
-  - filepath: "pid_flux2_1024_to_4096_4step_mxfp8.safetensors"
+  - filepath: "pid_1.5_flux2_1024_to_4096_4step_int8_convrot.safetensors"
     latent_format: "flux"
     architectures: ["flux2", "flux2-kv", "ideogram-4", "lens", "ernie-image"]
-  - filepath: "pid_qwenimage_1024_to_4096_4step_bf16.safetensors"
+  - filepath: "pid_1.5_qwenimage_1024_to_4096_4step_int8_convrot.safetensors"
     latent_format: "qwenimage"
     architectures: ["anima-3.8b-v1.1", "anima-3.8b", "anima", "qwen-image", "krea-2"]
-  - filepath: "pid_flux1_1024_to_4096_4step_mxfp8.safetensors"
+  - filepath: "pid_1.5_flux1_1024_to_4096_4step_int8_convrot.safetensors"
     latent_format: "flux"
     architectures: ["longcat-image", "newbie-image", "z-image", "kandinsky-5", "ovis-image", "omnigen2", "chroma1", "hidream-i1", "flux1", "boogu-image"]
   - filepath: "pid_sd3_1024_to_4096_4step_bf16.safetensors"

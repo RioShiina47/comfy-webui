@@ -16,6 +16,12 @@ krea-2:
     - krea2_style_reference
     - pid
 
+sensenova-u1.5:
+  enabled_chains:
+    - lora
+    - sensenova_reference
+    - vae
+
 mage-flow:
   enabled_chains:
   - reference_image
