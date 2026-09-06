@@ -327,6 +327,33 @@ def create_hidream_o1_reference_ui(components, prefix):
         components[key('hidream_o1_reference_count_state')] = gr.State(0)
 
 
+def create_sensenova_reference_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    constants = get_ui_constants()
+    max_refs = constants.get('MAX_REFERENCE_LATENTS', 10)
+    with gr.Accordion("SenseNova Reference Edit Settings", open=False) as ref_accordion:
+        components[key('sensenova_reference_accordion')] = ref_accordion
+        gr.Markdown("💡 **Tip:** For SenseNova models, this feature enables reference image editing and combining capabilities. In txt2img mode, adding a single reference image performs an **Image Edit**, while adding multiple images performs an **Image Combine**.")
+        
+        ref_image_groups = []
+        ref_image_inputs = []
+        with gr.Row():
+            for i in range(max_refs):
+                with gr.Column(visible=(i < 1), min_width=160) as img_col:
+                    img_comp = gr.Image(type="pil", label=f"Ref. {i+1}", sources=["upload"], height=150)
+                    ref_image_groups.append(img_col)
+                    ref_image_inputs.append(img_comp)
+        
+        components[key('sensenova_reference_rows')] = ref_image_groups
+        components[key('sensenova_reference_images')] = ref_image_inputs
+
+        with gr.Row():
+            components[key('add_sensenova_reference_button')] = gr.Button("✚ Add Reference Image")
+            components[key('delete_sensenova_reference_button')] = gr.Button("➖ Delete Reference Image", visible=False)
+        components[key('sensenova_reference_count_state')] = gr.State(1)
+        components[key('all_sensenova_reference_components_flat')] = ref_image_inputs
+
+
 def create_joyai_image_ui(components, prefix, max_units=None):
     if max_units is None:
         constants = get_ui_constants()

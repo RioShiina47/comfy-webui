@@ -7,6 +7,7 @@ import os
 import time
 import urllib.parse
 import urllib.request
+import urllib.error
 import uuid
 import json
 import base64
@@ -14,6 +15,13 @@ import io
 import yaml
 from typing import Dict, Any
 from PIL import Image
+
+_MAX_IMAGE_DOWNLOAD_BYTES = 50 * 1024 * 1024  # 50 MB
+_IMAGE_DOWNLOAD_TIMEOUT = 30  # seconds
+_ALLOWED_IMAGE_CONTENT_TYPES = frozenset([
+    "image/png", "image/jpeg", "image/jpg", "image/gif",
+    "image/webp", "image/bmp", "image/tiff",
+])
 
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _YAML_DIR = os.path.join(_PROJECT_ROOT, "yaml")
@@ -40,8 +48,60 @@ def _get_ipadapter_presets_by_arch() -> Dict[str, list]:
 
 
 
+def _download_image_from_url(url: str) -> Image.Image:
+    """Download an image from an HTTP/HTTPS URL and return it as a PIL Image.
+
+    Security measures:
+    - Timeout to prevent hanging on slow/malicious servers.
+    - Response size cap to prevent memory exhaustion.
+    - Content-Type validation to reject non-image responses.
+    """
+    req = urllib.request.Request(url, headers={"User-Agent": "ImageGen-MCP/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=_IMAGE_DOWNLOAD_TIMEOUT) as resp:
+            content_type = resp.headers.get("Content-Type", "").split(";")[0].strip().lower()
+            if content_type and content_type not in _ALLOWED_IMAGE_CONTENT_TYPES:
+                raise ValueError(
+                    f"URL returned non-image Content-Type '{content_type}'. "
+                    f"Expected one of: {', '.join(sorted(_ALLOWED_IMAGE_CONTENT_TYPES))}."
+                )
+
+            content_length = resp.headers.get("Content-Length")
+            if content_length and int(content_length) > _MAX_IMAGE_DOWNLOAD_BYTES:
+                raise ValueError(
+                    f"Image at URL is too large ({int(content_length)} bytes). "
+                    f"Maximum allowed size is {_MAX_IMAGE_DOWNLOAD_BYTES} bytes."
+                )
+
+            chunks = []
+            total = 0
+            while True:
+                chunk = resp.read(8192)
+                if not chunk:
+                    break
+                total += len(chunk)
+                if total > _MAX_IMAGE_DOWNLOAD_BYTES:
+                    raise ValueError(
+                        f"Image download exceeded maximum allowed size of "
+                        f"{_MAX_IMAGE_DOWNLOAD_BYTES} bytes."
+                    )
+                chunks.append(chunk)
+
+            data = b"".join(chunks)
+
+    except urllib.error.URLError as e:
+        raise ValueError(f"Failed to download image from URL: {e}") from e
+    except urllib.error.HTTPError as e:
+        raise ValueError(f"HTTP error {e.code} when downloading image from URL: {e.reason}") from e
+
+    if not data:
+        raise ValueError("Downloaded image data is empty.")
+
+    return Image.open(io.BytesIO(data))
+
+
 def _parse_image_param(image_param: Any) -> Any:
-    """Parse a Base64 Data URI, local file path, or PIL.Image into a PIL Image object. HTTP URLs are not supported."""
+    """Parse a Base64 Data URI, HTTP/HTTPS URL, local file path, or PIL.Image into a PIL Image object."""
     if isinstance(image_param, Image.Image):
         return image_param
 
@@ -50,11 +110,9 @@ def _parse_image_param(image_param: Any) -> Any:
 
     image_param = image_param.strip()
 
-    # Reject HTTP / HTTPS URL
+    # HTTP / HTTPS URL — download the image
     if image_param.startswith("http://") or image_param.startswith("https://"):
-        raise ValueError(
-            "Image URLs are not supported. Please supply the image directly as a Base64 Data URI (e.g., 'data:image/png;base64,...')."
-        )
+        return _download_image_from_url(image_param)
 
     # Base64 Data URI (e.g. data:image/png;base64,...)
     if image_param.startswith("data:image/"):
@@ -75,7 +133,7 @@ def _parse_image_param(image_param: Any) -> Any:
         return Image.open(image_param)
 
     raise ValueError(
-        "Invalid image parameter format. Expected a Base64 Data URI (e.g., 'data:image/png;base64,...') or local file path."
+        "Invalid image parameter format. Expected an HTTP/HTTPS URL, a Base64 Data URI (e.g., 'data:image/png;base64,...'), or a local file path."
     )
 
 
@@ -262,26 +320,116 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
             for item in chain:
                 itype = item.get("injector_type")
                 if itype == "lora":
-                    ui_values[f"{prefix}_loras_sources"] = ui_values.get(f"{prefix}_loras_sources", []) + [item.get("lora_source", "File")]
-                    ui_values[f"{prefix}_loras_ids"] = ui_values.get(f"{prefix}_loras_ids", []) + [item.get("lora_value", "")]
-                    ui_values[f"{prefix}_loras_scales"] = ui_values.get(f"{prefix}_loras_scales", []) + [item.get("scale", 1.0)]
-                elif itype in ("controlnet", "krea2_controlnet", "anima_controlnet_lllite"):
+                    src = item.get("source") or item.get("lora_source", "File")
+                    val = item.get("lora_value") or item.get("lora_id") or item.get("value", "")
+                    scale = float(item.get("scale", item.get("strength", 1.0)))
+                    ui_values[f"{prefix}_loras_sources"] = ui_values.get(f"{prefix}_loras_sources", []) + [src]
+                    ui_values[f"{prefix}_loras_ids"] = ui_values.get(f"{prefix}_loras_ids", []) + [val]
+                    ui_values[f"{prefix}_loras_file_dropdowns"] = ui_values.get(f"{prefix}_loras_file_dropdowns", []) + [val]
+                    ui_values[f"{prefix}_loras_scales"] = ui_values.get(f"{prefix}_loras_scales", []) + [scale]
+                elif itype == "embedding":
+                    src = item.get("source") or item.get("embedding_source", "Civitai")
+                    val = item.get("embedding_value") or item.get("embedding_id") or item.get("value", "")
+                    ui_values[f"{prefix}_embeddings_sources"] = ui_values.get(f"{prefix}_embeddings_sources", []) + [src]
+                    ui_values[f"{prefix}_embeddings_ids"] = ui_values.get(f"{prefix}_embeddings_ids", []) + [val]
+                elif itype == "conditioning":
+                    p = item.get("prompt", "")
+                    if p:
+                        ui_values[f"{prefix}_conditioning_prompts"] = ui_values.get(f"{prefix}_conditioning_prompts", []) + [p]
+                        ui_values[f"{prefix}_conditioning_widths"] = ui_values.get(f"{prefix}_conditioning_widths", []) + [int(item.get("width", 512))]
+                        ui_values[f"{prefix}_conditioning_heights"] = ui_values.get(f"{prefix}_conditioning_heights", []) + [int(item.get("height", 512))]
+                        ui_values[f"{prefix}_conditioning_xs"] = ui_values.get(f"{prefix}_conditioning_xs", []) + [int(item.get("x", 0))]
+                        ui_values[f"{prefix}_conditioning_ys"] = ui_values.get(f"{prefix}_conditioning_ys", []) + [int(item.get("y", 0))]
+                        ui_values[f"{prefix}_conditioning_strengths"] = ui_values.get(f"{prefix}_conditioning_strengths", []) + [float(item.get("strength", 1.0))]
+                elif itype == "controlnet":
                     parsed_cn_img = _parse_image_param(item.get("image"))
                     if parsed_cn_img:
                         ui_values[f"{prefix}_controlnet_images"] = ui_values.get(f"{prefix}_controlnet_images", []) + [parsed_cn_img]
-                        ui_values[f"{prefix}_controlnet_strengths"] = ui_values.get(f"{prefix}_controlnet_strengths", []) + [item.get("strength", 1.0)]
-                        ui_values[f"{prefix}_controlnet_filepaths"] = ui_values.get(f"{prefix}_controlnet_filepaths", []) + [item.get("control_net_name", "")]
-                elif itype in ("ipadapter", "flux1_ipadapter", "sd3_ipadapter"):
+                        ui_values[f"{prefix}_controlnet_strengths"] = ui_values.get(f"{prefix}_controlnet_strengths", []) + [float(item.get("strength", 1.0))]
+                        ui_values[f"{prefix}_controlnet_filepaths"] = ui_values.get(f"{prefix}_controlnet_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
+                elif itype == "anima_controlnet_lllite":
+                    parsed_cn_img = _parse_image_param(item.get("image"))
+                    if parsed_cn_img:
+                        ui_values[f"{prefix}_anima_controlnet_lllite_images"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_images", []) + [parsed_cn_img]
+                        ui_values[f"{prefix}_anima_controlnet_lllite_strengths"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_strengths", []) + [float(item.get("strength", 1.0))]
+                        ui_values[f"{prefix}_anima_controlnet_lllite_filepaths"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
+                        ui_values[f"{prefix}_anima_controlnet_lllite_start_percents"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_start_percents", []) + [float(item.get("start_percent", 0.0))]
+                        ui_values[f"{prefix}_anima_controlnet_lllite_end_percents"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_end_percents", []) + [float(item.get("end_percent", 1.0))]
+                elif itype == "krea2_controlnet":
+                    parsed_cn_img = _parse_image_param(item.get("image"))
+                    if parsed_cn_img:
+                        ui_values[f"{prefix}_krea2_controlnet_images"] = ui_values.get(f"{prefix}_krea2_controlnet_images", []) + [parsed_cn_img]
+                        ui_values[f"{prefix}_krea2_controlnet_strengths"] = ui_values.get(f"{prefix}_krea2_controlnet_strengths", []) + [float(item.get("strength", 1.0))]
+                        ui_values[f"{prefix}_krea2_controlnet_filepaths"] = ui_values.get(f"{prefix}_krea2_controlnet_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
+                elif itype == "diffsynth_controlnet":
+                    parsed_cn_img = _parse_image_param(item.get("image"))
+                    if parsed_cn_img:
+                        ui_values[f"{prefix}_diffsynth_controlnet_images"] = ui_values.get(f"{prefix}_diffsynth_controlnet_images", []) + [parsed_cn_img]
+                        ui_values[f"{prefix}_diffsynth_controlnet_strengths"] = ui_values.get(f"{prefix}_diffsynth_controlnet_strengths", []) + [float(item.get("strength", 1.0))]
+                        ui_values[f"{prefix}_diffsynth_controlnet_filepaths"] = ui_values.get(f"{prefix}_diffsynth_controlnet_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
+                elif itype == "ipadapter":
                     parsed_ipa_img = _parse_image_param(item.get("image"))
                     if parsed_ipa_img:
                         ui_values[f"{prefix}_ipadapter_images"] = ui_values.get(f"{prefix}_ipadapter_images", []) + [parsed_ipa_img]
-                        ui_values[f"{prefix}_ipadapter_weights"] = ui_values.get(f"{prefix}_ipadapter_weights", []) + [item.get("weight", 1.0)]
-                        ui_values[f"{prefix}_ipadapter_final_preset"] = item.get("preset", "STANDARD (medium strength)")
-                elif itype == "style":
+                        ui_values[f"{prefix}_ipadapter_weights"] = ui_values.get(f"{prefix}_ipadapter_weights", []) + [float(item.get("weight", 1.0))]
+                        ui_values[f"{prefix}_ipadapter_lora_strengths"] = ui_values.get(f"{prefix}_ipadapter_lora_strengths", []) + [float(item.get("lora_strength", 0.6))]
+                        if "preset" in item:
+                            ui_values[f"{prefix}_ipadapter_final_preset"] = item["preset"]
+                        if "final_weight" in item:
+                            ui_values[f"{prefix}_ipadapter_final_weight"] = float(item["final_weight"])
+                        if "embeds_scaling" in item:
+                            ui_values[f"{prefix}_ipadapter_embeds_scaling"] = item["embeds_scaling"]
+                        if "combine_method" in item:
+                            ui_values[f"{prefix}_ipadapter_combine_method"] = item["combine_method"]
+                        if "final_lora_strength" in item:
+                            ui_values[f"{prefix}_ipadapter_final_lora_strength"] = float(item["final_lora_strength"])
+                elif itype == "flux1_ipadapter":
+                    parsed_ipa_img = _parse_image_param(item.get("image"))
+                    if parsed_ipa_img:
+                        ui_values[f"{prefix}_flux1_ipadapter_images"] = ui_values.get(f"{prefix}_flux1_ipadapter_images", []) + [parsed_ipa_img]
+                        ui_values[f"{prefix}_flux1_ipadapter_weights"] = ui_values.get(f"{prefix}_flux1_ipadapter_weights", []) + [float(item.get("weight", 0.6))]
+                        ui_values[f"{prefix}_flux1_ipadapter_start_percents"] = ui_values.get(f"{prefix}_flux1_ipadapter_start_percents", []) + [float(item.get("start_percent", item.get("start_at", 0.0)))]
+                        ui_values[f"{prefix}_flux1_ipadapter_end_percents"] = ui_values.get(f"{prefix}_flux1_ipadapter_end_percents", []) + [float(item.get("end_percent", item.get("end_at", 0.6)))]
+                elif itype == "sd3_ipadapter":
+                    parsed_ipa_img = _parse_image_param(item.get("image"))
+                    if parsed_ipa_img:
+                        ui_values[f"{prefix}_sd3_ipadapter_images"] = ui_values.get(f"{prefix}_sd3_ipadapter_images", []) + [parsed_ipa_img]
+                        ui_values[f"{prefix}_sd3_ipadapter_weights"] = ui_values.get(f"{prefix}_sd3_ipadapter_weights", []) + [float(item.get("weight", 0.5))]
+                        ui_values[f"{prefix}_sd3_ipadapter_start_percents"] = ui_values.get(f"{prefix}_sd3_ipadapter_start_percents", []) + [float(item.get("start_percent", item.get("start_at", 0.0)))]
+                        ui_values[f"{prefix}_sd3_ipadapter_end_percents"] = ui_values.get(f"{prefix}_sd3_ipadapter_end_percents", []) + [float(item.get("end_percent", item.get("end_at", 1.0)))]
+                elif itype in ("style", "flux1_style"):
                     parsed_style_img = _parse_image_param(item.get("image"))
                     if parsed_style_img:
                         ui_values[f"{prefix}_style_images"] = ui_values.get(f"{prefix}_style_images", []) + [parsed_style_img]
-                        ui_values[f"{prefix}_style_strengths"] = ui_values.get(f"{prefix}_style_strengths", []) + [item.get("strength", 1.0)]
+                        ui_values[f"{prefix}_style_strengths"] = ui_values.get(f"{prefix}_style_strengths", []) + [float(item.get("strength", item.get("weight", 1.0)))]
+                elif itype in ("reference_latent", "reference_edit"):
+                    img = _parse_image_param(item.get("image"))
+                    if img:
+                        ui_values[f"{prefix}_reference_latent_images"] = ui_values.get(f"{prefix}_reference_latent_images", []) + [img]
+                elif itype == "hidream_o1_reference":
+                    img = _parse_image_param(item.get("image"))
+                    if img:
+                        ui_values[f"{prefix}_hidream_o1_reference_images"] = ui_values.get(f"{prefix}_hidream_o1_reference_images", []) + [img]
+                elif itype == "sensenova_reference":
+                    img = _parse_image_param(item.get("image"))
+                    if img:
+                        ui_values[f"{prefix}_sensenova_reference_images"] = ui_values.get(f"{prefix}_sensenova_reference_images", []) + [img]
+                elif itype in ("joyai_image", "joyai_reference", "joyai_reference_edit"):
+                    img = _parse_image_param(item.get("image"))
+                    if img:
+                        ui_values[f"{prefix}_joyai_image_images"] = ui_values.get(f"{prefix}_joyai_image_images", []) + [img]
+                elif itype in ("reference_image", "mage_flow_reference_edit"):
+                    img = _parse_image_param(item.get("image"))
+                    if img:
+                        ui_values[f"{prefix}_reference_image_images"] = ui_values.get(f"{prefix}_reference_image_images", []) + [img]
+                elif itype in ("boogu_image_edit", "boogu_edit"):
+                    parsed_boogu_img = _parse_image_param(item.get("image"))
+                    if parsed_boogu_img:
+                        ui_values[f"{prefix}_boogu_image_edit_images"] = ui_values.get(f"{prefix}_boogu_image_edit_images", []) + [parsed_boogu_img]
+                elif itype == "qwen_image_edit":
+                    parsed_qwen_img = _parse_image_param(item.get("image"))
+                    if parsed_qwen_img:
+                        ui_values[f"{prefix}_qwen_image_edit_images"] = ui_values.get(f"{prefix}_qwen_image_edit_images", []) + [parsed_qwen_img]
                 elif itype == "krea2_identity_edit":
                     parsed_identity_img = _parse_image_param(item.get("image"))
                     if parsed_identity_img:
@@ -290,14 +438,29 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                     parsed_style_ref_img = _parse_image_param(item.get("image"))
                     if parsed_style_ref_img:
                         ui_values[f"{prefix}_krea2_style_reference_images"] = ui_values.get(f"{prefix}_krea2_style_reference_images", []) + [parsed_style_ref_img]
-                elif itype == "boogu_image_edit":
-                    parsed_boogu_img = _parse_image_param(item.get("image"))
-                    if parsed_boogu_img:
-                        ui_values[f"{prefix}_boogu_image_edit_images"] = ui_values.get(f"{prefix}_boogu_image_edit_images", []) + [parsed_boogu_img]
-                elif itype == "qwen_image_edit":
-                    parsed_qwen_img = _parse_image_param(item.get("image"))
-                    if parsed_qwen_img:
-                        ui_values[f"{prefix}_qwen_image_edit_images"] = ui_values.get(f"{prefix}_qwen_image_edit_images", []) + [parsed_qwen_img]
+                elif itype == "vae":
+                    src = item.get("source") or item.get("vae_source", "File")
+                    val = item.get("vae_value") or item.get("value") or item.get("vae_id") or item.get("vae_name", "")
+                    ui_values[f"{prefix}_vae_override_source"] = src
+                    ui_values[f"{prefix}_vae_override_id"] = val
+                    ui_values[f"{prefix}_vae_override_file"] = val
+                elif itype == "pid":
+                    is_enabled = item.get("enabled", True)
+                    if isinstance(is_enabled, str):
+                        is_enabled = is_enabled.upper() in ("ON", "TRUE", "1")
+                    ui_values[f"{prefix}_pid_settings"] = "ON" if is_enabled else "OFF"
+                    ui_values["pid_settings"] = "ON" if is_enabled else "OFF"
+
+            # Auto set default IPAdapter final settings if IPAdapter images are present
+            if f"{prefix}_ipadapter_images" in ui_values and ui_values[f"{prefix}_ipadapter_images"]:
+                if f"{prefix}_ipadapter_final_preset" not in ui_values:
+                    ui_values[f"{prefix}_ipadapter_final_preset"] = "STANDARD (medium strength)"
+                if f"{prefix}_ipadapter_final_weight" not in ui_values:
+                    ui_values[f"{prefix}_ipadapter_final_weight"] = 1.0
+                if f"{prefix}_ipadapter_embeds_scaling" not in ui_values:
+                    ui_values[f"{prefix}_ipadapter_embeds_scaling"] = "V only"
+                if f"{prefix}_ipadapter_combine_method" not in ui_values:
+                    ui_values[f"{prefix}_ipadapter_combine_method"] = "concat"
 
         _TASKS_DB[task_id]["progress"] = 30
 

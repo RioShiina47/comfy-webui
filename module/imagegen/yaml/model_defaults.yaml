@@ -18,6 +18,13 @@ Krea-2:
     sampler_name: "euler"
     scheduler: "simple"
 
+SenseNova-U1.5:
+  _defaults:
+    steps: 50
+    cfg: 4.0
+    sampler_name: "euler"
+    scheduler: "normal"
+
 Mage-Flow:
   _defaults:
     steps: 30
@@ -310,7 +317,7 @@ AuraFlow:
     cfg: 3.5
     sampler_name: "euler"
     scheduler: "sgm_uniform"
-
+    
 SD3.5:
   _defaults:
     steps: 20
@@ -322,14 +329,18 @@ SDXL:
   _defaults:
     steps: 25
     cfg: 7.0
-    sampler_name: "euler"
+    sampler_name: "euler_ancestral"
     scheduler: "simple"
-    positive_prompt: ""
-    negative_prompt: ""
+  "stabilityai/SDXL-Turbo-1.0":
+    steps: 1
+    cfg: 1.0
+    positive_prompt: "NOTE: The model generates images of size 512x512 but higher image sizes work as well."
 
 SD1.5:
   _defaults:
-    steps: 47
+    steps: 35
     cfg: 7.0
     sampler_name: "euler_ancestral"
     scheduler: "simple"
+    positive_prompt: ""
+    negative_prompt: "worst quality, low quality, normal quality, lowres, bad anatomy, bad hands, missing fingers, extra digit, cropped, blurry, watermark, signature"

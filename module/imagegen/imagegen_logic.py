@@ -21,6 +21,7 @@ from .input_processors import (
     process_conditioning_inputs,
     process_reference_latent_inputs,
     process_hidream_o1_reference_inputs,
+    process_sensenova_reference_inputs,
     process_joyai_image_inputs,
     process_joyai_reference_inputs,
     process_reference_image_inputs,
@@ -141,6 +142,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
 
     ref_latent_inputs = process_reference_latent_inputs(ui_values, prefix)
     hidream_o1_ref_inputs = process_hidream_o1_reference_inputs(ui_values, prefix)
+    sensenova_ref_inputs = process_sensenova_reference_inputs(ui_values, prefix)
     joyai_image_inputs = process_joyai_image_inputs(ui_values, prefix)
     reference_img_inputs = process_reference_image_inputs(ui_values, prefix)
     boogu_edit_inputs = process_boogu_image_edit_inputs(ui_values, prefix)
@@ -161,6 +163,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
         'conditioning_chain': process_conditioning_inputs(ui_values, prefix),
         'reference_latent_chain': ref_latent_inputs,
         'hidream_o1_reference_chain': hidream_o1_ref_inputs,
+        'sensenova_reference_chain': sensenova_ref_inputs,
         'joyai_image_chain': joyai_image_inputs,
         'joyai_reference_chain': joyai_image_inputs,
         'reference_image_chain': reference_img_inputs,
