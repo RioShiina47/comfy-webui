@@ -68,8 +68,9 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     2. `ModelGen_multiview2model`: **Tri-View to 3D**. Generates high-fidelity 3D assets from front, back, and left view images using Hunyuan3D-2mv, returning public URLs to the 3D model.
     3. `AudioGen_music2music`: **Music Re-arrangement**. Re-arranges music clips based on text descriptions, optional lyrics, and input audio (`audio_url` or `audio_data`), returning public URLs to the generated audio.
     4. `AudioGen_txt2music`: **Text to Music**. Creates high-quality music clips from text prompts and optional lyrics using ACE-Step, returning public audio URLs.
-    5. `VideoGen_img2video`: **Image to Video**. Generates 16 FPS short video clips from an initial image and motion prompts with customizable aspect ratios, returning public video URLs.
-    6. `VideoGen_txt2video`: **Text to Video**. Generates 16 FPS video clips directly from text prompts across multiple resolutions, returning public video URLs.
+    5. `VideoGen_LTX_2_5_run`: **Lightricks LTX-2.5 Video & Audio Generation**. Unified execution interface for 5 task modes (`t2va`, `i2va`, `ta2va`, `ia2va`, `flf2va`) supporting audio-driven generation, keyframe interpolation, 2x spatial/temporal latent upscaling, and dynamic LoRA injection.
+    6. `VideoGen_LTX_2_5_get_task_list`: **LTX-2.5 Task Specifications**. Retrieves schemas, required inputs, and examples for all Lightricks LTX-2.5 tasks.
+    7. `VideoGen_LTX_2_5_get_task_status`: **LTX-2.5 Async Task Polling**. Queries real-time generation progress and public output video URLs.
 
 - **🧠 Cross-modal generation & editing**
   - **Instruction editing:** `FireRed-Image-Edit`, `LongCat-Image-Edit`, `ChronoEdit`, `Flux-Kontext-Dev` etc.
@@ -77,6 +78,7 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     - **Dynamic Subject & Style chains:** (for ByteDance USO) Inject an arbitrary number of subject and style reference images, automatically constructing resolution rescaling, VAE latent encoding, and multi-conditioning fusion chains for each input image.
   - **Video generation:** [`🤗Minimax-H3`](https://huggingface.co/spaces/RioShiina/MiniMax-H3), [`🤗LTX-2.5`](https://huggingface.co/spaces/RioShiina/LTX-2.5), `LTX-2.3`, `LTX-2`, `Wan-2.2`, `Wan-2.1`, `HunyuanVideo-1.5`, `HuMo`, `Kandinsky`
     - **Dynamic Multi-Modal Reference chains:** (for MiniMax-H3 / REF2VA) Dynamically mount arbitrary numbers of reference audios, reference images, and video slices at runtime to expand the model's conditioning guidance network.
+    - **Dynamic Latent Spatial & Temporal Upscaling chains:** (for LTX-2.5) Seamlessly switch between standard generation, 2x spatial upscaler, 2x temporal upscaler, or multi-stage combined latent enhancement pipelines.
     - **Dynamic Track Generation & Concat chains:** (for WanMove) Dynamically generate multiple motion tracks and concatenate them on the fly into complex, continuous camera trajectories.
     - **Dynamic Long-Sequence Chunk Extension chains:** (for Wan 2.2 S2V, InfiniteTalk, Animate) Cooperating with context-passing mechanisms, dynamically calculate chunk counts and recursively assemble multi-stage extension samplers and latent conduits for seamless chunked rendering of long videos.
   - **Audio generation:** `MiniMax-Music3`, `ACE-Step 1.5`, `ACE-Step`

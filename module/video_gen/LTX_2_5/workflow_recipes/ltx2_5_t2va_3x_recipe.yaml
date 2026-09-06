@@ -22,27 +22,6 @@ nodes:
     title: "Load Audio VAE"
     params:
       vae_name: "ltx-2.5-audio-vae-bf16.safetensors"
-
-  load_audio:
-    class_type: LoadAudio
-    title: "Load Audio"
-  trim_audio:
-    class_type: TrimAudioDuration
-    title: "Trim Audio Duration"
-    params:
-      start_index: 0
-  encode_audio:
-    class_type: LTXVAudioVAEEncode
-    title: "LTXV Audio VAE Encode"
-  solid_mask:
-    class_type: SolidMask
-    title: "Create Solid Mask"
-    params:
-      value: 0
-  mask_audio_latent:
-    class_type: SetLatentNoiseMask
-    title: "Set Latent Noise Mask"
-
   pos_prompt:
     class_type: CLIPTextEncode
     title: "Positive Prompt"
@@ -54,15 +33,20 @@ nodes:
     title: "LTXV Conditioning"
     params:
       frame_rate: 24
-  empty_video_latent:
+  empty_latent_video:
     class_type: EmptyLTXVLatentVideo
     title: "Empty Video Latent"
     params:
       batch_size: 1
+  empty_latent_audio:
+    class_type: LTXVEmptyLatentAudio
+    title: "Empty Audio Latent"
+    params:
+      batch_size: 1
+      frame_rate: 24
   latent_combiner_1:
     class_type: LTXVConcatAVLatent
     title: "Combine A/V Latents 1"
-
   sigmas_1:
     class_type: ManualSigmas
     title: "Sigmas 1"
@@ -88,19 +72,18 @@ nodes:
   latent_separator_1:
     class_type: LTXVSeparateAVLatent
     title: "Separate A/V Latents 1"
-
-  latent_upscaler_loader:
+  
+  latent_upscaler_loader_spatial:
     class_type: LatentUpscaleModelLoader
-    title: "Load Latent Upscale Model"
+    title: "Load Spatial Upscale Model"
     params:
-      model_name: ""
-  latent_upscaler:
+      model_name: "ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors"
+  latent_upscaler_spatial:
     class_type: LTXVLatentUpsampler
-    title: "Latent Upsampler"
+    title: "Spatial Latent Upsampler"
   latent_combiner_2:
     class_type: LTXVConcatAVLatent
     title: "Combine A/V Latents 2"
-
   sigmas_2:
     class_type: ManualSigmas
     title: "Sigmas 2"
@@ -127,9 +110,51 @@ nodes:
     class_type: LTXVSeparateAVLatent
     title: "Separate A/V Latents 2"
 
+  latent_upscaler_loader_temporal:
+    class_type: LatentUpscaleModelLoader
+    title: "Load Temporal Upscale Model"
+    params:
+      model_name: "ltx-2.5-latent-temporal-upscaler-x2-bf16-1.0.safetensors"
+  latent_upscaler_temporal:
+    class_type: LTXVLatentUpsampler
+    title: "Temporal Latent Upsampler"
+  latent_combiner_3:
+    class_type: LTXVConcatAVLatent
+    title: "Combine A/V Latents 3"
+  sigmas_3:
+    class_type: ManualSigmas
+    title: "Sigmas 3"
+    params:
+      sigmas: "0.85, 0.7250, 0.4219, 0.0"
+  noise_3:
+    class_type: RandomNoise
+    title: "Noise 3"
+  guider_3:
+    class_type: LTXVDualCFGGuider
+    title: "LTXV Dual CFG Guider 3"
+    params:
+      video_cfg: 1.0
+      audio_cfg: 1.0
+  sampler_select_3:
+    class_type: KSamplerSelect
+    title: "Sampler Select 3"
+    params:
+      sampler_name: "euler_ancestral"
+  sampler_3:
+    class_type: SamplerCustomAdvanced
+    title: "Sampler 3"
+  latent_separator_3:
+    class_type: LTXVSeparateAVLatent
+    title: "Separate A/V Latents 3"
+
   video_decoder:
-    class_type: VAEDecode
-    title: "VAE Decode"
+    class_type: VAEDecodeTiled
+    title: "VAE Decode (Tiled)"
+    params:
+      tile_size: 512
+      overlap: 64
+      temporal_size: 64
+      temporal_overlap: 16
   audio_decoder:
     class_type: LTXVAudioVAEDecode
     title: "Audio VAE Decode"
@@ -143,9 +168,10 @@ nodes:
     class_type: SaveVideo
     title: "Save Video"
     params:
-      filename_prefix: "video/LTX_2.5_ta2v"
-      format: "auto"
-      codec: "auto"
+      filename_prefix: "video/LTX_2.5_t2v"
+      format: "mp4"
+      codec:
+        codec: "h264"
 
 dynamic_lora_chains:
   loras:
@@ -163,6 +189,7 @@ dynamic_lora_chains:
       model:
         - "guider_1:model"
         - "guider_2:model"
+        - "guider_3:model"
       clip:
         - "pos_prompt:clip"
         - "neg_prompt:clip"
@@ -172,36 +199,33 @@ connections:
     to: "guider_1:model"
   - from: "unet_loader:0"
     to: "guider_2:model"
+  - from: "unet_loader:0"
+    to: "guider_3:model"
   - from: "clip_loader:0"
     to: "pos_prompt:clip"
   - from: "clip_loader:0"
     to: "neg_prompt:clip"
   - from: "video_vae_loader:0"
-    to: "latent_upscaler:vae"
-  - from: "video_vae_loader:0"
     to: "video_decoder:vae"
+  - from: "video_vae_loader:0"
+    to: "latent_upscaler_spatial:vae"
+  - from: "video_vae_loader:0"
+    to: "latent_upscaler_temporal:vae"
   - from: "audio_vae_loader:0"
-    to: "encode_audio:audio_vae"
+    to: "empty_latent_audio:audio_vae"
   - from: "audio_vae_loader:0"
     to: "audio_decoder:audio_vae"
-
-  - from: "load_audio:0"
-    to: "trim_audio:audio"
-  - from: "trim_audio:0"
-    to: "encode_audio:audio"
-  - from: "encode_audio:0"
-    to: "mask_audio_latent:samples"
-  - from: "solid_mask:0"
-    to: "mask_audio_latent:mask"
-
   - from: "pos_prompt:0"
     to: "conditioning:positive"
   - from: "neg_prompt:0"
     to: "conditioning:negative"
-  - from: "empty_video_latent:0"
+
+  - from: "empty_latent_video:0"
     to: "latent_combiner_1:video_latent"
-  - from: "mask_audio_latent:0"
+  - from: "empty_latent_audio:0"
     to: "latent_combiner_1:audio_latent"
+  - from: "latent_combiner_1:0"
+    to: "sampler_1:latent_image"
 
   - from: "conditioning:0"
     to: "guider_1:positive"
@@ -215,16 +239,14 @@ connections:
     to: "sampler_1:sigmas"
   - from: "sampler_select_1:0"
     to: "sampler_1:sampler"
-  - from: "latent_combiner_1:0"
-    to: "sampler_1:latent_image"
+
   - from: "sampler_1:0"
     to: "latent_separator_1:av_latent"
-
   - from: "latent_separator_1:0"
-    to: "latent_upscaler:samples"
-  - from: "latent_upscaler_loader:0"
-    to: "latent_upscaler:upscale_model"
-  - from: "latent_upscaler:0"
+    to: "latent_upscaler_spatial:samples"
+  - from: "latent_upscaler_loader_spatial:0"
+    to: "latent_upscaler_spatial:upscale_model"
+  - from: "latent_upscaler_spatial:0"
     to: "latent_combiner_2:video_latent"
   - from: "latent_separator_1:1"
     to: "latent_combiner_2:audio_latent"
@@ -243,12 +265,38 @@ connections:
     to: "sampler_2:sampler"
   - from: "latent_combiner_2:0"
     to: "sampler_2:latent_image"
+
   - from: "sampler_2:0"
     to: "latent_separator_2:av_latent"
-
   - from: "latent_separator_2:0"
-    to: "video_decoder:samples"
+    to: "latent_upscaler_temporal:samples"
+  - from: "latent_upscaler_loader_temporal:0"
+    to: "latent_upscaler_temporal:upscale_model"
+  - from: "latent_upscaler_temporal:0"
+    to: "latent_combiner_3:video_latent"
   - from: "latent_separator_2:1"
+    to: "latent_combiner_3:audio_latent"
+
+  - from: "conditioning:0"
+    to: "guider_3:positive"
+  - from: "conditioning:1"
+    to: "guider_3:negative"
+  - from: "guider_3:0"
+    to: "sampler_3:guider"
+  - from: "noise_3:0"
+    to: "sampler_3:noise"
+  - from: "sigmas_3:0"
+    to: "sampler_3:sigmas"
+  - from: "sampler_select_3:0"
+    to: "sampler_3:sampler"
+  - from: "latent_combiner_3:0"
+    to: "sampler_3:latent_image"
+
+  - from: "sampler_3:0"
+    to: "latent_separator_3:av_latent"
+  - from: "latent_separator_3:0"
+    to: "video_decoder:samples"
+  - from: "latent_separator_3:1"
     to: "audio_decoder:samples"
   - from: "video_decoder:0"
     to: "create_video:images"
@@ -258,19 +306,17 @@ connections:
     to: "save_video:video"
 
 ui_map:
-  upscaler_model_name: "latent_upscaler_loader:model_name"
-  audio_file: "load_audio:audio"
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
   aspect_ratio:
-    width: ["empty_video_latent:width", "solid_mask:width"]
-    height: ["empty_video_latent:height", "solid_mask:height"]
+    width: "empty_latent_video:width"
+    height: "empty_latent_video:height"
   video_length:
-    - "empty_video_latent:length"
-  duration_in_seconds:
-    - "trim_audio:duration"
+    - "empty_latent_video:length"
+    - "empty_latent_audio:frames_number"
   frame_rate:
     - "conditioning:frame_rate"
+    - "empty_latent_audio:frame_rate"
     - "create_video:fps"
-  seed: ["noise_1:noise_seed", "noise_2:noise_seed"]
+  seed: ["noise_1:noise_seed", "noise_2:noise_seed", "noise_3:noise_seed"]
   filename_prefix: "save_video:filename_prefix"
