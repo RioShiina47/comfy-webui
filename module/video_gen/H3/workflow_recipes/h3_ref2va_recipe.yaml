@@ -70,8 +70,9 @@ nodes:
     title: "Save Video"
     params:
       filename_prefix: "video/MiniMax_H3"
-      format: "auto"
-      codec: "auto"
+      format: "mp4"
+      codec:
+        codec: "h264"
 
 dynamic_lora_chains:
   loras:
@@ -111,6 +112,15 @@ dynamic_h3_controlnet_chains:
     target_nodes:
       - "basic_guider:model"
       - "basic_scheduler:model"
+
+dynamic_h3_guide_chains:
+  h3_guides:
+    template: MiniMaxH3AddGuide
+    source_node: "minimax_h3"
+    vae_source: "video_vae_loader:0"
+    audio_vae_source: "audio_vae_loader:0"
+    target_nodes:
+      - "basic_guider:conditioning"
 
 connections:
   - from: "clip_loader:0"
@@ -157,3 +167,4 @@ ui_map:
   length: "minimax_h3:length"
   seed: "random_noise:noise_seed"
   filename_prefix: "save_video:filename_prefix"
+  steps: "basic_scheduler:steps"
