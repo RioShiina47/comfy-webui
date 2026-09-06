@@ -22,49 +22,6 @@ nodes:
     title: "Load Audio VAE"
     params:
       vae_name: "ltx-2.5-audio-vae-bf16.safetensors"
-
-  load_image:
-    class_type: LoadImage
-    title: "Load Start Image"
-  resize_image:
-    class_type: ResizeImageMaskNode
-    title: "Resize Image/Mask"
-    params:
-      resize_type: "scale longer dimension"
-      resize_type.longer_size: 1536
-      scale_method: "lanczos"
-  preprocess_image:
-    class_type: LTXVPreprocess
-    title: "LTXV Preprocess"
-    params:
-      img_compression: 18
-  start_image_inplace_1:
-    class_type: LTXVImgToVideoInplace
-    title: "Apply Start Image to Latent 1"
-    params:
-      bypass: false
-      strength: 0.7
-
-  load_audio:
-    class_type: LoadAudio
-    title: "Load Audio"
-  trim_audio:
-    class_type: TrimAudioDuration
-    title: "Trim Audio Duration"
-    params:
-      start_index: 0
-  encode_audio:
-    class_type: LTXVAudioVAEEncode
-    title: "LTXV Audio VAE Encode"
-  solid_mask:
-    class_type: SolidMask
-    title: "Create Solid Mask"
-    params:
-      value: 0
-  mask_audio_latent:
-    class_type: SetLatentNoiseMask
-    title: "Set Latent Noise Mask"
-
   pos_prompt:
     class_type: CLIPTextEncode
     title: "Positive Prompt"
@@ -76,15 +33,20 @@ nodes:
     title: "LTXV Conditioning"
     params:
       frame_rate: 24
-  empty_video_latent:
+  empty_latent_video:
     class_type: EmptyLTXVLatentVideo
     title: "Empty Video Latent"
     params:
       batch_size: 1
+  empty_latent_audio:
+    class_type: LTXVEmptyLatentAudio
+    title: "Empty Audio Latent"
+    params:
+      batch_size: 1
+      frame_rate: 24
   latent_combiner_1:
     class_type: LTXVConcatAVLatent
     title: "Combine A/V Latents 1"
-
   sigmas_1:
     class_type: ManualSigmas
     title: "Sigmas 1"
@@ -110,13 +72,6 @@ nodes:
   latent_separator_1:
     class_type: LTXVSeparateAVLatent
     title: "Separate A/V Latents 1"
-
-  start_image_inplace_2:
-    class_type: LTXVImgToVideoInplace
-    title: "Apply Start Image to Latent 2"
-    params:
-      bypass: false
-      strength: 0.7
   latent_upscaler_loader:
     class_type: LatentUpscaleModelLoader
     title: "Load Latent Upscale Model"
@@ -128,7 +83,6 @@ nodes:
   latent_combiner_2:
     class_type: LTXVConcatAVLatent
     title: "Combine A/V Latents 2"
-
   sigmas_2:
     class_type: ManualSigmas
     title: "Sigmas 2"
@@ -154,10 +108,14 @@ nodes:
   latent_separator_2:
     class_type: LTXVSeparateAVLatent
     title: "Separate A/V Latents 2"
-
   video_decoder:
-    class_type: VAEDecode
-    title: "VAE Decode"
+    class_type: VAEDecodeTiled
+    title: "VAE Decode (Tiled)"
+    params:
+      tile_size: 512
+      overlap: 64
+      temporal_size: 64
+      temporal_overlap: 16
   audio_decoder:
     class_type: LTXVAudioVAEDecode
     title: "Audio VAE Decode"
@@ -171,9 +129,10 @@ nodes:
     class_type: SaveVideo
     title: "Save Video"
     params:
-      filename_prefix: "video/LTX_2.5_ia2v"
-      format: "auto"
-      codec: "auto"
+      filename_prefix: "video/LTX_2.5_t2v"
+      format: "mp4"
+      codec:
+        codec: "h264"
 
 dynamic_lora_chains:
   loras:
@@ -205,46 +164,24 @@ connections:
   - from: "clip_loader:0"
     to: "neg_prompt:clip"
   - from: "video_vae_loader:0"
-    to: "start_image_inplace_1:vae"
-  - from: "video_vae_loader:0"
-    to: "start_image_inplace_2:vae"
+    to: "video_decoder:vae"
   - from: "video_vae_loader:0"
     to: "latent_upscaler:vae"
-  - from: "video_vae_loader:0"
-    to: "video_decoder:vae"
   - from: "audio_vae_loader:0"
-    to: "encode_audio:audio_vae"
+    to: "empty_latent_audio:audio_vae"
   - from: "audio_vae_loader:0"
     to: "audio_decoder:audio_vae"
-
-  - from: "load_image:0"
-    to: "resize_image:input"
-  - from: "resize_image:0"
-    to: "preprocess_image:image"
-  - from: "preprocess_image:0"
-    to: "start_image_inplace_1:image"
-  - from: "preprocess_image:0"
-    to: "start_image_inplace_2:image"
-
-  - from: "load_audio:0"
-    to: "trim_audio:audio"
-  - from: "trim_audio:0"
-    to: "encode_audio:audio"
-  - from: "encode_audio:0"
-    to: "mask_audio_latent:samples"
-  - from: "solid_mask:0"
-    to: "mask_audio_latent:mask"
-
   - from: "pos_prompt:0"
     to: "conditioning:positive"
   - from: "neg_prompt:0"
     to: "conditioning:negative"
-  - from: "empty_video_latent:0"
-    to: "start_image_inplace_1:latent"
-  - from: "start_image_inplace_1:0"
+
+  - from: "empty_latent_video:0"
     to: "latent_combiner_1:video_latent"
-  - from: "mask_audio_latent:0"
+  - from: "empty_latent_audio:0"
     to: "latent_combiner_1:audio_latent"
+  - from: "latent_combiner_1:0"
+    to: "sampler_1:latent_image"
 
   - from: "conditioning:0"
     to: "guider_1:positive"
@@ -258,14 +195,10 @@ connections:
     to: "sampler_1:sigmas"
   - from: "sampler_select_1:0"
     to: "sampler_1:sampler"
-  - from: "latent_combiner_1:0"
-    to: "sampler_1:latent_image"
+
   - from: "sampler_1:0"
     to: "latent_separator_1:av_latent"
-
   - from: "latent_separator_1:0"
-    to: "start_image_inplace_2:latent"
-  - from: "start_image_inplace_2:0"
     to: "latent_upscaler:samples"
   - from: "latent_upscaler_loader:0"
     to: "latent_upscaler:upscale_model"
@@ -288,9 +221,9 @@ connections:
     to: "sampler_2:sampler"
   - from: "latent_combiner_2:0"
     to: "sampler_2:latent_image"
+
   - from: "sampler_2:0"
     to: "latent_separator_2:av_latent"
-
   - from: "latent_separator_2:0"
     to: "video_decoder:samples"
   - from: "latent_separator_2:1"
@@ -304,19 +237,17 @@ connections:
 
 ui_map:
   upscaler_model_name: "latent_upscaler_loader:model_name"
-  start_image: "load_image:image"
-  audio_file: "load_audio:audio"
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
   aspect_ratio:
-    width: ["empty_video_latent:width", "solid_mask:width"]
-    height: ["empty_video_latent:height", "solid_mask:height"]
+    width: "empty_latent_video:width"
+    height: "empty_latent_video:height"
   video_length:
-    - "empty_video_latent:length"
-  duration_in_seconds:
-    - "trim_audio:duration"
+    - "empty_latent_video:length"
+    - "empty_latent_audio:frames_number"
   frame_rate:
     - "conditioning:frame_rate"
+    - "empty_latent_audio:frame_rate"
     - "create_video:fps"
   seed: ["noise_1:noise_seed", "noise_2:noise_seed"]
   filename_prefix: "save_video:filename_prefix"
