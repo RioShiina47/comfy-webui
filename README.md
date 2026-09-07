@@ -66,8 +66,7 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
   - **Full-Modality Native MCP Tool Suite:**
     1. `ModelGen_img2model`: **Single Image to 3D**. Generates 3D assets from a single input image using Hunyuan3D-2. Accepts `image_url` or `image_data`, returning accessible 3D model files (`shape_model_url` and `textured_model_url`).
     2. `ModelGen_multiview2model`: **Tri-View to 3D**. Generates high-fidelity 3D assets from front, back, and left view images using Hunyuan3D-2mv, returning public URLs to the 3D model.
-    3. `AudioGen_music2music`: **Music Re-arrangement**. Re-arranges music clips based on text descriptions, optional lyrics, and input audio (`audio_url` or `audio_data`), returning public URLs to the generated audio.
-    4. `AudioGen_txt2music`: **Text to Music**. Creates high-quality music clips from text prompts and optional lyrics using ACE-Step, returning public audio URLs.
+    3. `AudioGen_MiniMax_Music_3`: **Text to Music**. Creates high-quality music and songs from text style descriptions and optional structured lyrics using MiniMax Music-3.
     5. `VideoGen_H3_run`: **MiniMax-H3 Video & Audio Generation**. Unified execution interface for 4 task modes (`t2va`, `i2va`, `flf2va`, `ref2va`) supporting multi-modal reference assets, keyframe guides, and ControlNet.
     6. `VideoGen_H3_get_task_list`: **H3 Task Specifications**. Retrieves schemas, required inputs, and examples for all MiniMax-H3 tasks.
     7. `VideoGen_H3_get_task_status`: **H3 Async Task Polling**. Queries real-time generation progress and public output video URLs.
