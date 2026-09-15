@@ -74,6 +74,7 @@ main_tabs_order:
 
   - "3DGen":
     - "simple_img_to_3D":
+      - "Pixal3D & TRELLIS.2"
       - "Hunyuan3D-2"
     - "three-view_img_to_3D":
       - "Hunyuan3D-2mv"

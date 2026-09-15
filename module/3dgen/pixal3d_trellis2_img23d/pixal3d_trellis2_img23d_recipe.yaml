@@ -1,0 +1,456 @@
+nodes:
+  load_image:
+    class_type: LoadImage
+    title: "Load Input Image"
+
+  bg_removal_model:
+    class_type: LoadBackgroundRemovalModel
+    title: "Load Background Removal Model"
+    params:
+      bg_removal_name: "birefnet.safetensors"
+
+  remove_bg:
+    class_type: RemoveBackground
+    title: "Remove Background"
+
+  crop_to_mask:
+    class_type: ImageCropToMask
+    title: "Crop Image to Mask"
+    params:
+      width: 1024
+      height: 1024
+      pad_factor: 1.1
+      grow_mask: 0
+      background: "#000000"
+
+  load_moge:
+    class_type: LoadMoGeModel
+    title: "Load MoGe Model"
+    params:
+      model_name: "moge_2_vitl_normal_fp16.safetensors"
+
+  moge_inference:
+    class_type: MoGeInference
+    title: "Run MoGe Inference"
+    params:
+      resolution_level: 9
+      fov_x_degrees: 0
+      batch_size: 4
+      force_projection: true
+      apply_mask: true
+
+  moge_fov:
+    class_type: MoGeGeometryToFOV
+    title: "Get FoV from MoGe Geometry"
+    params:
+      axis: "horizontal"
+      unit: "degrees"
+
+  load_clip_vision:
+    class_type: CLIPVisionLoader
+    title: "Load CLIP Vision"
+    params:
+      clip_name: "dino_v3_L_naf_fp32.safetensors"
+
+  pixal3d_conditioning:
+    class_type: Pixal3DConditioning
+    title: "Pixal3D Conditioning"
+
+  load_unet:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      unet_name: "pixal3d_int8_convrot.safetensors"
+      weight_dtype: "default"
+
+  load_shape_vae:
+    class_type: VAELoader
+    title: "Load Shape VAE"
+    params:
+      vae_name: "trellis_2_shape_vae_bf16.safetensors"
+
+  load_texture_vae:
+    class_type: VAELoader
+    title: "Load Texture VAE"
+    params:
+      vae_name: "trellis_2_texture_vae_bf16.safetensors"
+
+  cfg_override_structure:
+    class_type: CFGOverride
+    title: "CFG Override (Structure)"
+    params:
+      cfg: 1
+      start_percent: 0.667
+      end_percent: 1
+
+  rescale_cfg_structure:
+    class_type: RescaleCFG
+    title: "Rescale CFG (Structure)"
+    params:
+      multiplier: 0.7
+
+  model_sampling_sd3:
+    class_type: ModelSamplingSD3
+    title: "ModelSamplingSD3"
+    params:
+      shift: 5
+
+  empty_latent_structure:
+    class_type: EmptyTrellis2LatentStructure
+    title: "Empty Trellis2 Latent Structure"
+    params:
+      batch_size: 1
+
+  sampler_structure:
+    class_type: KSampler
+    title: "KSampler (Structure)"
+    params:
+      steps: 12
+      cfg: 7.5
+      sampler_name: "euler"
+      scheduler: "normal"
+      denoise: 1.0
+
+  decode_structure:
+    class_type: VaeDecodeStructureTrellis2
+    title: "VAE Decode Structure Trellis2"
+    params:
+      resolution: "32"
+
+  shape_stage:
+    class_type: Trellis2ShapeStage
+    title: "Trellis2 Shape Stage"
+
+  cfg_override_shape:
+    class_type: CFGOverride
+    title: "CFG Override (Shape)"
+    params:
+      cfg: 1
+      start_percent: 0.769
+      end_percent: 1
+
+  rescale_cfg_shape:
+    class_type: RescaleCFG
+    title: "Rescale CFG (Shape)"
+    params:
+      multiplier: 0.5
+
+  sampler_shape:
+    class_type: KSampler
+    title: "KSampler (Shape)"
+    params:
+      steps: 20
+      cfg: 7.5
+      sampler_name: "euler"
+      scheduler: "normal"
+      denoise: 1.0
+
+  upsample_stage:
+    class_type: Trellis2UpsampleStage
+    title: "Trellis2 Upsample Stage"
+    params:
+      target_resolution: "1536"
+
+  sampler_upsample:
+    class_type: KSampler
+    title: "KSampler (Upsample)"
+    params:
+      steps: 12
+      cfg: 7.5
+      sampler_name: "euler"
+      scheduler: "simple"
+      denoise: 1.0
+
+  decode_shape:
+    class_type: VaeDecodeShapeTrellis
+    title: "VAE Decode Shape Trellis"
+
+  mesh_info:
+    class_type: GetMeshInfo
+    title: "Get Mesh Info"
+
+  remesh_mesh:
+    class_type: RemeshMesh
+    title: "Remesh Mesh"
+    params:
+      resolution: 768
+      sign_mode: "udf"
+      sign_mode.qef: false
+      sign_mode.drop_inverted_components: false
+      sign_mode.drop_enclosed_components: false
+      band: 1.0
+      project_back: 0.0
+      fix_poles: false
+      smooth_iters: 20
+      drop_small_components: 0.01
+      precluster_max_verts: 20000000
+
+  decimate_mesh:
+    class_type: DecimateMesh
+    title: "Decimate Mesh"
+    params:
+      target_face_count: 700000
+      placement_mode: "midpoint"
+
+  smooth_mesh_normals:
+    class_type: MeshSmoothNormals
+    title: "Smooth Mesh Normals"
+    params:
+      crease_angle: 180
+
+  texture_stage:
+    class_type: Trellis2TextureStage
+    title: "Trellis2 Texture Stage"
+
+  sampler_texture:
+    class_type: KSampler
+    title: "KSampler (Texture)"
+    params:
+      steps: 12
+      cfg: 1.0
+      sampler_name: "euler"
+      scheduler: "normal"
+      denoise: 1.0
+
+  decode_texture:
+    class_type: VaeDecodeTextureTrellis
+    title: "VAE Decode Texture Trellis"
+
+  paint_mesh:
+    class_type: PaintMesh
+    title: "Paint Mesh (Vertex Colors)"
+
+  mesh_to_file_3d_shape:
+    class_type: MeshToFile3D
+    title: "Create 3D File (Painted Mesh)"
+
+  save_shape_3d:
+    class_type: Save3DAdvanced
+    title: "Save 3D (Shape)"
+    params:
+      filename_prefix: "3d/Trellis2_Shape"
+
+  unwrap_mesh:
+    class_type: UnwrapMesh
+    title: "Unwrap Mesh UVs"
+    params:
+      segmenter: "pec"
+      resolution: 4096
+      padding: 1
+      weld_distance: 0.0002
+
+  bake_texture_voxel:
+    class_type: BakeTextureFromVoxel
+    title: "Bake Texture From Voxel"
+    params:
+      texture_size: 4096
+
+  bake_normal:
+    class_type: BakeNormalMapFromMesh
+    title: "Bake Normal Map"
+    params:
+      resolution: 2048
+      cage_distance: 0.05
+      ignore_backfaces: true
+
+  bake_ao:
+    class_type: BakeAmbientOcclusion
+    title: "Bake Ambient Occlusion"
+    params:
+      resolution: 1024
+      samples: 64
+      max_distance: 0.71
+      strength: 1.0
+      bias: 0.01
+
+  apply_texture:
+    class_type: ApplyTextureToMesh
+    title: "Apply Texture to Mesh"
+
+  smooth_textured_normals:
+    class_type: MeshSmoothNormals
+    title: "Smooth Textured Normals"
+    params:
+      crease_angle: 180
+
+  mesh_to_file_3d_textured:
+    class_type: MeshToFile3D
+    title: "Create 3D File (Textured)"
+
+  save_textured_3d:
+    class_type: Save3DAdvanced
+    title: "Save 3D (Textured)"
+    params:
+      filename_prefix: "3d/Trellis2_Textured"
+
+connections:
+  - from: "load_image:0"
+    to: "remove_bg:image"
+  - from: "bg_removal_model:0"
+    to: "remove_bg:bg_removal_model"
+  - from: "load_image:0"
+    to: "crop_to_mask:images"
+  - from: "remove_bg:0"
+    to: "crop_to_mask:masks"
+
+  - from: "load_moge:0"
+    to: "moge_inference:moge_model"
+  - from: "crop_to_mask:0"
+    to: "moge_inference:image"
+  - from: "moge_inference:0"
+    to: "moge_fov:moge_geometry"
+
+  - from: "moge_fov:0"
+    to: "pixal3d_conditioning:camera_angle_x"
+  - from: "load_clip_vision:0"
+    to: "pixal3d_conditioning:clip_vision_model"
+  - from: "crop_to_mask:0"
+    to: "pixal3d_conditioning:image"
+
+  - from: "load_unet:0"
+    to: "cfg_override_structure:model"
+  - from: "cfg_override_structure:0"
+    to: "rescale_cfg_structure:model"
+  - from: "rescale_cfg_structure:0"
+    to: "model_sampling_sd3:model"
+  - from: "model_sampling_sd3:0"
+    to: "sampler_structure:model"
+  - from: "pixal3d_conditioning:0"
+    to: "sampler_structure:positive"
+  - from: "pixal3d_conditioning:1"
+    to: "sampler_structure:negative"
+  - from: "empty_latent_structure:0"
+    to: "sampler_structure:latent_image"
+  - from: "sampler_structure:0"
+    to: "decode_structure:samples"
+  - from: "load_shape_vae:0"
+    to: "decode_structure:vae"
+
+  - from: "pixal3d_conditioning:0"
+    to: "shape_stage:positive"
+  - from: "pixal3d_conditioning:1"
+    to: "shape_stage:negative"
+  - from: "decode_structure:0"
+    to: "shape_stage:voxel"
+  - from: "load_unet:0"
+    to: "cfg_override_shape:model"
+  - from: "cfg_override_shape:0"
+    to: "rescale_cfg_shape:model"
+  - from: "rescale_cfg_shape:0"
+    to: "sampler_shape:model"
+  - from: "shape_stage:0"
+    to: "sampler_shape:positive"
+  - from: "shape_stage:1"
+    to: "sampler_shape:negative"
+  - from: "shape_stage:2"
+    to: "sampler_shape:latent_image"
+
+  - from: "shape_stage:0"
+    to: "upsample_stage:positive"
+  - from: "shape_stage:1"
+    to: "upsample_stage:negative"
+  - from: "sampler_shape:0"
+    to: "upsample_stage:shape_latent"
+  - from: "load_shape_vae:0"
+    to: "upsample_stage:vae"
+  - from: "rescale_cfg_shape:0"
+    to: "sampler_upsample:model"
+  - from: "upsample_stage:0"
+    to: "sampler_upsample:positive"
+  - from: "upsample_stage:1"
+    to: "sampler_upsample:negative"
+  - from: "upsample_stage:2"
+    to: "sampler_upsample:latent_image"
+  - from: "sampler_upsample:0"
+    to: "decode_shape:samples"
+  - from: "load_shape_vae:0"
+    to: "decode_shape:vae"
+
+  - from: "decode_shape:0"
+    to: "mesh_info:mesh"
+  - from: "mesh_info:0"
+    to: "remesh_mesh:mesh"
+  - from: "remesh_mesh:0"
+    to: "decimate_mesh:mesh"
+  - from: "decimate_mesh:0"
+    to: "smooth_mesh_normals:mesh"
+
+  - from: "upsample_stage:0"
+    to: "texture_stage:positive"
+  - from: "upsample_stage:1"
+    to: "texture_stage:negative"
+  - from: "sampler_upsample:0"
+    to: "texture_stage:shape_latent"
+  - from: "load_unet:0"
+    to: "sampler_texture:model"
+  - from: "texture_stage:0"
+    to: "sampler_texture:positive"
+  - from: "texture_stage:1"
+    to: "sampler_texture:negative"
+  - from: "texture_stage:2"
+    to: "sampler_texture:latent_image"
+  - from: "sampler_texture:0"
+    to: "decode_texture:samples"
+  - from: "load_texture_vae:0"
+    to: "decode_texture:vae"
+  - from: "decode_shape:1"
+    to: "decode_texture:shape_subdivides"
+
+  - from: "smooth_mesh_normals:0"
+    to: "paint_mesh:mesh"
+  - from: "decode_texture:0"
+    to: "paint_mesh:voxel_colors"
+  - from: "paint_mesh:0"
+    to: "mesh_to_file_3d_shape:mesh"
+  - from: "mesh_to_file_3d_shape:0"
+    to: "save_shape_3d:model_3d"
+
+  - from: "smooth_mesh_normals:0"
+    to: "unwrap_mesh:mesh"
+  - from: "unwrap_mesh:0"
+    to: "bake_texture_voxel:mesh"
+  - from: "decode_shape:0"
+    to: "bake_texture_voxel:reference_mesh"
+  - from: "decode_texture:0"
+    to: "bake_texture_voxel:voxel_colors"
+  - from: "unwrap_mesh:0"
+    to: "bake_normal:low_poly"
+  - from: "remesh_mesh:0"
+    to: "bake_normal:high_poly"
+  - from: "unwrap_mesh:0"
+    to: "bake_ao:low_poly"
+  - from: "remesh_mesh:0"
+    to: "bake_ao:high_poly"
+
+  - from: "unwrap_mesh:0"
+    to: "apply_texture:mesh"
+  - from: "bake_texture_voxel:0"
+    to: "apply_texture:base_color"
+  - from: "bake_texture_voxel:1"
+    to: "apply_texture:metallic"
+  - from: "bake_texture_voxel:2"
+    to: "apply_texture:roughness"
+  - from: "bake_ao:0"
+    to: "apply_texture:occlusion"
+  - from: "bake_normal:0"
+    to: "apply_texture:normal_map"
+
+  - from: "apply_texture:0"
+    to: "smooth_textured_normals:mesh"
+  - from: "smooth_textured_normals:0"
+    to: "mesh_to_file_3d_textured:mesh"
+  - from: "mesh_to_file_3d_textured:0"
+    to: "save_textured_3d:model_3d"
+
+ui_map:
+  input_image: "load_image:image"
+  structure_seed: "sampler_structure:seed"
+  shape_seed: "sampler_shape:seed"
+  upsample_seed: "sampler_upsample:seed"
+  texture_seed: "sampler_texture:seed"
+  target_face_count: "decimate_mesh:target_face_count"
+  texture_resolution:
+    - "unwrap_mesh:resolution"
+    - "bake_texture_voxel:texture_size"
+  shape_filename_prefix: "save_shape_3d:filename_prefix"
+  textured_filename_prefix: "save_textured_3d:filename_prefix"

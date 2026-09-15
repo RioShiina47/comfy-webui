@@ -28,7 +28,7 @@ def _download_and_decode_image(image_url: str = None, image_data: str = None) ->
         raise RuntimeError(f"Failed to process input image. Error: {e}")
 
 
-def ModelGen_multiview2model(
+def _3DGen_Hunyuan3D_2_multiview(
     front_image_url: str = None,
     front_image_data: str = None,
     back_image_url: str = None,
@@ -52,7 +52,7 @@ def ModelGen_multiview2model(
     Returns:
         dict[str, str]: A dictionary containing publicly accessible URLs to the generated 3D model files ('shape_model_url' and 'textured_model_url').
     """
-    print(f"[MCP MultiView2Model] Received request.")
+    print(f"[MCP 3DGen Hunyuan3D-2 Multiview] Received request.")
     
     front_img = _download_and_decode_image(image_url=front_image_url, image_data=front_image_data)
     back_img = _download_and_decode_image(image_url=back_image_url, image_data=back_image_data)
@@ -90,8 +90,10 @@ def ModelGen_multiview2model(
         "textured_model_url": textured_url
     }
     
-    print(f"[MCP MultiView2Model] Generation complete. Returning URLs: {result}")
+    print(f"[MCP 3DGen Hunyuan3D-2 Multiview] Generation complete. Returning URLs: {result}")
     return result
 
 
-MCP_FUNCTIONS = [ModelGen_multiview2model]
+_3DGen_Hunyuan3D_2_multiview.__name__ = "3DGen_Hunyuan3D_2_multiview"
+globals()["3DGen_Hunyuan3D_2_multiview"] = _3DGen_Hunyuan3D_2_multiview
+MCP_FUNCTIONS = [_3DGen_Hunyuan3D_2_multiview]

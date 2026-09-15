@@ -28,7 +28,7 @@ def _download_and_decode_image(image_url: str = None, image_data: str = None) ->
         raise RuntimeError(f"Failed to process input image. Error: {e}")
 
 
-def ModelGen_img2model(
+def _3DGen_Hunyuan3D_2(
     image_url: str = None,
     image_data: str = None,
     request: gr.Request = None
@@ -44,7 +44,7 @@ def ModelGen_img2model(
     Returns:
         dict[str, str]: A dictionary containing publicly accessible URLs to the generated 3D model files ('shape_model_url' and 'textured_model_url').
     """
-    print(f"[MCP Img2Model] Received request.")
+    print(f"[MCP 3DGen Hunyuan3D-2] Received request.")
     
     input_image_pil = _download_and_decode_image(image_url=image_url, image_data=image_data)
 
@@ -78,8 +78,10 @@ def ModelGen_img2model(
         "textured_model_url": textured_url
     }
     
-    print(f"[MCP Img2Model] Generation complete. Returning URLs: {result}")
+    print(f"[MCP 3DGen Hunyuan3D-2] Generation complete. Returning URLs: {result}")
     return result
 
 
-MCP_FUNCTIONS = [ModelGen_img2model]
+_3DGen_Hunyuan3D_2.__name__ = "3DGen_Hunyuan3D_2"
+globals()["3DGen_Hunyuan3D_2"] = _3DGen_Hunyuan3D_2
+MCP_FUNCTIONS = [_3DGen_Hunyuan3D_2]
