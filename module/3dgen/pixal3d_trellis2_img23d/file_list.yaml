@@ -1,0 +1,34 @@
+file:
+  diffusion_models:
+    - filename: "pixal3d_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Pixal3D"
+      repository_file_path: "diffusion_models/pixal3d_int8_convrot.safetensors"
+    - filename: "trellis_2_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/TRELLIS.2"
+      repository_file_path: "diffusion_models/trellis_2_int8_convrot.safetensors"
+  vae:
+    - filename: "trellis_2_shape_vae_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/TRELLIS.2"
+      repository_file_path: "vae/trellis_2_shape_vae_bf16.safetensors"
+    - filename: "trellis_2_texture_vae_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/TRELLIS.2"
+      repository_file_path: "vae/trellis_2_texture_vae_bf16.safetensors"
+  clip_vision:
+    - filename: "dino_v3_L_naf_fp32.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Pixal3D"
+      repository_file_path: "clip_vision/dino_v3_L_naf_fp32.safetensors"
+  geometry_estimation:
+    - filename: "moge_2_vitl_normal_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MoGe"
+      repository_file_path: "geometry_estimation/moge_2_vitl_normal_fp16.safetensors"
+  background_removal:
+    - filename: "birefnet.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/BiRefNet"
+      repository_file_path: "background_removal/birefnet.safetensors"

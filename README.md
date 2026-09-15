@@ -64,9 +64,10 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
   - **Progressive Exploration Pipeline for Agents**: Built with a self-describing discovery flow (`Discover Tasks → Filter Architectures → Retrieve Models → Probe Recommended Hyperparameters & Samplers → Submit Execution → Async Status Polling`), enabling Agents to autonomously perceive and utilize platform capabilities.
   - **Zero-Guessing Hyperparameter Engine**: Supports **Minimal Mode** (server automatically applies expert presets) and **Explicit Alignment Mode** (query before passing), completely eliminating hyperparameter hallucination.
   - **Full-Modality Native MCP Tool Suite:**
-    1. `ModelGen_img2model`: **Single Image to 3D**. Generates 3D assets from a single input image using Hunyuan3D-2. Accepts `image_url` or `image_data`, returning accessible 3D model files (`shape_model_url` and `textured_model_url`).
-    2. `ModelGen_multiview2model`: **Tri-View to 3D**. Generates high-fidelity 3D assets from front, back, and left view images using Hunyuan3D-2mv, returning public URLs to the 3D model.
-    3. `AudioGen_MiniMax_Music_3`: **Text to Music**. Creates high-quality music and songs from text style descriptions and optional structured lyrics using MiniMax Music-3.
+    1. `3DGen_Pixal3D_TRELLIS_2`: **Single Image to 3D (Pixal3D & TRELLIS.2)**. Generates high-fidelity 3D assets with full PBR texture baking from a single input image. Accepts `image_url` or `image_data`, returning accessible 3D model files (`textured_model_url` and `shape_model_url`).
+    2. `3DGen_Hunyuan3D_2`: **Single Image to 3D (Hunyuan3D-2)**. Generates 3D assets from a single input image using Hunyuan3D-2. Accepts `image_url` or `image_data`, returning accessible 3D model files (`shape_model_url` and `textured_model_url`).
+    3. `3DGen_Hunyuan3D_2_multiview`: **Tri-View to 3D (Hunyuan3D-2mv)**. Generates high-fidelity 3D assets from front, back, and left view images using Hunyuan3D-2mv, returning public URLs to the 3D model.
+    4. `AudioGen_MiniMax_Music_3`: **Text to Music**. Creates high-quality music and songs from text style descriptions and optional structured lyrics using MiniMax Music-3.
     5. `VideoGen_H3_run`: **MiniMax-H3 Video & Audio Generation**. Unified execution interface for 4 task modes (`t2va`, `i2va`, `flf2va`, `ref2va`) supporting multi-modal reference assets, keyframe guides, and ControlNet.
     6. `VideoGen_H3_get_task_list`: **H3 Task Specifications**. Retrieves schemas, required inputs, and examples for all MiniMax-H3 tasks.
     7. `VideoGen_H3_get_task_status`: **H3 Async Task Polling**. Queries real-time generation progress and public output video URLs.
@@ -84,7 +85,7 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     - **Dynamic Track Generation & Concat chains:** (for WanMove) Dynamically generate multiple motion tracks and concatenate them on the fly into complex, continuous camera trajectories.
     - **Dynamic Long-Sequence Chunk Extension chains:** (for Wan 2.2 S2V, InfiniteTalk, Animate) Cooperating with context-passing mechanisms, dynamically calculate chunk counts and recursively assemble multi-stage extension samplers and latent conduits for seamless chunked rendering of long videos.
   - **Audio generation:** `MiniMax-Music3`, `ACE-Step 1.5`, `ACE-Step`
-  - **3D generation (Hunyuan3D-2):** `Image-to-3D`, `Multi-view-to-3D`
+  - **3D generation:** `Pixal3D & TRELLIS.2`, `Hunyuan3D-2`
 
 - **⚡ Asynchronous Tasks & Persistent History**
   - Thread-safe fully asynchronous task scheduling queue. Background tasks continue running uninterrupted even if the browser is closed or the network disconnects.
