@@ -83,7 +83,8 @@ def download_file(filename, subfolder="", file_type="output"):
         with requests.get(url, stream=True, timeout=60) as r:
             r.raise_for_status()
             suffix = Path(filename).suffix
-            with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_file:
+            stem = Path(filename).stem
+            with tempfile.NamedTemporaryFile(delete=False, prefix=f"{stem}_", suffix=suffix) as tmp_file:
                 shutil.copyfileobj(r.raw, tmp_file)
                 return tmp_file.name
     except requests.exceptions.RequestException as e:
@@ -156,6 +157,43 @@ def get_output_data(prompt_id, client_id):
                 ws.close()
             except Exception:
                 pass
+def extract_outputs_to_download(outputs_dict):
+    """
+    Extract file descriptors ({'filename': ..., 'subfolder': ..., 'type': ...})
+    from ComfyUI execution outputs or history. Supports both standard image/video/audio
+    dicts ({'filename': ...}) and custom string path outputs from 3D/audio nodes
+    (e.g., "3d/model_00001.glb").
+    """
+    outputs_to_download = []
+    if not outputs_dict or not isinstance(outputs_dict, dict):
+        return outputs_to_download
+
+    SUPPORTED_EXTENSIONS = (
+        '.glb', '.gltf', '.obj', '.fbx', '.stl', '.ply',
+        '.png', '.jpg', '.jpeg', '.webp',
+        '.mp4', '.webm', '.mov', '.gif',
+        '.mp3', '.wav', '.flac'
+    )
+
+    for node_id, node_out in outputs_dict.items():
+        if not isinstance(node_out, dict):
+            continue
+        for key, val in node_out.items():
+            if isinstance(val, list):
+                for item in val:
+                    if isinstance(item, dict) and 'filename' in item:
+                        outputs_to_download.append(item)
+                    elif isinstance(item, str) and item:
+                        ext = os.path.splitext(item)[1].lower()
+                        if ext in SUPPORTED_EXTENSIONS:
+                            clean_item = item.replace('\\', '/')
+                            subfolder, fname = os.path.split(clean_item)
+                            outputs_to_download.append({
+                                'filename': fname,
+                                'subfolder': subfolder,
+                                'type': 'output'
+                            })
+    return outputs_to_download
 
 
 def run_workflow_and_get_output(workflow_data):
@@ -275,21 +313,11 @@ def run_workflow_and_get_output(workflow_data):
         history = get_history(prompt_id)
     if history and prompt_id in history:
         history_outputs = history[prompt_id].get('outputs', {})
-        for node_id, node_out in history_outputs.items():
-            for key, val in node_out.items():
-                if isinstance(val, list):
-                    for item in val:
-                        if isinstance(item, dict) and 'filename' in item:
-                            outputs_to_download.append(item)
+        outputs_to_download = extract_outputs_to_download(history_outputs)
 
     # Fallback to executed events if history endpoint had no output items
     if not outputs_to_download and executed_outputs:
-        for node_id, node_out in executed_outputs.items():
-            for key, val in node_out.items():
-                if isinstance(val, list):
-                    for item in val:
-                        if isinstance(item, dict) and 'filename' in item:
-                            outputs_to_download.append(item)
+        outputs_to_download = extract_outputs_to_download(executed_outputs)
 
     if not outputs_to_download:
         yield "Error: Failed to receive any output files from ComfyUI.", None
@@ -397,20 +425,10 @@ def execute_workflow_and_wait(workflow_data, timeout=300):
     history_outputs = {}
     if history and prompt_id in history:
         history_outputs = history[prompt_id].get('outputs', {})
-        for node_id, node_out in history_outputs.items():
-            for key, val in node_out.items():
-                if isinstance(val, list):
-                    for item in val:
-                        if isinstance(item, dict) and 'filename' in item:
-                            outputs_to_download.append(item)
+        outputs_to_download = extract_outputs_to_download(history_outputs)
 
     if not outputs_to_download and executed_outputs:
-        for node_id, node_out in executed_outputs.items():
-            for key, val in node_out.items():
-                if isinstance(val, list):
-                    for item in val:
-                        if isinstance(item, dict) and 'filename' in item:
-                            outputs_to_download.append(item)
+        outputs_to_download = extract_outputs_to_download(executed_outputs)
 
     downloaded_files = []
     for item in outputs_to_download:
