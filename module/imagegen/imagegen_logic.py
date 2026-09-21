@@ -25,7 +25,6 @@ from .input_processors import (
     process_joyai_image_inputs,
     process_joyai_reference_inputs,
     process_reference_image_inputs,
-    process_boogu_image_edit_inputs,
     process_qwen_image_edit_inputs,
     process_krea2_identity_edit_inputs,
     process_krea2_style_reference_inputs
@@ -145,7 +144,6 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
     sensenova_ref_inputs = process_sensenova_reference_inputs(ui_values, prefix)
     joyai_image_inputs = process_joyai_image_inputs(ui_values, prefix)
     reference_img_inputs = process_reference_image_inputs(ui_values, prefix)
-    boogu_edit_inputs = process_boogu_image_edit_inputs(ui_values, prefix)
     qwen_edit_inputs = process_qwen_image_edit_inputs(ui_values, prefix)
     krea2_identity_inputs = process_krea2_identity_edit_inputs(ui_values, prefix)
     krea2_style_ref_inputs = process_krea2_style_reference_inputs(ui_values, prefix)
@@ -167,7 +165,6 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
         'joyai_image_chain': joyai_image_inputs,
         'joyai_reference_chain': joyai_image_inputs,
         'reference_image_chain': reference_img_inputs,
-        'boogu_image_edit_chain': boogu_edit_inputs,
         'qwen_image_edit_chain': qwen_edit_inputs,
         'krea2_identity_edit_chain': krea2_identity_inputs,
         'krea2_style_reference_chain': krea2_style_ref_inputs,

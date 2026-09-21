@@ -418,14 +418,10 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                     img = _parse_image_param(item.get("image"))
                     if img:
                         ui_values[f"{prefix}_joyai_image_images"] = ui_values.get(f"{prefix}_joyai_image_images", []) + [img]
-                elif itype in ("reference_image", "mage_flow_reference_edit"):
+                elif itype in ("reference_image", "mage_flow_reference_edit", "boogu_image_edit", "boogu_edit", "qwen_image_2_1_edit"):
                     img = _parse_image_param(item.get("image"))
                     if img:
                         ui_values[f"{prefix}_reference_image_images"] = ui_values.get(f"{prefix}_reference_image_images", []) + [img]
-                elif itype in ("boogu_image_edit", "boogu_edit"):
-                    parsed_boogu_img = _parse_image_param(item.get("image"))
-                    if parsed_boogu_img:
-                        ui_values[f"{prefix}_boogu_image_edit_images"] = ui_values.get(f"{prefix}_boogu_image_edit_images", []) + [parsed_boogu_img]
                 elif itype == "qwen_image_edit":
                     parsed_qwen_img = _parse_image_param(item.get("image"))
                     if parsed_qwen_img:

@@ -271,10 +271,6 @@ def register_ui_chain_events(components, prefix):
     _add_row_factory(key('reference_image_count_state'), key('add_reference_image_button'), key('delete_reference_image_button'), key('reference_image_rows'), max_ref_imgs)
     _delete_row_factory(key('reference_image_count_state'), key('add_reference_image_button'), key('delete_reference_image_button'), key('reference_image_rows'), max_ref_imgs, reset_keys=[key('reference_image_images')])
 
-    max_boogu_edits = constants.get('MAX_BOOGU_IMAGE_EDITS', 10)
-    _add_row_factory(key('boogu_image_edit_count_state'), key('add_boogu_image_edit_button'), key('delete_boogu_image_edit_button'), key('boogu_image_edit_rows'), max_boogu_edits)
-    _delete_row_factory(key('boogu_image_edit_count_state'), key('add_boogu_image_edit_button'), key('delete_boogu_image_edit_button'), key('boogu_image_edit_rows'), max_boogu_edits, reset_keys=[key('boogu_image_edit_images')])
-
     max_qwen_edits = constants.get('MAX_QWEN_IMAGE_EDITS', 3)
     _add_row_factory(key('qwen_image_edit_count_state'), key('add_qwen_image_edit_button'), key('delete_qwen_image_edit_button'), key('qwen_image_edit_rows'), max_qwen_edits)
     _delete_row_factory(key('qwen_image_edit_count_state'), key('add_qwen_image_edit_button'), key('delete_qwen_image_edit_button'), key('qwen_image_edit_rows'), max_qwen_edits, reset_keys=[key('qwen_image_edit_images')])
