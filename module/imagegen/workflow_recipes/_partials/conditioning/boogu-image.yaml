@@ -49,11 +49,11 @@ dynamic_conditioning_chains:
     ksampler_node: "ksampler"
     clip_source: "clip_loader:0"
 
-dynamic_boogu_image_edit_chains:
-  boogu_image_edit_chain:
-    ksampler_node: "ksampler"
-    boogu_prompt_node: "boogu_prompt"
-    vae_loader_node: "vae_loader"
+dynamic_reference_image_chains:
+  reference_image_chain:
+    text_encode_node: "boogu_prompt"
+    vae_node: "vae_loader"
+    max_images: 10
 
 dynamic_pid_chains:
   pid_chain:

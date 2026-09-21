@@ -24,7 +24,6 @@ txt2img:
   - krea2_identity_edit
   - krea2_style_reference
   - qwen_image_edit
-  - boogu_image_edit
   - reference_image
   - pid
   - vae
@@ -50,7 +49,6 @@ img2img:
   - krea2_identity_edit
   - krea2_style_reference
   - qwen_image_edit
-  - boogu_image_edit
   - reference_image
   - vae
 
@@ -75,7 +73,6 @@ inpaint:
   - krea2_identity_edit
   - krea2_style_reference
   - qwen_image_edit
-  - boogu_image_edit
   - reference_image
   - vae
 
@@ -100,7 +97,6 @@ outpaint:
   - krea2_identity_edit
   - krea2_style_reference
   - qwen_image_edit
-  - boogu_image_edit
   - reference_image
   - vae
 
@@ -125,6 +121,5 @@ hires_fix:
   - krea2_identity_edit
   - krea2_style_reference
   - qwen_image_edit
-  - boogu_image_edit
   - reference_image
   - vae

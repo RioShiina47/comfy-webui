@@ -223,8 +223,8 @@ reference_edit:
 
 mage_flow_reference_edit:
   chains: reference_image
-  display_name: "Mage-Flow Reference Edit"
-  description: " (Mage-Flow-Edit-Turbo/Mage-Flow-Edit recommended) For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  display_name: "Reference Image Edit"
+  description: "For multimodal models, this feature enables reference image editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
   max_count: 10
   usage_guideline: "Supply reference image as Base64 Data URI or HTTP/HTTPS URL."
   parameters_schema:
@@ -291,21 +291,6 @@ diffsynth_controlnet:
     required:
       - type
       - series
-      - image
-
-boogu_image_edit:
-  chains: boogu_image_edit
-  display_name: "Boogu-Image Edit"
-  description: " (Boogu-Image-Edit-Turbo/Boogu-Image-Edit recommended, Boogu-Image-Edit need set ZeroGPU Duration (s) to 120 ) In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
-  max_count: 2
-  usage_guideline: "Supply reference image as Base64 Data URI or HTTP/HTTPS URL."
-  parameters_schema:
-    type: object
-    properties:
-      image:
-        type: string
-        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
-    required:
       - image
 
 joyai_reference_edit:

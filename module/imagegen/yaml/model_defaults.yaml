@@ -131,6 +131,13 @@ Z-Image:
     steps: 9
     cfg: 1.0
 
+Qwen-Image-2.1:
+  _defaults:
+    steps: 25
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+
 Qwen-Image:
   _defaults:
     steps: 20

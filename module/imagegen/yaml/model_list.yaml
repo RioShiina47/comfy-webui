@@ -12,6 +12,14 @@ Checkpoints:
           unet: "krea2_raw_fp8_scaled.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "qwen_image_vae.safetensors"
+  Qwen-Image-2.1:
+    latent_type: latent
+    models:
+      - display_name: "Qwen-Image-2.1"
+        components:
+          unet: "qwen_image_2.1_int8_convrot.safetensors"
+          vae: "qwen_image_2.1_vae_bf16.safetensors"
+          clip: "qwen3vl_8b_w4a8.safetensors"
   SenseNova-U1.5:
     latent_type: hidream_o1_latent
     models:

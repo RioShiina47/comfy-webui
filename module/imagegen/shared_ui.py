@@ -397,9 +397,9 @@ def create_reference_image_ui(components, prefix, max_units=None):
         constants = get_ui_constants()
         max_units = constants.get('MAX_REFERENCE_IMAGES', 10)
     key = lambda name: f"{prefix}_{name}"
-    with gr.Accordion("Mage-Flow Reference Edit Settings", open=False) as ref_accordion:
+    with gr.Accordion("Reference Image Edit Settings", open=False) as ref_accordion:
         components[key('reference_image_accordion')] = ref_accordion
-        gr.Markdown("💡 **Tip:** (Mage-Flow-Edit-Turbo/Mage-Flow-Edit recommended) For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an **Image Edit**, while adding multiple images performs an **Image Combine**.")
+        gr.Markdown("💡 **Tip:** For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an **Image Edit**, while adding multiple images performs an **Image Combine**.")
         
         ref_image_groups = []
         ref_image_inputs = []
@@ -419,35 +419,6 @@ def create_reference_image_ui(components, prefix, max_units=None):
         components[key('reference_image_count_state')] = gr.State(1)
         
         components[key('all_reference_image_components_flat')] = ref_image_inputs
-
-
-def create_boogu_image_edit_ui(components, prefix, max_units=None):
-    if max_units is None:
-        constants = get_ui_constants()
-        max_units = constants.get('MAX_BOOGU_IMAGE_EDITS', 10)
-    key = lambda name: f"{prefix}_{name}"
-    with gr.Accordion("Boogu-Image Edit Settings", open=False) as ref_accordion:
-        components[key('boogu_image_edit_accordion')] = ref_accordion
-        gr.Markdown("💡 **Tip:** (Boogu-Image-Edit-Turbo/Boogu-Image-Edit recommended) In txt2img mode, adding a single reference image performs an **Image Edit**, while adding multiple images performs an **Image Combine**.")
-        
-        ref_image_groups = []
-        ref_image_inputs = []
-        with gr.Row():
-            for i in range(max_units):
-                with gr.Column(visible=(i < 1), min_width=160) as img_col:
-                    img_comp = gr.Image(type="pil", label=f"Ref. {i+1}", sources=["upload"], height=150)
-                    ref_image_groups.append(img_col)
-                    ref_image_inputs.append(img_comp)
-        
-        components[key('boogu_image_edit_rows')] = ref_image_groups
-        components[key('boogu_image_edit_images')] = ref_image_inputs
-
-        with gr.Row():
-            components[key('add_boogu_image_edit_button')] = gr.Button("✚ Add Reference Image")
-            components[key('delete_boogu_image_edit_button')] = gr.Button("➖ Delete Reference Image", visible=False)
-        components[key('boogu_image_edit_count_state')] = gr.State(1)
-        
-        components[key('all_boogu_image_edit_components_flat')] = ref_image_inputs
 
 
 def create_qwen_image_edit_ui(components, prefix, max_units=None):

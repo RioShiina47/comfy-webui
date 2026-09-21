@@ -407,6 +407,11 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/z_image"
       repository_file_path: "split_files/diffusion_models/z_image_bf16.safetensors"
+    # Qwen-Image-2.1
+    - filename: "qwen_image_2.1_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image-2.1"
+      repository_file_path: "diffusion_models/qwen_image_2.1_int8_convrot.safetensors"
     # Qwen-Image
     - filename: "qwen_image_2512_fp8_e4m3fn_scaled_comfyui_4steps_v1.0.safetensors"
       source: "hf"
@@ -771,6 +776,10 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Omnigen2_ComfyUI_repackaged"
       repository_file_path: "split_files/text_encoders/qwen_2.5_vl_fp16.safetensors"  
+    - filename: "qwen3vl_8b_w4a8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image-2.1"
+      repository_file_path: "text_encoders/qwen3vl_8b_w4a8.safetensors"
   vae: 
     - filename: "wan_2.1_vae.safetensors"
       source: "hf"
@@ -780,6 +789,10 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Qwen-Image_ComfyUI"
       repository_file_path: "split_files/vae/qwen_image_vae.safetensors"
+    - filename: "qwen_image_2.1_vae_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen-Image-2.1"
+      repository_file_path: "vae/qwen_image_2.1_vae_bf16.safetensors"
     - filename: "hunyuan_image_2.1_vae_fp16.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/HunyuanImage_2.1_ComfyUI"
