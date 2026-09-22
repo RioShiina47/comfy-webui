@@ -437,3 +437,21 @@ def process_krea2_style_reference_inputs(all_ui_values: dict, prefix: str):
             
     return references
 
+
+def process_qwen_image_2_1_prompt_enhancer_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_enable'), False)
+    is_on = val is True or str(val).lower() in ("on", "true", "yes", "1")
+    if not is_on:
+        return []
+    thinking_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_thinking'), False)
+    is_thinking = thinking_val is True or str(thinking_val).lower() in ("on", "true", "yes", "1")
+    max_length_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_max_length'), 512)
+    try:
+        max_length = int(max_length_val)
+    except (ValueError, TypeError):
+        max_length = 512
+    return [{"enable": True, "thinking": is_thinking, "max_length": max_length}]
+
+
+

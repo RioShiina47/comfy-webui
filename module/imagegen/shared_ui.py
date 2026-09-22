@@ -507,3 +507,33 @@ def create_krea2_style_reference_ui(components, prefix, max_units=None):
         
         components[key('all_krea2_style_reference_components_flat')] = ref_image_inputs
 
+
+def create_qwen_image_2_1_prompt_enhancer_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("Qwen-Image-2.1 Prompt Enhancer Settings", open=False) as enhancer_accordion:
+        components[key('qwen_image_2_1_prompt_enhancer_accordion')] = enhancer_accordion
+        gr.Markdown("💡 **Tip:** Automatically selects between [Qwen-Image-2.1-PE-T2I](https://huggingface.co/Qwen/Qwen-Image-2.1-PE-T2I) and [Qwen-Image-2.1-PE-I2I](https://huggingface.co/Qwen/Qwen-Image-2.1-PE-I2I) for prompt enhancement based on input context.")
+        with gr.Row():
+            components[key('qwen_image_2_1_prompt_enhancer_enable')] = gr.Checkbox(
+                label="Enable Qwen-Image-2.1 Prompt Enhancer",
+                value=False,
+                interactive=True,
+                scale=2
+            )
+            components[key('qwen_image_2_1_prompt_enhancer_thinking')] = gr.Checkbox(
+                label="Enable Thinking (Reasoning CoT)",
+                value=False,
+                interactive=True,
+                scale=2
+            )
+            components[key('qwen_image_2_1_prompt_enhancer_max_length')] = gr.Number(
+                label="Max Length",
+                value=512,
+                precision=0,
+                minimum=16,
+                step=16,
+                interactive=True,
+                scale=1
+            )
+
+

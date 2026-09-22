@@ -523,3 +523,27 @@ embedding:
     required:
       - source
       - embedding_value
+
+qwen_image_2_1_prompt_enhancer:
+  chains: qwen_image_2_1_prompt_enhancer
+  display_name: "Qwen-Image-2.1 Prompt Enhancer"
+  description: "Enhances text prompts for Qwen-Image-2.1 using Qwen3.5-9B prompt enhancer."
+  max_count: 1
+  usage_guideline: "Set enable to true to automatically enhance text prompt using Qwen3.5-9B PE text generate node."
+  parameters_schema:
+    type: object
+    properties:
+      enable:
+        type: boolean
+        default: false
+        description: "Whether to enable Qwen-Image-2.1 prompt enhancer."
+      thinking:
+        type: boolean
+        default: false
+        description: "Whether to enable thinking mode and strip <think> reasoning block via RegexReplace."
+      max_length:
+        type: integer
+        default: 512
+        description: "Maximum token generation length for Qwen Prompt Enhancer (default 512)."
+
+

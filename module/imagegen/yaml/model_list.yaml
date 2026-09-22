@@ -19,7 +19,7 @@ Checkpoints:
         components:
           unet: "qwen_image_2.1_int8_convrot.safetensors"
           vae: "qwen_image_2.1_vae_bf16.safetensors"
-          clip: "qwen3vl_8b_w4a8.safetensors"
+          clip: "qwen3vl_8b_nvfp4.safetensors"
   SenseNova-U1.5:
     latent_type: hidream_o1_latent
     models:

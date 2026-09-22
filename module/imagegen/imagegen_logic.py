@@ -27,7 +27,8 @@ from .input_processors import (
     process_reference_image_inputs,
     process_qwen_image_edit_inputs,
     process_krea2_identity_edit_inputs,
-    process_krea2_style_reference_inputs
+    process_krea2_style_reference_inputs,
+    process_qwen_image_2_1_prompt_enhancer_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -171,6 +172,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
         'vae_chain': [vae_override] if vae_override else [],
         'hidream_o1_smoothing_chain': hidream_o1_smoothing_data,
         'pid_chain': [vals.get('pid_settings', 'OFF')] if vals.get('pid_settings', 'OFF') == 'ON' else [],
+        'qwen_image_2_1_prompt_enhancer_chain': process_qwen_image_2_1_prompt_enhancer_inputs(ui_values, prefix),
     }
 
     final_values_for_assembler = {**vals, **processed_chains}

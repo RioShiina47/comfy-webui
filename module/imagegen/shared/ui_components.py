@@ -8,7 +8,8 @@ from ..shared_ui import (
     create_hidream_o1_reference_ui, create_sensenova_reference_ui, create_joyai_image_ui, create_joyai_reference_ui,
     create_reference_image_ui,
     create_qwen_image_edit_ui,
-    create_krea2_identity_edit_ui, create_krea2_style_reference_ui
+    create_krea2_identity_edit_ui, create_krea2_style_reference_ui,
+    create_qwen_image_2_1_prompt_enhancer_ui
 )
 from .config_loader import load_constants_config, load_model_config, load_architectures_config
 from .vae_utils import on_vae_upload
