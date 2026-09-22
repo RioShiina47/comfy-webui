@@ -84,6 +84,7 @@ qwen-image-2.1:
   enabled_chains:
   - lora
   - reference_image
+  - qwen_image_2_1_prompt_enhancer
 
 qwen-image:
   enabled_chains:

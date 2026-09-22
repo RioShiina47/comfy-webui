@@ -70,6 +70,10 @@ dynamic_reference_image_chains:
     vae_node: "vae_loader"
     max_images: 10
 
+dynamic_qwen_image_2_1_prompt_enhancer_chains:
+  qwen_image_2_1_prompt_enhancer_chain:
+    target_node: "prompt"
+
 ui_map:
   positive_prompt: "prompt:prompt"
   negative_prompt: "prompt:negative_prompt"
