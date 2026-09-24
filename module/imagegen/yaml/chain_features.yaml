@@ -543,7 +543,33 @@ qwen_image_2_1_prompt_enhancer:
         description: "Whether to enable thinking mode and strip <think> reasoning block via RegexReplace."
       max_length:
         type: integer
-        default: 512
-        description: "Maximum token generation length for Qwen Prompt Enhancer (default 512)."
+        default: 4096
+        description: "Maximum token generation length for Qwen Prompt Enhancer (default 4096)."
+
+ming_image_prompt_enhancer:
+  chains: ming_image_prompt_enhancer
+  display_name: "Ming-Image Prompt Enhancer"
+  description: "Enhances text prompts for Ming-Image using Qwen3.8-27B prompt enhancer."
+  max_count: 1
+  usage_guideline: "Set enable to true to automatically enhance text prompt using Qwen3.8-27B PE text generate node."
+  parameters_schema:
+    type: object
+    properties:
+      enable:
+        type: boolean
+        default: false
+        description: "Whether to enable Ming-Image prompt enhancer."
+      thinking:
+        type: boolean
+        default: false
+        description: "Whether to enable thinking mode."
+      max_length:
+        type: integer
+        default: 4096
+        description: "Maximum token generation length for Ming-Image Prompt Enhancer (default 4096)."
+      system_prompt:
+        type: string
+        description: "System prompt for Qwen3.8-27B prompt enhancer (defaults to official Ming-Image Figma-style rewriter prompt)."
+
 
 

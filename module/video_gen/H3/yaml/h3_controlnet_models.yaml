@@ -1,0 +1,8 @@
+H3_ControlNet:
+  MiniMax-H3:
+    - Filepath: "minimax_h3_fun_controlnet_union_2.0_pruned_int8_convrot.safetensors"
+      Series: "alibaba-pai/MiniMax-H3-Fun-Controlnet-Union-2.0"
+      Type: ["Canny", "Depth", "HED", "MLSD", "Pose", "Scribble", "Layout", "Gray"]
+    - Filepath: "minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors"
+      Series: "alibaba-pai/MiniMax-H3-Fun-Controlnet-Union"
+      Type: ["Canny", "Depth", "HED", "MLSD", "Pose"]

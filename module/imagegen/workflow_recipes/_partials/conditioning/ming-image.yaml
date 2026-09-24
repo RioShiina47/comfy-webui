@@ -1,0 +1,108 @@
+nodes:
+  prompt:
+    class_type: TextEncodeMingImageEdit
+    title: "Text Encode Ming Image Edit"
+    params:
+      images: {}
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      weight_dtype: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "qwen_image"
+      device: "default"
+  guider:
+    class_type: BasicGuider
+    title: "Basic Guider"
+  ksampler_select:
+    class_type: KSamplerSelect
+    title: "KSamplerSelect"
+  scheduler_node:
+    class_type: BasicScheduler
+    title: "BasicScheduler"
+    params:
+      scheduler: "simple"
+      steps: 12
+      denoise: 1.0
+  random_noise:
+    class_type: RandomNoise
+    title: "RandomNoise"
+  ksampler:
+    class_type: SamplerCustomAdvanced
+    title: "SamplerCustomAdvanced"
+
+connections:
+  - from: "unet_loader:0"
+    to: "guider:model"
+  - from: "unet_loader:0"
+    to: "scheduler_node:model"
+  - from: "clip_loader:0"
+    to: "prompt:clip"
+  - from: "prompt:0"
+    to: "guider:conditioning"
+  - from: "random_noise:0"
+    to: "ksampler:noise"
+  - from: "guider:0"
+    to: "ksampler:guider"
+  - from: "ksampler_select:0"
+    to: "ksampler:sampler"
+  - from: "scheduler_node:0"
+    to: "ksampler:sigmas"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "unet_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["guider:model", "scheduler_node:model"]
+      "clip": ["prompt:clip"]
+
+dynamic_conditioning_chains:
+  conditioning_chain:
+    guider_node: "guider"
+    guider_target_inputs: ["conditioning"]
+    clip_source: "clip_loader:0"
+
+dynamic_pid_chains:
+  pid_chain:
+    ksampler_node: "ksampler"
+
+dynamic_reference_image_chains:
+  reference_image_chain:
+    text_encode_node: "prompt"
+    vae_node: "vae_loader"
+    max_images: 8
+
+dynamic_ming_image_prompt_enhancer_chains:
+  ming_image_prompt_enhancer_chain:
+    target_node: "prompt"
+
+
+ui_map:
+  positive_prompt: "prompt:prompt"
+  negative_prompt: "dummy:negative_prompt"
+  unet_name: "unet_loader:unet_name"
+  clip_name: "clip_loader:clip_name"
+  vae_name: "vae_loader:vae_name"
+  seed: "random_noise:noise_seed"
+  steps: "scheduler_node:steps"
+  cfg: "dummy:cfg"
+  sampler_name: "ksampler_select:sampler_name"
+  scheduler: "scheduler_node:scheduler"
+  denoise: "scheduler_node:denoise"

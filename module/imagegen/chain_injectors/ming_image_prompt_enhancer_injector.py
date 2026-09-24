@@ -1,12 +1,10 @@
-"""Qwen-Image-2.1 Prompt Enhancer Chain Injector.
+"""Ming-Image Prompt Enhancer Chain Injector.
 
-This injector automatically integrates the Qwen-Image-2.1 prompt enhancement model into
-the generation workflow:
+This injector automatically integrates the Qwen3.8-27B prompt enhancement model into
+the Ming-Image generation workflow:
 - Detects whether the task is pure text-to-image (T2I) or involves images (I2I, inpainting,
   outpainting, hires.fix, or multi-reference images).
-- Automatically selects the appropriate prompt enhancement checkpoint:
-  - T2I: qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors
-  - I2I / Reference: qwen3.5_9b_qwen_image_2.1_pe_i2i.int8_convrot.safetensors
+- Uses the Qwen3.8-27B PE text encoder: qwen3.8_27b_w4a8.safetensors (type: qwen_image).
 - Handles single or multi-reference inputs: multiple reference images are stitched into
   a structured grid layout via ComfyUI native ImageStitch nodes and scaled via ImageScaleToTotalPixels.
 - Supports reasoning mode (thinking=True) leveraging ComfyUI TextGenerate native reasoning separation
@@ -17,6 +15,18 @@ try:
     from utils.app_utils import ensure_file_downloaded
 except ImportError:
     ensure_file_downloaded = None
+
+
+DEFAULT_MING_IMAGE_SYSTEM_PROMPT = (
+    "You are a senior visual designer and image-prompt engineer. Expand the user's request into one precise, high-resolution Figma-style caption. Return only one JSON object. "
+    "Use exactly two top-level keys. `canvas_settings` contains exactly `aspect_ratio`, `ambient_lighting`, and `image_style`. `layers` lists visible groups from background to topmost overlay. Every layer contains exactly `description`, `coordinates`, `hierarchy_and_relation`, and `color_specs`; `color_specs` is an array of hex colors. "
+    '`coordinates` MUST be one string, never an object or array, in exactly this form: `"cx: 0.500, cy: 0.500, w: 1.000, h: 1.000"`. Values are normalized; each bbox encloses its complete owned object and stays inside the canvas. '
+    "A layer is one selectable visible semantic group: background, full person, coherent object, panel, card, row, or text block. Prefer the fewest groups that preserve the layout. Keep people and objects intact. Never create invisible parents, guides, placeholders, empty layers, duplicate summaries, or multiple owners for one element. "
+    "Preserve every user-supplied rendered string character-for-character and as one contiguous string. Unless multiple visible copies are requested, it must occur exactly once across all `description` fields and zero times in `hierarchy_and_relation`. Quote it only where describing its visible rendering; refer to the related subject elsewhere with unquoted semantic wording. Enumerate intended copy, invent extra copy sparingly, and never hide content behind \"other text\", \"remaining labels\", or \"etc.\" "
+    "Describe concrete composition, typography, materials, texture, lighting, pose, and camera treatment without literary filler. Use `hierarchy_and_relation` only for ownership, alignment, containment, stacking, and occlusion. "
+    "Infer structured layouts first. Use one complete layer per card and state its row and column. A compact secondary table may be one layer only if every header and cell is listed; otherwise use a visible shared frame when present, one complete header, and one complete layer per body row, binding values to columns and stating blanks. Enumerate sequences, schedules, spans, gaps, and vacant tracks in visual order. Do not mistake ordinary alignment for a table. "
+    "Silently verify schema, string coordinates, Z-order, exact-text counts, geometry, bbox validity, and completeness."
+)
 
 
 def create_node(assembler, class_type, title):
@@ -36,13 +46,14 @@ def create_node(assembler, class_type, title):
 
 
 def inject(assembler, chain_definition, chain_items):
-    """Inject Qwen-Image-2.1 prompt enhancer nodes into the target generation workflow."""
+    """Inject Ming-Image prompt enhancer nodes into the target generation workflow."""
     if not chain_items:
         return
 
     is_enabled = False
     thinking_enabled = False
     max_length = 4096
+    system_prompt = DEFAULT_MING_IMAGE_SYSTEM_PROMPT
     for item in chain_items:
         if isinstance(item, dict):
             if item.get("enable", False) or item.get("enabled", False) or item.get("value", False):
@@ -54,6 +65,8 @@ def inject(assembler, chain_definition, chain_items):
                         max_length = int(item["max_length"])
                     except (ValueError, TypeError):
                         pass
+                if "system_prompt" in item and item["system_prompt"]:
+                    system_prompt = str(item["system_prompt"])
         elif item is True or str(item).lower() in ("on", "true", "yes", "1"):
             is_enabled = True
             break
@@ -66,12 +79,12 @@ def inject(assembler, chain_definition, chain_items):
 
     if not target_node_id or target_node_id not in assembler.workflow:
         for node_id, node in assembler.workflow.items():
-            if isinstance(node, dict) and node.get('class_type') == 'TextEncodeQwenImage21':
+            if isinstance(node, dict) and node.get('class_type') == 'TextEncodeMingImageEdit':
                 target_node_id = node_id
                 break
 
     if not target_node_id or target_node_id not in assembler.workflow:
-        print(f"Warning: Target node '{target_node_name}' (TextEncodeQwenImage21) not found for Qwen-Image-2.1 Prompt Enhancer. Skipping.")
+        print(f"Warning: Target node '{target_node_name}' (TextEncodeMingImageEdit) not found for Ming-Image Prompt Enhancer. Skipping.")
         return
 
     target_node = assembler.workflow[target_node_id]
@@ -85,14 +98,9 @@ def inject(assembler, chain_definition, chain_items):
     has_load_image = len(load_image_nodes) > 0
 
     target_image_conn = None
+    clip_model_name = "qwen3.8_27b_w4a8.safetensors"
 
-    if not has_load_image:
-        # Pure text-to-image (txt2img) task without reference images
-        clip_model_name = "qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors"
-    else:
-        # Task with reference images or img2img / inpaint / outpaint / hires.fix
-        clip_model_name = "qwen3.5_9b_qwen_image_2.1_pe_i2i.int8_convrot.safetensors"
-
+    if has_load_image:
         # Collect image connections
         # Prioritize extracting all images.image_* slots from target_node['inputs'] (injected by reference image injectors)
         indexed_slots = []
@@ -203,7 +211,7 @@ def inject(assembler, chain_definition, chain_items):
         except Exception as e:
             print(f"Warning: Failed to ensure '{clip_model_name}' downloaded: {e}")
 
-    # 2. Create CLIPLoader node
+    # 3. Create CLIPLoader node (using qwen_image type for Qwen3.8-27B PE)
     clip_node_id = assembler._get_unique_id()
     clip_node = create_node(assembler, "CLIPLoader", "Load CLIP")
     clip_node['inputs'] = {
@@ -213,7 +221,15 @@ def inject(assembler, chain_definition, chain_items):
     }
     assembler.workflow[clip_node_id] = clip_node
 
-    # 3. Create TextGenerate node
+    # 4. Create PrimitiveString node for System Prompt (Text node)
+    system_prompt_node_id = assembler._get_unique_id()
+    system_prompt_node = create_node(assembler, "PrimitiveString", "Text")
+    system_prompt_node['inputs'] = {
+        "value": system_prompt
+    }
+    assembler.workflow[system_prompt_node_id] = system_prompt_node
+
+    # 5. Create TextGenerate node
     text_gen_node_id = assembler._get_unique_id()
     text_gen_node = create_node(assembler, "TextGenerate", "Generate Text")
     text_gen_inputs = {
@@ -221,16 +237,17 @@ def inject(assembler, chain_definition, chain_items):
         "max_length": max_length,
         "sampling_mode": "on",
         "sampling_mode.temperature": 0.7,
-        "sampling_mode.top_k": 20,
+        "sampling_mode.top_k": 64,
         "sampling_mode.top_p": 0.95,
-        "sampling_mode.min_p": 0.0,
+        "sampling_mode.min_p": 0.05,
         "sampling_mode.repetition_penalty": 1.05,
         "sampling_mode.seed": 0,
-        "sampling_mode.presence_penalty": 0.0 if has_load_image else 1.5,
+        "sampling_mode.presence_penalty": 0,
         "thinking": thinking_enabled,
         "use_default_template": True,
         "mtp": "auto",
-        "clip": [clip_node_id, 0]
+        "clip": [clip_node_id, 0],
+        "system_prompt": [system_prompt_node_id, 0]
     }
     if target_image_conn is not None:
         text_gen_inputs["image"] = target_image_conn
@@ -238,8 +255,8 @@ def inject(assembler, chain_definition, chain_items):
     text_gen_node['inputs'] = text_gen_inputs
     assembler.workflow[text_gen_node_id] = text_gen_node
 
-    # 4. Connect TextGenerate output directly to target node prompt
+    # 6. Connect TextGenerate output directly to target node prompt
     # ComfyUI TextGenerate node natively strips reasoning tags (<think>...</think>) into output slot 1,
     # leaving clean enhanced prompt in output slot 0.
     target_node['inputs']['prompt'] = [text_gen_node_id, 0]
-    print(f"[Injector] Qwen-Image-2.1 Prompt Enhancer applied successfully ({'I2I' if has_load_image else 'T2I'}, clip='{clip_model_name}', thinking={thinking_enabled}).")
+    print(f"[Injector] Ming-Image Prompt Enhancer applied successfully ({'I2I' if has_load_image else 'T2I'}, clip='{clip_model_name}', thinking={thinking_enabled}).")
