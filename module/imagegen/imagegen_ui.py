@@ -12,6 +12,7 @@ from .shared.ui_components import (
     create_qwen_image_edit_ui,
     create_krea2_identity_edit_ui, create_krea2_style_reference_ui,
     create_qwen_image_2_1_prompt_enhancer_ui,
+    create_ming_image_prompt_enhancer_ui,
 )
 from .shared.event_handlers import register_shared_events
 from .shared.generation import create_run_generation_logic
@@ -239,6 +240,7 @@ def create_ui():
             create_style_ui(components, PREFIX)
             create_pid_ui(components, PREFIX)
             create_qwen_image_2_1_prompt_enhancer_ui(components, PREFIX)
+            create_ming_image_prompt_enhancer_ui(components, PREFIX)
         components[key('accordion_wrapper')] = accordion_wrapper
 
     components['run_button'] = components[key('run_button')]

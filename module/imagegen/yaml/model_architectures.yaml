@@ -1,6 +1,7 @@
 architecture_order:
   - "Krea-2"
   - "Qwen-Image-2.1"
+  - "Ming-Image"
   - "SenseNova-U1.5"
   - "Mage-Flow"
   - "JoyAI-Image"
@@ -60,6 +61,8 @@ architectures:
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"
+  "Ming-Image":
+    model_type: "ming-image"
   "Qwen-Image-2.1":
     model_type: "qwen-image-2.1"
     controlnet_key: "Qwen-Image"

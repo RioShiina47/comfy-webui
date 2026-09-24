@@ -23,7 +23,11 @@ file:
       repo_id: "Comfy-Org/MiniMax-H3"
       repository_file_path: "vae/minimax_h3_video_vae_fp16.safetensors"
   model_patches:
+    - filename: "minimax_h3_fun_controlnet_union_2.0_pruned_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Kijai/MiniMax-H3-experimental"
+      repository_file_path: "model_patches/minimax_h3_fun_controlnet_union_2.0_pruned_int8_convrot.safetensors"
     - filename: "minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors"
       source: "hf"
       repo_id: "Kijai/MiniMax-H3-experimental"
-      repository_file_path: "controlnet/minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors"
+      repository_file_path: "model_patches/minimax_h3_fun_controlnet_union_pruned_int8_convrot.safetensors"

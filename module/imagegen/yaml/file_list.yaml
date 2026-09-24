@@ -501,6 +501,11 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Omnigen2_ComfyUI_repackaged"
       repository_file_path: "split_files/diffusion_models/omnigen2_fp16.safetensors"  
+    # Ming-Image
+    - filename: "ming_image_0.1_design_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Ming-Image"
+      repository_file_path: "diffusion_models/ming_image_0.1_design_int8_convrot.safetensors"
   ipadapter: 
     # SD3.5
     - filename: "ip-adapter_sd35l_instantx.bin"
@@ -784,6 +789,16 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Qwen-Image-2.1"
       repository_file_path: "text_encoders/qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors"
+    # Ming-Image
+    - filename: "ming_image_0.1_ling_mini_2.0_w4a8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Ming-Image"
+      repository_file_path: "text_encoders/ming_image_0.1_ling_mini_2.0_w4a8.safetensors"
+    # Qwen3.8-27B (Ming-Image Prompt Enhancer)
+    - filename: "qwen3.8_27b_w4a8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen3.8-27B"
+      repository_file_path: "text_encoders/qwen3.8_27b_w4a8.safetensors"
   vae: 
     - filename: "wan_2.1_vae.safetensors"
       source: "hf"
@@ -817,3 +832,8 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/Mage-Flow"
       repository_file_path: "vae/mage_flow_vae_bf16.safetensors"
+    # Ming-Image
+    - filename: "ming_image_vae_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Ming-Image"
+      repository_file_path: "vae/ming_image_vae_bf16.safetensors"

@@ -12,6 +12,14 @@ Checkpoints:
           unet: "krea2_raw_fp8_scaled.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "qwen_image_vae.safetensors"
+  Ming-Image:
+    latent_type: latent
+    models:
+      - display_name: "Ming-Image-0.1-Design"
+        components:
+          unet: "ming_image_0.1_design_int8_convrot.safetensors"
+          clip: "ming_image_0.1_ling_mini_2.0_w4a8.safetensors"
+          vae: "ming_image_vae_bf16.safetensors"
   Qwen-Image-2.1:
     latent_type: latent
     models:

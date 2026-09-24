@@ -446,12 +446,33 @@ def process_qwen_image_2_1_prompt_enhancer_inputs(all_ui_values: dict, prefix: s
         return []
     thinking_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_thinking'), False)
     is_thinking = thinking_val is True or str(thinking_val).lower() in ("on", "true", "yes", "1")
-    max_length_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_max_length'), 512)
+    max_length_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_max_length'), 4096)
     try:
         max_length = int(max_length_val)
     except (ValueError, TypeError):
-        max_length = 512
+        max_length = 4096
     return [{"enable": True, "thinking": is_thinking, "max_length": max_length}]
+
+
+def process_ming_image_prompt_enhancer_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    val = all_ui_values.get(key('ming_image_prompt_enhancer_enable'), False)
+    is_on = val is True or str(val).lower() in ("on", "true", "yes", "1")
+    if not is_on:
+        return []
+    thinking_val = all_ui_values.get(key('ming_image_prompt_enhancer_thinking'), False)
+    is_thinking = thinking_val is True or str(thinking_val).lower() in ("on", "true", "yes", "1")
+    max_length_val = all_ui_values.get(key('ming_image_prompt_enhancer_max_length'), 4096)
+    try:
+        max_length = int(max_length_val)
+    except (ValueError, TypeError):
+        max_length = 4096
+    system_prompt = all_ui_values.get(key('ming_image_prompt_enhancer_system_prompt'), None)
+    res = {"enable": True, "thinking": is_thinking, "max_length": max_length}
+    if system_prompt:
+        res["system_prompt"] = str(system_prompt)
+    return [res]
+
 
 
 

@@ -455,7 +455,19 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                     if isinstance(is_thinking, str):
                         is_thinking = is_thinking.upper() in ("ON", "TRUE", "1")
                     ui_values[f"{prefix}_qwen_image_2_1_prompt_enhancer_thinking"] = bool(is_thinking)
-                    ui_values[f"{prefix}_qwen_image_2_1_prompt_enhancer_max_length"] = int(item.get("max_length", 512))
+                    ui_values[f"{prefix}_qwen_image_2_1_prompt_enhancer_max_length"] = int(item.get("max_length", 4096))
+                elif itype == "ming_image_prompt_enhancer":
+                    is_enabled = item.get("enable", item.get("enabled", True))
+                    if isinstance(is_enabled, str):
+                        is_enabled = is_enabled.upper() in ("ON", "TRUE", "1")
+                    ui_values[f"{prefix}_ming_image_prompt_enhancer_enable"] = bool(is_enabled)
+                    is_thinking = item.get("thinking", False)
+                    if isinstance(is_thinking, str):
+                        is_thinking = is_thinking.upper() in ("ON", "TRUE", "1")
+                    ui_values[f"{prefix}_ming_image_prompt_enhancer_thinking"] = bool(is_thinking)
+                    ui_values[f"{prefix}_ming_image_prompt_enhancer_max_length"] = int(item.get("max_length", 4096))
+                    if "system_prompt" in item:
+                        ui_values[f"{prefix}_ming_image_prompt_enhancer_system_prompt"] = str(item["system_prompt"])
 
 
 

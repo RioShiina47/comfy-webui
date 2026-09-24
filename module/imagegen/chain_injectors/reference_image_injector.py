@@ -43,7 +43,7 @@ def inject(assembler, chain_definition, chain_items):
     target_node_id = assembler.node_map.get(target_node_name)
 
     if not target_node_id or target_node_id not in assembler.workflow:
-        supported_types = ('TextEncodeMageFlowEdit', 'TextEncodeQwenImage21', 'TextEncodeBooguEdit')
+        supported_types = ('TextEncodeMageFlowEdit', 'TextEncodeQwenImage21', 'TextEncodeBooguEdit', 'TextEncodeMingImageEdit')
         for node_id, node in assembler.workflow.items():
             if isinstance(node, dict) and node.get('class_type') in supported_types:
                 target_node_id = node_id

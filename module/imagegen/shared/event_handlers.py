@@ -113,6 +113,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     krea2_style_reference_accordion = components.get(key('krea2_style_reference_accordion'))
     vae_accordion = components.get(key('vae_accordion'))
     qwen_image_2_1_prompt_enhancer_accordion = components.get(key('qwen_image_2_1_prompt_enhancer_accordion'))
+    ming_image_prompt_enhancer_accordion = components.get(key('ming_image_prompt_enhancer_accordion'))
 
 
     def on_architecture_filter_change(arch_filter, current_cat="ALL"):
@@ -195,7 +196,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'krea2_style_reference': krea2_style_reference_accordion,
             'vae': vae_accordion,
             'pid': pid_accordion,
-            'qwen_image_2_1_prompt_enhancer': qwen_image_2_1_prompt_enhancer_accordion
+            'qwen_image_2_1_prompt_enhancer': qwen_image_2_1_prompt_enhancer_accordion,
+            'ming_image_prompt_enhancer': ming_image_prompt_enhancer_accordion
         }
 
         for chain_key, accordion_component in chain_map.items():
@@ -368,7 +370,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "krea2_identity_edit_accordion": krea2_identity_edit_accordion,
         "krea2_style_reference_accordion": krea2_style_reference_accordion,
         "vae_accordion": vae_accordion, "pid_accordion": pid_accordion,
-        "qwen_image_2_1_prompt_enhancer_accordion": qwen_image_2_1_prompt_enhancer_accordion
+        "qwen_image_2_1_prompt_enhancer_accordion": qwen_image_2_1_prompt_enhancer_accordion,
+        "ming_image_prompt_enhancer_accordion": ming_image_prompt_enhancer_accordion
     }
     
     positive_prompt_textbox = components.get(key('positive_prompt'))

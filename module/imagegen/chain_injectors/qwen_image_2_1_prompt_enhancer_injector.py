@@ -9,8 +9,8 @@ the generation workflow:
   - I2I / Reference: qwen3.5_9b_qwen_image_2.1_pe_i2i.int8_convrot.safetensors
 - Handles single or multi-reference inputs: multiple reference images are stitched into
   a structured grid layout via ComfyUI native ImageStitch nodes and scaled via ImageScaleToTotalPixels.
-- Supports reasoning mode (thinking=True) with automatic reasoning tag stripping via RegexReplace
-  (^.*?</think>\\s*) to prevent thought chain text from contaminating downstream image conditioning.
+- Supports reasoning mode (thinking=True) leveraging ComfyUI TextGenerate native reasoning separation
+  (output slot 0 outputs clean prompt text, while output slot 1 isolates reasoning chain).
 """
 
 try:
@@ -42,7 +42,7 @@ def inject(assembler, chain_definition, chain_items):
 
     is_enabled = False
     thinking_enabled = False
-    max_length = 512
+    max_length = 4096
     for item in chain_items:
         if isinstance(item, dict):
             if item.get("enable", False) or item.get("enabled", False) or item.get("value", False):
@@ -238,22 +238,8 @@ def inject(assembler, chain_definition, chain_items):
     text_gen_node['inputs'] = text_gen_inputs
     assembler.workflow[text_gen_node_id] = text_gen_node
 
-    # 4. Insert Replace Text (Regex) node if thinking is enabled to strip reasoning tags
-    if thinking_enabled:
-        regex_node_id = assembler._get_unique_id()
-        regex_node = create_node(assembler, "RegexReplace", "Replace Text (Regex)")
-        regex_node['inputs'] = {
-            "string": [text_gen_node_id, 0],
-            "regex_pattern": "^.*?</think>\\s*",
-            "replace": "",
-            "case_insensitive": True,
-            "multiline": False,
-            "dotall": True,
-            "count": 0
-        }
-        assembler.workflow[regex_node_id] = regex_node
-        target_node['inputs']['prompt'] = [regex_node_id, 0]
-        print(f"[Injector] Qwen-Image-2.1 Prompt Enhancer applied successfully with RegexReplace ({'I2I' if has_load_image else 'T2I'}, clip='{clip_model_name}', thinking=True).")
-    else:
-        target_node['inputs']['prompt'] = [text_gen_node_id, 0]
-        print(f"[Injector] Qwen-Image-2.1 Prompt Enhancer applied successfully ({'I2I' if has_load_image else 'T2I'}, clip='{clip_model_name}', thinking=False).")
+    # 4. Connect TextGenerate output directly to target node prompt
+    # ComfyUI TextGenerate node natively strips reasoning tags (<think>...</think>) into output slot 1,
+    # leaving clean enhanced prompt in output slot 0.
+    target_node['inputs']['prompt'] = [text_gen_node_id, 0]
+    print(f"[Injector] Qwen-Image-2.1 Prompt Enhancer applied successfully ({'I2I' if has_load_image else 'T2I'}, clip='{clip_model_name}', thinking={thinking_enabled}).")
