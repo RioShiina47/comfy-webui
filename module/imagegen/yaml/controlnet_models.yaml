@@ -1,4 +1,55 @@
 ControlNet:
+  Qwen-Image-2.1:
+    - Filepath: "qwen_image_2.1_fun_controlnet_union_int8_convrot.safetensors"
+      Series: "Alibaba-PAI Fun-ControlNet Union"
+      Type: ["Canny", "Depth", "Pose", "Lineart", "HED", "MLSD", "Scribble", "Grayscale"]
+  Qwen-Image:
+    - Filepath: "Qwen-Image-InstantX-ControlNet-Union.safetensors"
+      Series: "InstantX Union"
+      Type: ["Canny", "Soft Edge", "Depth", "Pose"]
+  Krea-2:
+    - Filepath: "krea2-anythng_step_007000.safetensors"
+      Series: "tori29umai"
+      Type: ["Anythng"]
+    - Filepath: "depth-control-lora.safetensors"
+      Series: "Patil"
+      Type: ["Depth"]
+  Z-Image:
+    - Filepath: "Z-Image-Turbo-Fun-Controlnet-Union-2.1-8steps.safetensors"
+      Series: "alibaba-pai Controlnet Union 2.1 8steps"
+      Type: ["Pose", "Canny", "HED", "Depth", "MLSD"]
+    - Filepath: "Z-Image-Turbo-Fun-Controlnet-Tile-2.1-8steps.safetensors"
+      Series: "alibaba-pai Controlnet Union 2.1 8steps"
+      Type: ["Tile"]
+  Anima:
+    - Filepath: "anima-lllite-any-test-like-v2.safetensors"
+      Series: "kohya-ss"
+      Type: ["Any-Test"]
+    - Filepath: "anima-lllite-depth-1.safetensors"
+      Series: "kohya-ss"
+      Type: ["Depth"]
+    - Filepath: "anima-lllite-lineart-1.safetensors"
+      Series: "kohya-ss"
+      Type: ["Lineart"]
+    - Filepath: "anima-lllite-pose-1.safetensors"
+      Series: "kohya-ss"
+      Type: ["Pose"]
+    - Filepath: "anima-lllite-scribble-1.safetensors"
+      Series: "kohya-ss"
+      Type: ["Scribble"]
+  FLUX.1:
+    - Filepath: "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"
+      Series: "Shakker Labs Union Pro"
+      Type: ["Canny", "Tile", "Depth", "Blur", "Pose", "Gray", "Low Quality"]
+    - Filepath: "flux-canny-controlnet-v3.safetensors"
+      Series: "XLabs-AI"
+      Type: ["Canny"]
+    - Filepath: "flux-depth-controlnet-v3.safetensors"
+      Series: "XLabs-AI"
+      Type: ["Depth (Midas)"]
+    - Filepath: "flux-hed-controlnet-v3.safetensors"
+      Series: "XLabs-AI"
+      Type: ["HED"]
   SD3.5:
     - Filepath: "sd3.5_large_controlnet_blur.safetensors"
       Series: "[Large] StabilityAI"
@@ -34,23 +85,6 @@ ControlNet:
     - Filepath: "anime-painter.safetensors"
       Series: "xinsir"
       Type: ["Anime Painter"]
-  FLUX.1:
-    - Filepath: "FLUX.1-dev-ControlNet-Union-Pro-2.0.safetensors"
-      Series: "Shakker Labs Union Pro"
-      Type: ["Canny", "Tile", "Depth", "Blur", "Pose", "Gray", "Low Quality"]
-    - Filepath: "flux-canny-controlnet-v3.safetensors"
-      Series: "XLabs-AI"
-      Type: ["Canny"]
-    - Filepath: "flux-depth-controlnet-v3.safetensors"
-      Series: "XLabs-AI"
-      Type: ["Depth (Midas)"]
-    - Filepath: "flux-hed-controlnet-v3.safetensors"
-      Series: "XLabs-AI"
-      Type: ["HED"]
-  Qwen-Image:
-    - Filepath: "Qwen-Image-InstantX-ControlNet-Union.safetensors"
-      Series: "InstantX Union"
-      Type: ["Canny", "Soft Edge", "Depth", "Pose"]
   SD1.5:
     - Filepath: "control_v11p_sd15_canny_fp16.safetensors"
       Series: "Standard"

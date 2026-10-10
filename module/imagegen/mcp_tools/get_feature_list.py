@@ -33,11 +33,11 @@ def _get_default_example_chain_item(chain_name: str, chain_data: dict) -> dict:
             "weight": 1.0,
             "preset": "STANDARD (medium strength)",
         }
-    elif chain_name in ("controlnet", "diffsynth_controlnet", "krea2_controlnet", "anima_controlnet_lllite"):
+    elif chain_name == "controlnet":
         return {
-            "injector_type": chain_name,
+            "injector_type": "controlnet",
             "type": "Depth",
-            "series": "SDXL" if chain_name == "controlnet" else "Patil",
+            "series": "SDXL",
             "image": "https://example.com/control_depth_map.png",
             "strength": 1.0,
         }
@@ -133,14 +133,9 @@ def _build_feature_entry(chain_name: str, chain_data: dict, task_features: dict 
     }
     if include_schema:
         schema = deepcopy(chain_data.get("parameters_schema", {}))
-        if chain_name in ("krea2_controlnet", "diffsynth_controlnet", "controlnet", "anima_controlnet_lllite"):
-            config_key = (
-                "Krea2_ControlNet" if chain_name == "krea2_controlnet"
-                else "DiffSynth_ControlNet" if chain_name == "diffsynth_controlnet"
-                else "Anima_ControlNet_Lllite" if chain_name == "anima_controlnet_lllite"
-                else "ControlNet"
-            )
-            yaml_filename = f"{chain_name}_models.yaml"
+        if chain_name == "controlnet":
+            config_key = "ControlNet"
+            yaml_filename = "controlnet_models.yaml"
             model_path = os.path.join(_YAML_DIR, yaml_filename)
             raw_models = _load_yaml(model_path).get(config_key, [])
             models_list = []

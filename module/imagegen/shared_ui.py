@@ -69,94 +69,42 @@ def create_controlnet_ui(components, prefix):
             key('controlnet_filepaths'): filepaths
         })
         
+        from .shared.config_loader import load_controlnet_models
+        cn_config = load_controlnet_models()
+        default_arch_key = "SDXL"
+        init_types = []
+        init_default_type = None
+        init_series = []
+        init_default_series = None
+        init_filepath = "None"
+        if default_arch_key in cn_config:
+            models = cn_config.get(default_arch_key, [])
+            init_types = sorted(list(set(t for m in models for t in m.get("Type", []))))
+            init_default_type = init_types[0] if init_types else None
+            if init_default_type:
+                init_series = sorted(list(set(m.get("Series", "Default") for m in models if init_default_type in m.get("Type", []))))
+                init_default_series = init_series[0] if init_series else None
+                if init_default_series:
+                    for m in models:
+                        if m.get("Series") == init_default_series and init_default_type in m.get("Type", []):
+                            init_filepath = m.get("Filepath")
+                            break
+
         for i in range(max_controlnets):
             with gr.Row(visible=(i < 1)) as row:
                 with gr.Column(scale=1):
                     images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
                 with gr.Column(scale=2):
-                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
-                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
+                    types.append(gr.Dropdown(label="Type", choices=init_types, value=init_default_type, interactive=True, allow_custom_value=True))
+                    series.append(gr.Dropdown(label="Series", choices=init_series, value=init_default_series, interactive=True, allow_custom_value=True))
                     strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
-                    filepaths.append(gr.State(None))
+                    filepaths.append(gr.State(init_filepath))
                 cn_rows.append(row)
 
         with gr.Row():
             components[key('add_controlnet_button')] = gr.Button("✚ Add ControlNet")
             components[key('delete_controlnet_button')] = gr.Button("➖ Delete ControlNet", visible=False)
         components[key('controlnet_count_state')] = gr.State(1)
-
-
-def create_anima_controlnet_lllite_ui(components, prefix):
-    key = lambda name: f"{prefix}_{name}"
-    constants = get_ui_constants()
-    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
-    with gr.Accordion("Anima ControlNet Lllite Settings", open=False) as anima_cn_accordion:
-        components[key('anima_controlnet_lllite_accordion')] = anima_cn_accordion
-        
-        cn_rows, images, series, types, strengths, filepaths, start_percents, end_percents = [], [], [], [], [], [], [], []
-        components.update({
-            key('anima_controlnet_lllite_rows'): cn_rows,
-            key('anima_controlnet_lllite_images'): images,
-            key('anima_controlnet_lllite_series'): series,
-            key('anima_controlnet_lllite_types'): types,
-            key('anima_controlnet_lllite_strengths'): strengths,
-            key('anima_controlnet_lllite_filepaths'): filepaths,
-            key('anima_controlnet_lllite_start_percents'): start_percents,
-            key('anima_controlnet_lllite_end_percents'): end_percents
-        })
-        
-        for i in range(max_controlnets):
-            with gr.Row(visible=(i < 1)) as row:
-                with gr.Column(scale=1):
-                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
-                with gr.Column(scale=2):
-                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
-                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
-                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
-                    with gr.Row():
-                        start_percents.append(gr.Slider(label="Start At", minimum=0.0, maximum=1.0, step=0.01, value=0.0, interactive=True))
-                        end_percents.append(gr.Slider(label="End At", minimum=0.0, maximum=1.0, step=0.01, value=1.0, interactive=True))
-                    filepaths.append(gr.State(None))
-                cn_rows.append(row)
-
-        with gr.Row():
-            components[key('add_anima_controlnet_lllite_button')] = gr.Button("✚ Add Lllite")
-            components[key('delete_anima_controlnet_lllite_button')] = gr.Button("➖ Delete Lllite", visible=False)
-        components[key('anima_controlnet_lllite_count_state')] = gr.State(1)
-
-
-def create_diffsynth_controlnet_ui(components, prefix):
-    key = lambda name: f"{prefix}_{name}"
-    constants = get_ui_constants()
-    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
-    with gr.Accordion("DiffSynth ControlNet Settings", open=False) as diffsynth_controlnet_accordion:
-        components[key('diffsynth_controlnet_accordion')] = diffsynth_controlnet_accordion
-        
-        cn_rows, images, series, types, strengths, filepaths = [], [], [], [], [], []
-        components.update({
-            key('diffsynth_controlnet_rows'): cn_rows,
-            key('diffsynth_controlnet_images'): images,
-            key('diffsynth_controlnet_series'): series,
-            key('diffsynth_controlnet_types'): types,
-            key('diffsynth_controlnet_strengths'): strengths,
-            key('diffsynth_controlnet_filepaths'): filepaths
-        })
-        
-        for i in range(max_controlnets):
-            with gr.Row(visible=(i < 1)) as row:
-                with gr.Column(scale=1):
-                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
-                with gr.Column(scale=2):
-                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
-                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
-                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
-                    filepaths.append(gr.State(None))
-                cn_rows.append(row)
-
-        with gr.Row():
-            components[key('add_diffsynth_controlnet_button')] = gr.Button("✚ Add DiffSynth ControlNet")
-            components[key('delete_diffsynth_controlnet_button')] = gr.Button("➖ Delete DiffSynth ControlNet", visible=False)
-        components[key('diffsynth_controlnet_count_state')] = gr.State(1)
 
 
 def create_ipadapter_ui(components, prefix):

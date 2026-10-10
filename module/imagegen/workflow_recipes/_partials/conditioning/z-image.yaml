@@ -58,8 +58,8 @@ dynamic_lora_chains:
       "model": ["model_sampler:model"]
       "clip": ["pos_prompt:clip", "neg_prompt:clip"]
 
-dynamic_diffsynth_controlnet_chains:
-  diffsynth_controlnet_chain:
+dynamic_controlnet_chains:
+  controlnet_chain:
     template: "QwenImageDiffsynthControlnet"
     model_sampler_node: "model_sampler"
     ksampler_node: "ksampler"

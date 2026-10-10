@@ -265,34 +265,6 @@ krea2_style_reference:
         description: "Style reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
     required:
       - image
-
-diffsynth_controlnet:
-  chains: diffsynth_controlnet
-  display_name: "DiffSynth ControlNet"
-  description: "DiffSynth optimized ControlNet injector for Z-Image models."
-  max_count: 5
-  usage_guideline: "Supply ControlNet type (e.g., 'Canny'), series (e.g., 'alibaba-pai Controlnet Union 2.1 8steps'), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and optional strength."
-  parameters_schema:
-    type: object
-    properties:
-      type:
-        type: string
-        description: "ControlNet conditioning type."
-      series:
-        type: string
-        description: "ControlNet model series name."
-      image:
-        type: string
-        description: "Pre-processed control image (e.g., Depth map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
-      strength:
-        type: number
-        default: 1.0
-        description: "Control influence strength."
-    required:
-      - type
-      - series
-      - image
-
 joyai_reference_edit:
   chains: joyai_image
   display_name: "JoyAI Reference Edit"
@@ -323,6 +295,7 @@ qwen_image_edit:
     required:
       - image
 
+
 hidream_o1_smoothing:
   chains: hidream_o1_smoothing
   display_name: "HiDream O1 Smoothing Injector"
@@ -337,70 +310,6 @@ hidream_o1_smoothing:
         default: 0.5
         description: "Smoothing intensity (0.0 to 1.0)."
     required: []
-
-krea2_controlnet:
-  chains: krea2_controlnet
-  display_name: "KREA2 ControlNet"
-  description: "Processed using the facok/comfyui-krea2-controlnet node."
-  max_count: 5
-  usage_guideline: "Supply ControlNet type (e.g., 'Depth'), series (e.g., 'Patil'), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and optional strength."
-  parameters_schema:
-    type: object
-    properties:
-      type:
-        type: string
-        enum:
-          - "Depth"
-        description: "ControlNet conditioning type."
-      series:
-        type: string
-        enum:
-          - "Patil"
-        default: "Patil"
-        description: "ControlNet model series."
-      image:
-        type: string
-        description: "Pre-processed control image (e.g., Depth map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
-      strength:
-        type: number
-        default: 1.0
-        minimum: 0.0
-        maximum: 2.0
-        description: "Control influence strength (0.0 to 2.0)."
-    required:
-      - type
-      - series
-      - image
-
-anima_controlnet_lllite:
-  chains: anima_controlnet_lllite
-  display_name: "Anima ControlNet LLLite"
-  description: "Anima model-specific lightweight ControlNet."
-  max_count: 5
-  usage_guideline: "Supply Anima ControlNet LLLite type (e.g., 'Depth'), series (e.g., 'kohya-ss'), pre-processed control image (Base64 Data URI or HTTP/HTTPS URL; system does NOT pre-process raw RGB images), and optional strength."
-  parameters_schema:
-    type: object
-    properties:
-      type:
-        type: string
-        description: "Anima ControlNet LLLite conditioning type."
-      series:
-        type: string
-        description: "Anima ControlNet LLLite model series."
-      image:
-        type: string
-        description: "Pre-processed control image (e.g., Depth, Lineart map) encoded as Base64 Data URI or HTTP/HTTPS URL. Note: System does NOT automatically pre-process raw RGB images."
-      strength:
-        type: number
-        default: 1.0
-        minimum: 0.0
-        maximum: 2.0
-        description: "Control influence strength (0.0 to 2.0)."
-    required:
-      - type
-      - series
-      - image
-
 hidream_o1_reference:
   chains: hidream_o1_reference
   display_name: "HiDream-O1 Reference Edit"
@@ -526,50 +435,47 @@ embedding:
 
 qwen_image_2_1_prompt_enhancer:
   chains: qwen_image_2_1_prompt_enhancer
-  display_name: "Qwen-Image-2.1 Prompt Enhancer"
-  description: "Enhances text prompts for Qwen-Image-2.1 using Qwen3.5-9B prompt enhancer."
+  display_name: "Qwen-Image-2.1 Prompt Enhancer Settings"
+  description: "Enhance prompts using Qwen-Image-2.1 Prompt Enhancer with automatic model selection (T2I vs I2I/reference images) and optional reasoning CoT thinking mode."
   max_count: 1
-  usage_guideline: "Set enable to true to automatically enhance text prompt using Qwen3.5-9B PE text generate node."
+  usage_guideline: "Set enable to true to activate prompt enhancement. Enable thinking to allow reasoning CoT (reasoning tags are automatically stripped from the resulting prompt). Set max_length to control generation length."
   parameters_schema:
     type: object
     properties:
       enable:
         type: boolean
         default: false
-        description: "Whether to enable Qwen-Image-2.1 prompt enhancer."
+        description: "Enable Qwen-Image-2.1 Prompt Enhancer."
       thinking:
         type: boolean
         default: false
-        description: "Whether to enable thinking mode and strip <think> reasoning block via RegexReplace."
+        description: "Enable thinking (reasoning CoT). Thought text inside <think> tags will be automatically stripped before passing prompt to downstream text encoding."
       max_length:
         type: integer
         default: 4096
-        description: "Maximum token generation length for Qwen Prompt Enhancer (default 4096)."
+        description: "Maximum generation length for prompt enhancement (default 4096)."
 
 ming_image_prompt_enhancer:
   chains: ming_image_prompt_enhancer
-  display_name: "Ming-Image Prompt Enhancer"
-  description: "Enhances text prompts for Ming-Image using Qwen3.8-27B prompt enhancer."
+  display_name: "Ming-Image Prompt Enhancer Settings"
+  description: "Enhance prompts using Ming-Image Prompt Enhancer (Qwen3.8-27B) guided by official Figma-style rewriter System Prompt, with optional reasoning CoT thinking mode."
   max_count: 1
-  usage_guideline: "Set enable to true to automatically enhance text prompt using Qwen3.8-27B PE text generate node."
+  usage_guideline: "Set enable to true to activate Ming-Image prompt enhancement. Supports single/multi-reference images, thinking mode, and custom system prompt."
   parameters_schema:
     type: object
     properties:
       enable:
         type: boolean
         default: false
-        description: "Whether to enable Ming-Image prompt enhancer."
+        description: "Enable Ming-Image Prompt Enhancer."
       thinking:
         type: boolean
         default: false
-        description: "Whether to enable thinking mode."
+        description: "Enable thinking (reasoning CoT)."
       max_length:
         type: integer
         default: 4096
-        description: "Maximum token generation length for Ming-Image Prompt Enhancer (default 4096)."
+        description: "Maximum generation length for prompt enhancement (default 4096)."
       system_prompt:
         type: string
         description: "System prompt for Qwen3.8-27B prompt enhancer (defaults to official Ming-Image Figma-style rewriter prompt)."
-
-
-

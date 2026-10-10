@@ -30,7 +30,7 @@ Integrating an intuitive graphical interface (UI) with high-level semantic inter
     - **Model dimension (`model_type`)**: supports a wide range of model families such as `Krea-2`, `Qwen-Image-2.1`, `SenseNova-U1.5`, `Mage-Flow`, `JoyAI-Image`, `Boogu-Image`, `PixelDiT`, `ideogram-4`, `Lens`, `FLUX.2`, `Z-Image`, `Qwen-Image`, `ERNIE-Image`, `LongCat-Image`, `Cosmos-Predict2`, `Anima-3.8B-v1.1`, `Anima-3.8B`, `Anima`, `NewBie-Image`, `Kandinsky-5`, `Ovis-Image`, `HunyuanImage`, `Chroma1-Radiance`, `Chroma1`, `Lumina`, `HiDream-O1`, `HiDream-I1`, `FLUX.1`, `AuraFlow`, `SD3.5`, `SDXL`, `SD1.5`, etc.
   - After selecting a base mode, you can stack dynamic capabilities onto the workflow using Chain Injectors:
     - **Dynamic LoRA chains:** Load multiple LoRAs from Civitai, Hugging Face, direct URLs, uploaded files, or local paths and chain them; each LoRA's weight is independently controllable.
-    - **Dynamic ControlNet/Krea-2 ControlNet/DiffSynth ControlNet/Anima ControlNet LLLite chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
+    - **Dynamic ControlNet chains:** Stack multiple ControlNets, each with its own control image, type, and model settings.
     - **Dynamic IP-Adapter chains:** Build complex multi-image IP-Adapter networks and finely control each reference image's weight and stylistic influence.
     - **Dynamic Reference Latent/HiDream-O1 Reference chains:** (for FLUX.2, FLUX.2-KV, OmniGen2 and HiDream-O1 models) Enables image editing and combination workflows by injecting multiple reference images directly into the diffusion latent space.
     - **Dynamic Reference Image/Krea-2 Identity Edit/Krea-2 Style Reference/Joyai-Image/Qwen-Image Edit chains:** Enables image editing and combination workflows in multimodal models (e.g., Mage-Flow, Qwen-Image-2.1, Boogu-Image) utilizing VL models as Text Encoder by injecting multiple reference images as visual tokens.
@@ -256,7 +256,8 @@ Each functional module (such as `module/imagegen/`, `module/video_gen/`) encapsu
   - Automatically populates the UI when switching models to eliminate user guesswork.
 
 - `controlnet_models.yaml` & `ipadapter.yaml`: **Adapter Model Registries**
-  - Defines available ControlNet, T2I-Adapter, and IP-Adapter presets, associated preprocessor types, and weights.
+  - `controlnet_models.yaml`: Centralized, unified ControlNet catalog across all 9 supported model architectures (**SD1.5**, **SDXL**, **SD3.5**, **FLUX.1**, **Qwen-Image-2.1**, **Qwen-Image**, **Z-Image**, **Anima**, **Krea-2**), mapping series names, preprocessor types, and model filenames (consolidating previously separate architecture-specific manifests into a single unified registry).
+  - `ipadapter.yaml`: Defines available IP-Adapter presets, associated vision encoders, and weight configs.
 
 - `task_features.yaml` & `chain_features.yaml` (in `module/imagegen/yaml/`): **Task & Chain Feature Schemas (MCP / Semantic API)**
   - Declaratively defines schemas, argument types, dynamic enum sources (e.g. available ControlNet/IP-Adapter models), and runnable example payloads for all tasks and chain injectors exposed via MCP.

@@ -144,6 +144,11 @@ Qwen-Image-2.1:
     cfg: 1.0
     sampler_name: "euler"
     scheduler: "simple"
+  "Qwen-Image-2.1-Turbo":
+    steps: 8
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
 
 Qwen-Image:
   _defaults:

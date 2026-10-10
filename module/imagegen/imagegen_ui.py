@@ -4,9 +4,8 @@ from PIL import Image
 from .shared.ui_components import (
     create_model_architecture_filter_ui, create_sdxl_category_filter_ui,
     create_lora_ui, create_controlnet_ui, create_ipadapter_ui, create_embedding_ui,
-    create_anima_controlnet_lllite_ui, create_krea2_controlnet_ui,
     create_style_ui, create_conditioning_ui,
-    create_diffsynth_controlnet_ui, create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
+    create_flux1_ipadapter_ui, create_sd3_ipadapter_ui,
     create_reference_latent_ui, create_hidream_o1_reference_ui, create_sensenova_reference_ui, create_joyai_image_ui, create_joyai_reference_ui,
     create_reference_image_ui, create_pid_ui,
     create_qwen_image_edit_ui,
@@ -220,9 +219,6 @@ def create_ui():
         with gr.Column() as accordion_wrapper:
             create_lora_ui(components, PREFIX)
             create_controlnet_ui(components, PREFIX)
-            create_anima_controlnet_lllite_ui(components, PREFIX)
-            create_krea2_controlnet_ui(components, PREFIX)
-            create_diffsynth_controlnet_ui(components, PREFIX)
             create_ipadapter_ui(components, PREFIX)
             create_flux1_ipadapter_ui(components, PREFIX)
             create_sd3_ipadapter_ui(components, PREFIX)
