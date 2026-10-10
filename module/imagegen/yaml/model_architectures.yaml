@@ -65,7 +65,7 @@ architectures:
     model_type: "ming-image"
   "Qwen-Image-2.1":
     model_type: "qwen-image-2.1"
-    controlnet_key: "Qwen-Image"
+    controlnet_key: "Qwen-Image-2.1"
   "Qwen-Image":
     model_type: "qwen-image"
     controlnet_key: "Qwen-Image"

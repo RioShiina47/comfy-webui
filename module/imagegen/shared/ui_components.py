@@ -3,7 +3,7 @@ from core import node_info_manager
 from core.shared_ui import create_lora_ui
 from ..shared_ui import (
     create_embedding_ui, create_controlnet_ui, 
-    create_diffsynth_controlnet_ui, create_ipadapter_ui, 
+    create_ipadapter_ui, 
     create_style_ui, create_conditioning_ui, create_reference_latent_ui,
     create_hidream_o1_reference_ui, create_sensenova_reference_ui, create_joyai_image_ui, create_joyai_reference_ui,
     create_reference_image_ui,
@@ -117,74 +117,6 @@ def create_generation_parameters_ui(prefix: str):
         components[key('batch_size')] = gr.Slider(label="Batch Size", minimum=1, maximum=8, step=1, value=1, interactive=True)
     return components
 
-def create_anima_controlnet_lllite_ui(components, prefix):
-    key = lambda name: f"{prefix}_{name}"
-    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
-    with gr.Accordion("Anima ControlNet Lllite Settings", open=False) as anima_cn_accordion:
-        components[key('anima_controlnet_lllite_accordion')] = anima_cn_accordion
-        
-        cn_rows, images, series, types, strengths, filepaths, start_percents, end_percents = [], [], [], [], [], [], [], []
-        components.update({
-            key('anima_controlnet_lllite_rows'): cn_rows,
-            key('anima_controlnet_lllite_images'): images,
-            key('anima_controlnet_lllite_series'): series,
-            key('anima_controlnet_lllite_types'): types,
-            key('anima_controlnet_lllite_strengths'): strengths,
-            key('anima_controlnet_lllite_filepaths'): filepaths,
-            key('anima_controlnet_lllite_start_percents'): start_percents,
-            key('anima_controlnet_lllite_end_percents'): end_percents
-        })
-        
-        for i in range(max_controlnets):
-            with gr.Row(visible=(i < 1)) as row:
-                with gr.Column(scale=1):
-                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources="upload", height=256))
-                with gr.Column(scale=2):
-                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True))
-                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True))
-                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
-                    start_percents.append(gr.State(0.0))
-                    end_percents.append(gr.State(1.0))
-                    filepaths.append(gr.State(None))
-                cn_rows.append(row)
-
-        with gr.Row():
-            components[key('add_anima_controlnet_lllite_button')] = gr.Button("✚ Add Lllite")
-            components[key('delete_anima_controlnet_lllite_button')] = gr.Button("➖ Delete Lllite", visible=False)
-        components[key('anima_controlnet_lllite_count_state')] = gr.State(1)
-
-def create_krea2_controlnet_ui(components, prefix):
-    key = lambda name: f"{prefix}_{name}"
-    max_controlnets = constants.get('MAX_CONTROLNETS', 5)
-    with gr.Accordion("Krea2 ControlNet Settings", open=False) as krea2_cn_accordion:
-        components[key('krea2_controlnet_accordion')] = krea2_cn_accordion
-        gr.Markdown("💡 **Tip:** Processed using the [facok/comfyui-krea2-controlnet](https://github.com/facok/comfyui-krea2-controlnet) node.")
-        
-        cn_rows, images, series, types, strengths, filepaths = [], [], [], [], [], []
-        components.update({
-            key('krea2_controlnet_rows'): cn_rows,
-            key('krea2_controlnet_images'): images,
-            key('krea2_controlnet_series'): series,
-            key('krea2_controlnet_types'): types,
-            key('krea2_controlnet_strengths'): strengths,
-            key('krea2_controlnet_filepaths'): filepaths
-        })
-        
-        for i in range(max_controlnets):
-            with gr.Row(visible=(i < 1)) as row:
-                with gr.Column(scale=1):
-                    images.append(gr.Image(label=f"Control Image {i+1}", type="pil", sources=["upload"], height=256))
-                with gr.Column(scale=2):
-                    types.append(gr.Dropdown(label="Type", choices=[], interactive=True, allow_custom_value=True))
-                    series.append(gr.Dropdown(label="Series", choices=[], interactive=True, allow_custom_value=True))
-                    strengths.append(gr.Slider(label="Strength", minimum=0.0, maximum=2.0, step=0.05, value=1.0, interactive=True))
-                    filepaths.append(gr.State(None))
-                cn_rows.append(row)
-
-        with gr.Row():
-            components[key('add_krea2_controlnet_button')] = gr.Button("✚ Add Krea2 ControlNet")
-            components[key('delete_krea2_controlnet_button')] = gr.Button("➖ Delete Krea2 ControlNet", visible=False)
-        components[key('krea2_controlnet_count_state')] = gr.State(1)
 
 
 def create_flux1_ipadapter_ui(components, prefix):

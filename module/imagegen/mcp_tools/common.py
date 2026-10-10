@@ -347,26 +347,6 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                         ui_values[f"{prefix}_controlnet_images"] = ui_values.get(f"{prefix}_controlnet_images", []) + [parsed_cn_img]
                         ui_values[f"{prefix}_controlnet_strengths"] = ui_values.get(f"{prefix}_controlnet_strengths", []) + [float(item.get("strength", 1.0))]
                         ui_values[f"{prefix}_controlnet_filepaths"] = ui_values.get(f"{prefix}_controlnet_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
-                elif itype == "anima_controlnet_lllite":
-                    parsed_cn_img = _parse_image_param(item.get("image"))
-                    if parsed_cn_img:
-                        ui_values[f"{prefix}_anima_controlnet_lllite_images"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_images", []) + [parsed_cn_img]
-                        ui_values[f"{prefix}_anima_controlnet_lllite_strengths"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_strengths", []) + [float(item.get("strength", 1.0))]
-                        ui_values[f"{prefix}_anima_controlnet_lllite_filepaths"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
-                        ui_values[f"{prefix}_anima_controlnet_lllite_start_percents"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_start_percents", []) + [float(item.get("start_percent", 0.0))]
-                        ui_values[f"{prefix}_anima_controlnet_lllite_end_percents"] = ui_values.get(f"{prefix}_anima_controlnet_lllite_end_percents", []) + [float(item.get("end_percent", 1.0))]
-                elif itype == "krea2_controlnet":
-                    parsed_cn_img = _parse_image_param(item.get("image"))
-                    if parsed_cn_img:
-                        ui_values[f"{prefix}_krea2_controlnet_images"] = ui_values.get(f"{prefix}_krea2_controlnet_images", []) + [parsed_cn_img]
-                        ui_values[f"{prefix}_krea2_controlnet_strengths"] = ui_values.get(f"{prefix}_krea2_controlnet_strengths", []) + [float(item.get("strength", 1.0))]
-                        ui_values[f"{prefix}_krea2_controlnet_filepaths"] = ui_values.get(f"{prefix}_krea2_controlnet_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
-                elif itype == "diffsynth_controlnet":
-                    parsed_cn_img = _parse_image_param(item.get("image"))
-                    if parsed_cn_img:
-                        ui_values[f"{prefix}_diffsynth_controlnet_images"] = ui_values.get(f"{prefix}_diffsynth_controlnet_images", []) + [parsed_cn_img]
-                        ui_values[f"{prefix}_diffsynth_controlnet_strengths"] = ui_values.get(f"{prefix}_diffsynth_controlnet_strengths", []) + [float(item.get("strength", 1.0))]
-                        ui_values[f"{prefix}_diffsynth_controlnet_filepaths"] = ui_values.get(f"{prefix}_diffsynth_controlnet_filepaths", []) + [item.get("filepath") or item.get("control_net_name", "")]
                 elif itype == "ipadapter":
                     parsed_ipa_img = _parse_image_param(item.get("image"))
                     if parsed_ipa_img:

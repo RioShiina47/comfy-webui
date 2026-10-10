@@ -51,7 +51,7 @@ dynamic_lora_chains:
 
 dynamic_controlnet_chains:
   controlnet_chain:
-    template: "ControlNetApplyAdvanced"
+    template: "ZImageFunControlnet"
     ksampler_node: "ksampler"
     vae_source: "vae_loader:0"
 

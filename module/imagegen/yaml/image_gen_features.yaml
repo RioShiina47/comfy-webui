@@ -11,7 +11,7 @@ default:
 krea-2:
   enabled_chains:
     - lora
-    - krea2_controlnet
+    - controlnet
     - krea2_identity_edit
     - krea2_style_reference
     - pid
@@ -76,7 +76,7 @@ z-image:
   enabled_chains:
   - lora
   - conditioning
-  - controlnet_model_patch
+  - controlnet
   - vae
   - pid
 
@@ -89,6 +89,7 @@ ming-image:
 qwen-image-2.1:
   enabled_chains:
   - lora
+  - controlnet
   - reference_image
   - qwen_image_2_1_prompt_enhancer
 
@@ -115,7 +116,7 @@ cosmos-predict2:
 anima-3.8b-v1.1:
   enabled_chains:
   - lora
-  - anima_controlnet_lllite
+  - controlnet
   - conditioning
   - vae
   - pid
@@ -123,7 +124,7 @@ anima-3.8b-v1.1:
 anima-3.8b:
   enabled_chains:
   - lora
-  - anima_controlnet_lllite
+  - controlnet
   - conditioning
   - vae
   - pid
@@ -131,7 +132,7 @@ anima-3.8b:
 anima:
   enabled_chains:
   - lora
-  - anima_controlnet_lllite
+  - controlnet
   - conditioning
   - vae
   - pid

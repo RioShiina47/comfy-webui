@@ -7,9 +7,6 @@ txt2img:
   enabled_chains:
   - lora
   - controlnet
-  - anima_controlnet_lllite
-  - diffsynth_controlnet
-  - krea2_controlnet
   - ipadapter
   - flux1_ipadapter
   - sd3_ipadapter
@@ -25,6 +22,8 @@ txt2img:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
+  - qwen_image_2_1_prompt_enhancer
+  - ming_image_prompt_enhancer
   - pid
   - vae
 
@@ -32,9 +31,6 @@ img2img:
   enabled_chains:
   - lora
   - controlnet
-  - anima_controlnet_lllite
-  - diffsynth_controlnet
-  - krea2_controlnet
   - ipadapter
   - flux1_ipadapter
   - sd3_ipadapter
@@ -50,15 +46,14 @@ img2img:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
+  - qwen_image_2_1_prompt_enhancer
+  - ming_image_prompt_enhancer
   - vae
 
 inpaint:
   enabled_chains:
   - lora
   - controlnet
-  - anima_controlnet_lllite
-  - diffsynth_controlnet
-  - krea2_controlnet
   - ipadapter
   - flux1_ipadapter
   - sd3_ipadapter
@@ -74,15 +69,14 @@ inpaint:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
+  - qwen_image_2_1_prompt_enhancer
+  - ming_image_prompt_enhancer
   - vae
 
 outpaint:
   enabled_chains:
   - lora
   - controlnet
-  - anima_controlnet_lllite
-  - diffsynth_controlnet
-  - krea2_controlnet
   - ipadapter
   - flux1_ipadapter
   - sd3_ipadapter
@@ -98,15 +92,14 @@ outpaint:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
+  - qwen_image_2_1_prompt_enhancer
+  - ming_image_prompt_enhancer
   - vae
 
 hires_fix:
   enabled_chains:
   - lora
   - controlnet
-  - anima_controlnet_lllite
-  - diffsynth_controlnet
-  - krea2_controlnet
   - ipadapter
   - flux1_ipadapter
   - sd3_ipadapter
@@ -122,4 +115,6 @@ hires_fix:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
+  - qwen_image_2_1_prompt_enhancer
+  - ming_image_prompt_enhancer
   - vae
