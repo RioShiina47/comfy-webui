@@ -1,4 +1,17 @@
 Checkpoints:
+  FLUX.3:
+    latent_type: flux2_latent
+    models:
+      - display_name: "FLUX.3-Image-Klein"
+        components:
+          unet: "flux3_image_klein_nvfp4.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "FLUX.3-Image-Klein-Distilled"
+        components:
+          unet: "flux3_image_klein_sd_nvfp4.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "flux2-vae.safetensors"
   Krea-2:
     latent_type: latent
     models:
