@@ -1,5 +1,5 @@
 # Complete Feature & Chain Definitions Configuration for MCP Tools
-# Every chain injector in chain_injectors/ corresponds 1-to-1 with an entry here (21 injectors total).
+# Every chain injector in chain_injectors/ corresponds 1-to-1 with an entry here (22 injectors total).
 
 lora:
   chains: lora
@@ -479,3 +479,33 @@ ming_image_prompt_enhancer:
       system_prompt:
         type: string
         description: "System prompt for Qwen3.8-27B prompt enhancer (defaults to official Ming-Image Figma-style rewriter prompt)."
+
+flux3_prompt_upsampler:
+  chains: flux3_prompt_upsampler
+  display_name: "FLUX.3 Prompt Upsampler Settings"
+  description: "Expand short prompts into detailed generative captions using FLUX.3 Prompt Upsampler (qwen3.5_9b_flux3_prompt_upsampler_w4a8) with automatic official template selection (t2i, i2i, t2i_bbox, i2i_bbox), multi-reference image stitching, and reasoning CoT thinking mode."
+  max_count: 1
+  usage_guideline: "Set enable to true to activate FLUX.3 prompt upsampler. Automatically selects official BFL t2i or i2i template based on input image detection. Supports bbox_mode, thinking mode, and multi-reference image stitching."
+  parameters_schema:
+    type: object
+    properties:
+      enable:
+        type: boolean
+        default: false
+        description: "Enable FLUX.3 Prompt Upsampler."
+      thinking:
+        type: boolean
+        default: false
+        description: "Enable thinking (reasoning CoT)."
+      bbox_mode:
+        type: boolean
+        default: false
+        description: "Enable BBox mode (automatically selects t2i_bbox or i2i_bbox official system prompt templates to output bounding boxes)."
+      max_length:
+        type: integer
+        default: 3584
+        description: "Maximum generation length for prompt upsampler (default 3584)."
+      system_prompt:
+        type: string
+        description: "Optional custom system prompt override (defaults to official t2i/i2i or t2i_bbox/i2i_bbox templates)."
+

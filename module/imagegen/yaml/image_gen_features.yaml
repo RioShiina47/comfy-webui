@@ -12,6 +12,7 @@ flux3:
   enabled_chains:
   - lora
   - reference_latent
+  - flux3_prompt_upsampler
   - pid
 
 krea-2:
