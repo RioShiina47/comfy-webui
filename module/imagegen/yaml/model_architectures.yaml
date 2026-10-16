@@ -1,4 +1,5 @@
 architecture_order:
+  - "FLUX.3"
   - "Krea-2"
   - "Qwen-Image-2.1"
   - "Ming-Image"
@@ -36,6 +37,8 @@ architecture_order:
   - "SD1.5"
 
 architectures:
+  "FLUX.3":
+    model_type: "flux3"
   Krea-2:
     model_type: "krea-2"
   "SenseNova-U1.5":

@@ -203,6 +203,15 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # Flux-3
+    - filename: "flux3_image_klein_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/flux-3-image-klein-comfy"
+      repository_file_path: "diffusion_models/flux3_image_klein_nvfp4.safetensors"
+    - filename: "flux3_image_klein_sd_nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/flux-3-image-klein-comfy"
+      repository_file_path: "diffusion_models/flux3_image_klein_sd_nvfp4.safetensors"
     # Krea-2
     - filename: "krea2_turbo_nvfp4.safetensors"
       source: "hf"

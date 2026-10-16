@@ -8,6 +8,12 @@ default:
   - conditioning
   - vae
 
+flux3:
+  enabled_chains:
+  - lora
+  - reference_latent
+  - pid
+
 krea-2:
   enabled_chains:
     - lora
