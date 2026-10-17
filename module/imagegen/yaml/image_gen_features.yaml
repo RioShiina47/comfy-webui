@@ -87,6 +87,11 @@ z-image:
   - vae
   - pid
 
+moss-image:
+  enabled_chains:
+  - lora
+  - pid
+
 ming-image:
   enabled_chains:
   - lora

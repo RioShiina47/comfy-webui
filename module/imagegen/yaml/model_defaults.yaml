@@ -1,6 +1,6 @@
 Default:
-  steps: 8
-  cfg: 1.0
+  steps: 25
+  cfg: 3.5
   sampler_name: "euler"
   scheduler: "simple"
   positive_prompt: ""
@@ -20,6 +20,11 @@ FLUX.3:
   "FLUX.3-Image-Klein-Distilled":
     steps: 15
     cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+  "FLUX-3-Image-Klein-Base":
+    steps: 50
+    cfg: 3.5
     sampler_name: "euler"
     scheduler: "simple"
 
@@ -147,6 +152,13 @@ Z-Image:
   "Tongyi-MAI/Z Image Turbo":
     steps: 9
     cfg: 1.0
+
+MOSS-Image:
+  _defaults:
+    steps: 50
+    cfg: 3.0
+    sampler_name: "euler"
+    scheduler: "simple"
 
 Ming-Image:
   _defaults:
