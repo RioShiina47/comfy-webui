@@ -290,6 +290,9 @@ def inject(assembler, chain_definition, chain_items):
                         if input_val[0] == original_vae_decode_id:
                             node_data['inputs'][input_name] = [pid_vae_decode_id, 0]
 
+    if original_vae_decode_id in assembler.workflow:
+        del assembler.workflow[original_vae_decode_id]
+
     is_vae_loader_referenced = False
     if original_vae_loader_id:
         for node_id, node_data in assembler.workflow.items():
@@ -305,8 +308,5 @@ def inject(assembler, chain_definition, chain_items):
 
     if original_vae_loader_id in assembler.workflow and not is_vae_loader_referenced:
         del assembler.workflow[original_vae_loader_id]
-
-    if original_vae_decode_id in assembler.workflow:
-        del assembler.workflow[original_vae_decode_id]
 
     print("[PiD Injector] Successfully injected PiD pipeline and replaced VAE decode/loader.")

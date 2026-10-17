@@ -204,14 +204,27 @@ file:
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
     # Flux-3
-    - filename: "flux3_image_klein_nvfp4.safetensors"
+    - filename: "flux3-image-klein-nvfp4.safetensors"
       source: "hf"
       repo_id: "black-forest-labs/flux-3-image-klein-comfy"
-      repository_file_path: "diffusion_models/flux3_image_klein_nvfp4.safetensors"
+      repository_file_path: "diffusion_models/flux3-image-klein-nvfp4.safetensors"
     - filename: "flux3_image_klein_sd_nvfp4.safetensors"
       source: "hf"
       repo_id: "black-forest-labs/flux-3-image-klein-comfy"
       repository_file_path: "diffusion_models/flux3_image_klein_sd_nvfp4.safetensors"
+    - filename: "flux3-image-klein-base-nvfp4.safetensors"
+      source: "hf"
+      repo_id: "black-forest-labs/flux-3-image-klein-comfy"
+      repository_file_path: "diffusion_models/flux3-image-klein-base-nvfp4.safetensors"
+    # MOSS-Image
+    - filename: "moss_image_base_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MOSS-Image"
+      repository_file_path: "diffusion_models/moss_image_base_int8_convrot.safetensors"
+    - filename: "moss_image_sft_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MOSS-Image"
+      repository_file_path: "diffusion_models/moss_image_sft_int8_convrot.safetensors"
     # Krea-2
     - filename: "krea2_turbo_nvfp4.safetensors"
       source: "hf"
@@ -680,6 +693,11 @@ file:
       repo_id: "Kijai/QwenImage_experimental"
       repository_file_path: "model_patches/qwen_image_2.1_fun_controlnet_union_int8_convrot.safetensors"
   text_encoders: 
+    # MOSS-Image
+    - filename: "qwen3.5_9b_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MOSS-Image"
+      repository_file_path: "text_encoders/qwen3.5_9b_int8_convrot.safetensors"
     # Krea-2
     - filename: "qwen3vl_4b_fp8_scaled.safetensors"
       source: "hf"

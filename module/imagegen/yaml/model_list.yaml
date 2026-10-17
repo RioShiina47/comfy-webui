@@ -4,12 +4,17 @@ Checkpoints:
     models:
       - display_name: "FLUX.3-Image-Klein"
         components:
-          unet: "flux3_image_klein_nvfp4.safetensors"
+          unet: "flux3-image-klein-nvfp4.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "flux2-vae.safetensors"
       - display_name: "FLUX.3-Image-Klein-Distilled"
         components:
           unet: "flux3_image_klein_sd_nvfp4.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "FLUX-3-Image-Klein-Base"
+        components:
+          unet: "flux3-image-klein-base-nvfp4.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "flux2-vae.safetensors"
   Krea-2:
@@ -24,7 +29,19 @@ Checkpoints:
         components:
           unet: "krea2_raw_fp8_scaled.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
-          vae: "qwen_image_vae.safetensors"
+  MOSS-Image:
+    latent_type: flux2_latent
+    models:
+      - display_name: "MOSS-Image-SFT"
+        components:
+          unet: "moss_image_sft_int8_convrot.safetensors"
+          clip: "qwen3.5_9b_int8_convrot.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "MOSS-Image-Base"
+        components:
+          unet: "moss_image_base_int8_convrot.safetensors"
+          clip: "qwen3.5_9b_int8_convrot.safetensors"
+          vae: "flux2-vae.safetensors"
   Ming-Image:
     latent_type: latent
     models:

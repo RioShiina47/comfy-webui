@@ -2,6 +2,7 @@ architecture_order:
   - "FLUX.3"
   - "Krea-2"
   - "Qwen-Image-2.1"
+  - "MOSS-Image"
   - "Ming-Image"
   - "SenseNova-U1.5"
   - "Mage-Flow"
@@ -64,6 +65,8 @@ architectures:
   "Z-Image":
     model_type: "z-image"
     controlnet_key: "Z-Image"
+  "MOSS-Image":
+    model_type: "moss-image"
   "Ming-Image":
     model_type: "ming-image"
   "Qwen-Image-2.1":
