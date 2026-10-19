@@ -1,6 +1,6 @@
 # Comfy web UI — A Modular, Recipe-Driven "Workflow-as-a-Service (WaaS)" Platform for ComfyUI
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Comfy web UI is more than a modular frontend for ComfyUI — it is a powerful **Workflow-as-a-Service (WaaS)** platform. Built on Gradio, it communicates with ComfyUI backends in a fully decoupled manner via dynamic workflow assembly APIs. In addition to an intuitive graphical interface, it exposes high-level semantic APIs and MCP functions so developers can encapsulate complex multi-node workflows into simple, callable functions for automation and integration.
 
@@ -304,5 +304,5 @@ Thanks to automatic discovery and modular decoupling, removing a feature require
 
 ## 📄 License
 
-- **Framework Code**: This project's code is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+- **Framework Code**: This project's code is licensed under the [Apache License, Version 2.0](https://opensource.org/licenses/Apache-2.0). See the [LICENSE](LICENSE) and [NOTICE](NOTICE) files for details.
 - **Models & Generated Content**: Note that this license **does not cover** any third-party model weights, custom ComfyUI nodes, or ComfyUI itself that you may use with this tool. Please comply with respective open-source licenses and commercial terms when creating and distributing content.
