@@ -1,10 +1,10 @@
 import os
-from core.config import COMFYUI_INPUT_PATH
-from core.utils import get_media_metadata
-from core import node_info_manager
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
-from core.utils import save_temp_image, save_temp_video
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.utils import get_media_metadata
+from comfy_webui_core import node_info_manager
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import save_temp_image, save_temp_video
 
 IMAGE_RECIPE_PATH = "controlnet_image_recipe.yaml"
 VIDEO_RECIPE_PATH = "controlnet_video_recipe.yaml"

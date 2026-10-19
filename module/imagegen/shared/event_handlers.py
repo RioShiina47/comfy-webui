@@ -1,8 +1,8 @@
 import gradio as gr
 import os
 import shutil
-from core.config import LORA_DIR, EMBEDDING_DIR
-from core.shared_ui import register_ui_chain_events
+from comfy_webui_core.config import LORA_DIR, EMBEDDING_DIR
+from comfy_webui_core.shared_ui import register_ui_chain_events
 from .utils import get_model_type, get_model_generation_defaults
 from .config_loader import load_model_config, load_model_defaults, load_controlnet_models, load_ipadapter_presets, load_constants_config, load_features_config, load_architectures_config
 

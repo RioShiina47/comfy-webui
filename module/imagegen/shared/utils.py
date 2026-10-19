@@ -4,7 +4,7 @@ import shutil
 import random
 from PIL import Image
 import numpy as np
-from core.config import LORA_DIR, COMFYUI_INPUT_PATH
+from comfy_webui_core.config import LORA_DIR, COMFYUI_INPUT_PATH
 from .config_loader import load_model_config, load_constants_config
 
 _constants = None

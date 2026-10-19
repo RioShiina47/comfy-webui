@@ -1,7 +1,7 @@
 import gradio as gr
 import traceback
 from .invsr_logic import process_inputs
-from core.utils import create_simple_run_generation
+from comfy_webui_core.utils import create_simple_run_generation
 
 UI_INFO = {
     "workflow_recipe": "invsr_recipe.yaml",

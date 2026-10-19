@@ -2,8 +2,8 @@ import gradio as gr
 import traceback
 
 from .qwen_inpaint_logic import process_inputs
-from core.utils import create_simple_run_generation
-from core.shared_ui import create_lora_ui, register_ui_chain_events
+from comfy_webui_core.utils import create_simple_run_generation
+from comfy_webui_core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = { 
     "workflow_recipe": "qwen_inpaint_recipe.yaml",

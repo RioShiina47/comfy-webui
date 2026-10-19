@@ -144,7 +144,7 @@ def inject(assembler, chain_definition, chain_items):
 
         if architecture:
             try:
-                from core.settings import ARCHITECTURES_CONFIG
+                from comfy_webui_core.settings import ARCHITECTURES_CONFIG
                 arch_info = ARCHITECTURES_CONFIG.get('architectures', {}).get(architecture, {})
                 mapped_arch = arch_info.get("model_type")
                 if mapped_arch:

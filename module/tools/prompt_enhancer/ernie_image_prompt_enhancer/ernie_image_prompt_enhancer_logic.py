@@ -2,9 +2,9 @@ import random
 import os
 import tempfile
 
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
-from core.utils import handle_seed
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import handle_seed
 
 WORKFLOW_RECIPE_PATH = "ernie_image_prompt_enhancer_recipe.yaml"
 

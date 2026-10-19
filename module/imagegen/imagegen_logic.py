@@ -3,11 +3,11 @@ import os
 import numpy as np
 from PIL import Image
 
-from core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
 from .recipe_loader import load_recipe_and_injector_order
-from core.config import COMFYUI_INPUT_PATH
-from core.utils import save_temp_image, create_mask_from_layer, handle_seed
-from core.input_processors import process_lora_inputs
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.utils import save_temp_image, create_mask_from_layer, handle_seed
+from comfy_webui_core.input_processors import process_lora_inputs
 from .input_processors import (
     process_controlnet_inputs,
     process_ipadapter_inputs,

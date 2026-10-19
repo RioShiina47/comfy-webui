@@ -231,7 +231,7 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
         from ..imagegen_logic import process_inputs
         from .get_model_list import ImageGen_get_model_list
         from .get_model_features import ImageGen_get_model_features
-        from core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
+        from comfy_webui_core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
 
 
         task_type = params["task_type"]

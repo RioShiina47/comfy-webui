@@ -1,6 +1,6 @@
 import gradio as gr
 from .Kandinsky_txt2video_logic import process_inputs as process_inputs_logic, ASPECT_RATIO_PRESETS
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 
 UI_INFO = {
     "main_tab": "VideoGen",

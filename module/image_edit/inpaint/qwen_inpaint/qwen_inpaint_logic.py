@@ -2,11 +2,11 @@ import os
 import numpy as np
 from PIL import Image
 
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
-from core.utils import create_mask_from_layer, save_temp_image, handle_seed
-from core.utils import get_filename_prefix
-from core.input_processors import process_lora_inputs
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.utils import create_mask_from_layer, save_temp_image, handle_seed
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_PATH = "qwen_inpaint_recipe.yaml"
 PREFIX = "qwen_inpaint"

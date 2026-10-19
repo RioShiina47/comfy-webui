@@ -1,7 +1,7 @@
 import gradio as gr
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 from .ace_step_1_5_txt2music_logic import process_inputs
-from core import node_info_manager
+from comfy_webui_core import node_info_manager
 
 UI_INFO = {
     "main_tab": "AudioGen",

@@ -7,7 +7,7 @@ Query all supported Sampler algorithms and Noise Schedulers available for image 
 def ImageGen_get_sampler_scheduler_list() -> dict:
     """Query all supported Sampler algorithms and Noise Schedulers available for image generation tasks."""
     try:
-        from core import node_info_manager
+        from comfy_webui_core import node_info_manager
         samplers = node_info_manager.get_node_input_options("KSampler", "sampler_name")
         schedulers = node_info_manager.get_node_input_options("KSampler", "scheduler")
     except Exception:

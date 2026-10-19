@@ -8,9 +8,9 @@ import time
 from PIL import Image
 
 from .qwen_vl_logic import process_inputs
-from core.comfy_api import run_workflow_and_get_output
-from core import node_info_manager
-from core.utils import get_textbox_copy_kwargs
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core import node_info_manager
+from comfy_webui_core.utils import get_textbox_copy_kwargs
 
 UI_INFO = {
     "workflow_recipe": "qwen_vl_recipe.yaml",

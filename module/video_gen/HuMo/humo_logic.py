@@ -1,8 +1,8 @@
 import os
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
-from core.utils import get_filename_prefix
-from core.utils import handle_seed, save_temp_image, save_temp_audio
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import handle_seed, save_temp_image, save_temp_audio
 
 WORKFLOW_RECIPE_PATH = "humo_recipe.yaml"
 

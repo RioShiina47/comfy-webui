@@ -1,16 +1,20 @@
-import gradio as gr
-import time
 import os
 import sys
 import importlib
-from core.config import (
+import gradio as gr
+import time
+
+import comfy_webui_core
+comfy_webui_core.set_app_root(os.path.dirname(os.path.abspath(__file__)))
+
+from comfy_webui_core.config import (
     ENABLE_LOGIN, LOGIN_CREDENTIALS, 
     COMFYUI_OUTPUT_PATH, AUTO_DOWNLOAD_MODELS
 )
-from core.ui_loader import discover_ui_modules, load_ui_layout
-from core.ui_builder import build_gradio_ui
+from comfy_webui_core.ui_loader import discover_ui_modules, load_ui_layout
+from comfy_webui_core.ui_builder import build_gradio_ui
 
-from core import job_manager, node_info_manager, backend_manager
+from comfy_webui_core import job_manager, node_info_manager, backend_manager
 
 
 js_shortcut_code = """
@@ -65,7 +69,7 @@ def discover_and_register_mcp_modules(app: gr.Blocks):
 def main():
     print("="*50)
     print("Initializing Backend Manager...")
-    _ = backend_manager.backend_manager
+    _ = getattr(backend_manager, "backend_manager", backend_manager)
     print("Backend Manager initialized.")
     print("="*50)
 
@@ -100,7 +104,7 @@ def main():
         try:
             print("="*50)
             print("Starting model check and download process...")
-            from core.model_downloader import check_and_download_models
+            from comfy_webui_core.model_downloader import check_and_download_models
             check_and_download_models()
             print("Model check and download process finished.")
             print("="*50)

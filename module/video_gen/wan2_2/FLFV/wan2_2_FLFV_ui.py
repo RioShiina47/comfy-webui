@@ -1,7 +1,7 @@
 import gradio as gr
 import traceback
 from .wan2_2_FLFV_logic import process_inputs, ASPECT_RATIO_PRESETS
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 
 UI_INFO = {
     "workflow_recipe": "wan2_2_FLFV_recipe.yaml",

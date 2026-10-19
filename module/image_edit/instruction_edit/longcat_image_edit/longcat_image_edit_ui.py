@@ -1,6 +1,6 @@
 import gradio as gr
 from .longcat_image_edit_logic import process_inputs, ASPECT_RATIO_PRESETS
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 
 UI_INFO = {
     "main_tab": "ImageEdit",

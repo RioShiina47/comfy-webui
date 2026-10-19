@@ -1,6 +1,6 @@
 import os
 import yaml
-from core.yaml_loader import load_and_merge_yaml, deep_merge_dicts
+from comfy_webui_core.yaml_loader import load_and_merge_yaml, deep_merge_dicts
 
 _model_config = None
 _model_defaults = None

@@ -2,8 +2,8 @@ import random
 import os
 import tempfile
 
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
 
 WORKFLOW_RECIPE_PATH = "newbie_recipe.yaml"
 

@@ -2,7 +2,7 @@ import gradio as gr
 import traceback
 
 from .humo_logic import process_inputs, ASPECT_RATIO_PRESETS
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 
 UI_INFO = {
     "workflow_recipe": "humo_recipe.yaml",

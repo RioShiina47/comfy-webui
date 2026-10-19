@@ -1,8 +1,8 @@
 import gradio as gr
 import os
-from core.config import CIVITAI_API_KEY, EMBEDDING_DIR
-from core.download_utils import resolve_and_download_asset
-from core.utils import save_temp_image
+from comfy_webui_core.config import CIVITAI_API_KEY, EMBEDDING_DIR
+from comfy_webui_core.download_utils import resolve_and_download_asset
+from comfy_webui_core.utils import save_temp_image
 
 
 def process_embedding_inputs(all_ui_values: dict, prefix: str):

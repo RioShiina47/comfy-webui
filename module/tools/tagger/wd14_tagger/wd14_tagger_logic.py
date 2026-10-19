@@ -2,9 +2,9 @@ import random
 import os
 import tempfile
 
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
-from core.utils import save_temp_image
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import save_temp_image
 
 WORKFLOW_RECIPE_PATH = "wd14_tagger_recipe.yaml"
 
