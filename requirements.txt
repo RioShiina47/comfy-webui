@@ -1,4 +1,1 @@
-gradio[mcp]
-requests
-websocket-client
-imageio
+comfy-webui-core

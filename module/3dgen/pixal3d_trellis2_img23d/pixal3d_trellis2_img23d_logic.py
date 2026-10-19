@@ -1,7 +1,7 @@
 import os
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_OUTPUT_PATH
-from core.utils import get_filename_prefix, save_temp_image, handle_seed
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.config import COMFYUI_OUTPUT_PATH
+from comfy_webui_core.utils import get_filename_prefix, save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "pixal3d_trellis2_img23d_recipe.yaml"
 

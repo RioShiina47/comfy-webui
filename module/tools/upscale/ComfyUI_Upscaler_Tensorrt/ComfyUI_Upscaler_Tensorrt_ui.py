@@ -2,7 +2,7 @@ import gradio as gr
 import os
 import tempfile
 from .ComfyUI_Upscaler_Tensorrt_logic import process_inputs, extract_audio_ffmpeg, merge_video_audio_ffmpeg
-from core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
 
 UI_INFO = {
     "main_tab": "Tools",

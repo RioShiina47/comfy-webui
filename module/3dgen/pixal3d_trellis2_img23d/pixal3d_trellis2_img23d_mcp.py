@@ -8,9 +8,9 @@ import time
 import glob
 
 from .pixal3d_trellis2_img23d_logic import process_inputs
-from core.backend_manager import backend_manager
-from core.comfy_api import execute_workflow_and_wait, format_gradio_file_url
-from core.config import COMFYUI_OUTPUT_PATH
+from comfy_webui_core.backend_manager import backend_manager
+from comfy_webui_core.comfy_api import execute_workflow_and_wait, format_gradio_file_url
+from comfy_webui_core.config import COMFYUI_OUTPUT_PATH
 
 
 def _download_and_decode_image(image_url: str = None, image_data: str = None) -> Image.Image:

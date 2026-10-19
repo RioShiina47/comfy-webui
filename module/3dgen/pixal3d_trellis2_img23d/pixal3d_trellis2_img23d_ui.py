@@ -7,8 +7,8 @@ import glob
 import traceback
 
 from .pixal3d_trellis2_img23d_logic import process_inputs
-from core.comfy_api import run_workflow_and_get_output
-from core.config import COMFYUI_OUTPUT_PATH
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core.config import COMFYUI_OUTPUT_PATH
 
 UI_INFO = {
     "main_tab": "3DGen",

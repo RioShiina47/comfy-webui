@@ -3,7 +3,7 @@ import random
 import os
 import traceback
 from .ace_step_txt2music_logic import process_inputs
-from core.utils import create_simple_run_generation
+from comfy_webui_core.utils import create_simple_run_generation
 
 UI_INFO = {
     "workflow_recipe": "ace_step_txt2music_recipe.yaml",

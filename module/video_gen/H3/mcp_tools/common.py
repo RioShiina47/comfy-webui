@@ -14,8 +14,8 @@ import io
 from typing import Dict, Any
 from PIL import Image
 
-from core.config import COMFYUI_INPUT_PATH
-from core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
 from module.video_gen.H3.h3_logic import process_inputs, RESOLUTION_PRESETS, calculate_h3_frame_length
 
 _MAX_IMAGE_DOWNLOAD_BYTES = 50 * 1024 * 1024   # 50 MB

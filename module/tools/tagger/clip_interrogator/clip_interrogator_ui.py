@@ -4,8 +4,8 @@ import traceback
 import time
 
 from .clip_interrogator_logic import process_inputs
-from core.comfy_api import run_workflow_and_get_output
-from core.utils import get_textbox_copy_kwargs
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core.utils import get_textbox_copy_kwargs
 
 UI_INFO = {
     "workflow_recipe": "clip_interrogator_recipe.yaml",

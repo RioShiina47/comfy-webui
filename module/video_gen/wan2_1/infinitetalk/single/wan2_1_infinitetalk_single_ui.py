@@ -1,7 +1,7 @@
 import gradio as gr
 from .wan2_1_infinitetalk_single_logic import process_inputs, RESOLUTION_PRESETS, CHUNK_LENGTH
-from core.utils import create_batched_run_generation
-from core.shared_ui import create_lora_ui, register_ui_chain_events
+from comfy_webui_core.utils import create_batched_run_generation
+from comfy_webui_core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "wan2_1_infinitetalk_single_recipe.yaml",

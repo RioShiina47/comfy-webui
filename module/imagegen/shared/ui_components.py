@@ -1,6 +1,6 @@
 import gradio as gr
-from core import node_info_manager
-from core.shared_ui import create_lora_ui
+from comfy_webui_core import node_info_manager
+from comfy_webui_core.shared_ui import create_lora_ui
 from ..shared_ui import (
     create_embedding_ui, create_controlnet_ui, 
     create_ipadapter_ui, 

@@ -1,7 +1,7 @@
 import gradio as gr
 import traceback
 from .depth_anything_tensorrt_logic import process_inputs, ENGINE_CHOICES
-from core.utils import create_simple_run_generation
+from comfy_webui_core.utils import create_simple_run_generation
 
 UI_INFO = {
     "main_tab": "Tools",

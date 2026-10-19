@@ -1,6 +1,6 @@
 import traceback
-from core.comfy_api import run_workflow_and_get_output
-from core.utils import get_filename_prefix
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core.utils import get_filename_prefix
 
 def create_run_generation_logic(process_inputs_func, ui_info, prefix):
     def run_generation(ui_values):

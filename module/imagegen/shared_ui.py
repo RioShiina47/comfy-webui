@@ -1,8 +1,8 @@
 import gradio as gr
 import os
 import shutil
-from core.config import EMBEDDING_DIR
-from core.shared_ui import get_ui_constants
+from comfy_webui_core.config import EMBEDDING_DIR
+from comfy_webui_core.shared_ui import get_ui_constants
 
 
 def on_embedding_upload(file_obj):

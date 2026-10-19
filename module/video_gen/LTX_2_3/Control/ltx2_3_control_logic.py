@@ -1,8 +1,8 @@
 import os
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
-from core.utils import handle_seed, save_temp_image, save_temp_video
-from core.input_processors import process_lora_inputs
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import handle_seed, save_temp_image, save_temp_video
+from comfy_webui_core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_1X = "ltx2_3_control_recipe.yaml"
 WORKFLOW_RECIPE_2X = "ltx2_3_control_2x_recipe.yaml"

@@ -1,9 +1,9 @@
 import os
 
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
-from core.utils import save_temp_image, handle_seed
-from core.input_processors import process_lora_inputs
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import save_temp_image, handle_seed
+from comfy_webui_core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_PATH = "bytedance_uso_recipe.yaml"
 PREFIX = "uso"

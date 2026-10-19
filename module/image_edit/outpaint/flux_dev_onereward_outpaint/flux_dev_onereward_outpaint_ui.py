@@ -2,7 +2,7 @@ import gradio as gr
 import traceback
 
 from .flux_dev_onereward_outpaint_logic import process_inputs
-from core.utils import create_simple_run_generation
+from comfy_webui_core.utils import create_simple_run_generation
 
 UI_INFO = { 
     "main_tab": "ImageEdit", 

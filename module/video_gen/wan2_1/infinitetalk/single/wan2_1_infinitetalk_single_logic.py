@@ -1,10 +1,10 @@
 import os
 import math
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import get_filename_prefix
-from core.utils import handle_seed, save_temp_image, save_temp_audio
-from core.utils import get_media_metadata
-from core.input_processors import process_lora_inputs
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import handle_seed, save_temp_image, save_temp_audio
+from comfy_webui_core.utils import get_media_metadata
+from comfy_webui_core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_PATH = "wan2_1_infinitetalk_recipe.yaml"
 

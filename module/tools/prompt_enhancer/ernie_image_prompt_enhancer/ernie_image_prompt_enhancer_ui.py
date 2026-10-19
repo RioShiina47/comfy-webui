@@ -4,8 +4,8 @@ import traceback
 import time
 
 from .ernie_image_prompt_enhancer_logic import process_inputs
-from core.comfy_api import run_workflow_and_get_output
-from core.utils import get_textbox_copy_kwargs
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core.utils import get_textbox_copy_kwargs
 
 UI_INFO = {
     "main_tab": "Tools",

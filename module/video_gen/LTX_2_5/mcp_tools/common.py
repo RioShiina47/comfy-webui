@@ -16,8 +16,8 @@ import io
 from typing import Dict, Any, Optional
 from PIL import Image
 
-from core.config import COMFYUI_INPUT_PATH
-from core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
 from ..ltx2_5_logic import process_inputs, RESOLUTION_PRESETS
 
 _MAX_IMAGE_DOWNLOAD_BYTES = 50 * 1024 * 1024   # 50 MB

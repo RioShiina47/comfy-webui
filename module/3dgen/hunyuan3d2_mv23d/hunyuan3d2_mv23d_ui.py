@@ -8,7 +8,7 @@ from PIL import Image
 import traceback
 
 from .hunyuan3d2_mv23d_logic import process_inputs
-from core.comfy_api import run_workflow_and_get_output
+from comfy_webui_core.comfy_api import run_workflow_and_get_output
 
 UI_INFO = {
     "main_tab": "3DGen",

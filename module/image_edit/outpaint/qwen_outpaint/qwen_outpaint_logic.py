@@ -1,9 +1,9 @@
 import os
 
-from core.workflow_assembler import WorkflowAssembler
-from core.utils import save_temp_image, handle_seed
-from core.utils import get_filename_prefix
-from core.input_processors import process_lora_inputs
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.utils import save_temp_image, handle_seed
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.input_processors import process_lora_inputs
 
 WORKFLOW_RECIPE_PATH = "qwen_outpaint_recipe.yaml"
 PREFIX = "qwen_outpaint"

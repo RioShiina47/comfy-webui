@@ -2,10 +2,10 @@ import random
 import os
 import tempfile
 
-from core.workflow_assembler import WorkflowAssembler
-from core.config import COMFYUI_INPUT_PATH
-from core.utils import get_filename_prefix
-from core.utils import save_temp_image, handle_seed
+from comfy_webui_core.workflow_assembler import WorkflowAssembler
+from comfy_webui_core.config import COMFYUI_INPUT_PATH
+from comfy_webui_core.utils import get_filename_prefix
+from comfy_webui_core.utils import save_temp_image, handle_seed
 
 WORKFLOW_RECIPE_PATH = "qwen_vl_recipe.yaml"
 

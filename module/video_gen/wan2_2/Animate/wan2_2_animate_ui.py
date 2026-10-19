@@ -2,7 +2,7 @@ import gradio as gr
 import traceback
 
 from .wan2_2_animate_logic import process_inputs, ASPECT_RATIO_PRESETS, PREVIEW_LENGTH
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 
 UI_INFO = {
     "main_tab": "VideoGen",

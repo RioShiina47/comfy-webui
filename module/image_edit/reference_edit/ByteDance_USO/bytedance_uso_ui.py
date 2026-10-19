@@ -2,8 +2,8 @@ import gradio as gr
 import traceback
 
 from .bytedance_uso_logic import process_inputs, ASPECT_RATIO_PRESETS
-from core.utils import create_batched_run_generation
-from core.shared_ui import create_lora_ui, register_ui_chain_events
+from comfy_webui_core.utils import create_batched_run_generation
+from comfy_webui_core.shared_ui import create_lora_ui, register_ui_chain_events
 
 UI_INFO = {
     "workflow_recipe": "bytedance_uso_recipe.yaml",

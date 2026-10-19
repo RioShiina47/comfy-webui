@@ -1,7 +1,7 @@
 import gradio as gr
 
 from .minimax_music_3_logic import process_inputs
-from core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
+from comfy_webui_core.comfy_api import execute_workflow_and_wait, resolve_output_file_url
 
 
 def AudioGen_MiniMax_Music_3(

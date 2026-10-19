@@ -1,7 +1,7 @@
 import gradio as gr
 from .controlnet_auxiliary_preprocessor_logic import process_inputs, MAX_DYNAMIC_CONTROLS
-from core.utils import create_simple_run_generation
-from core import node_info_manager
+from comfy_webui_core.utils import create_simple_run_generation
+from comfy_webui_core import node_info_manager
 
 UI_INFO = {
     "workflow_recipe": None,

@@ -44,7 +44,7 @@ def create_ui():
     components = {}
     key = lambda name: f"{PREFIX}_{name}"
     
-    from core import node_info_manager
+    from comfy_webui_core import node_info_manager
     sampler_choices = node_info_manager.get_node_input_options("KSampler", "sampler_name")
     if not sampler_choices:
         sampler_choices = [

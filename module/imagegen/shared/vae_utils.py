@@ -1,8 +1,8 @@
 import os
 import shutil
 import gradio as gr
-from core.config import COMFYUI_PATH, CIVITAI_API_KEY
-from core.download_utils import resolve_and_download_asset
+from comfy_webui_core.config import COMFYUI_PATH, CIVITAI_API_KEY
+from comfy_webui_core.download_utils import resolve_and_download_asset
 from .config_loader import load_constants_config
 
 VAE_DIR = os.path.join(COMFYUI_PATH, "models", "vae")

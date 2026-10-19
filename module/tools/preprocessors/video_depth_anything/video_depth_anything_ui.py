@@ -1,7 +1,7 @@
 import gradio as gr
 import traceback
 from .video_depth_anything_logic import process_inputs, MODEL_CHOICES, PRECISION_CHOICES, COLORMAP_CHOICES
-from core.utils import create_simple_run_generation
+from comfy_webui_core.utils import create_simple_run_generation
 
 UI_INFO = {
     "main_tab": "Tools",

@@ -1,5 +1,5 @@
 import gradio as gr
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 from .minimax_music_3_logic import process_inputs
 
 UI_INFO = {

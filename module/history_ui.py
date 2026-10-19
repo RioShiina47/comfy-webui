@@ -4,7 +4,7 @@ from datetime import datetime
 from collections import defaultdict
 from typing import List, Dict, Any
 import gradio as gr
-from core.config import COMFYUI_OUTPUT_PATH
+from comfy_webui_core.config import COMFYUI_OUTPUT_PATH
 
 UI_INFO = {
     "main_tab": "History",
@@ -194,4 +194,4 @@ def create_event_handlers(components: dict, all_components: dict, demo: gr.Block
         outputs=preview_outputs,
         show_progress=False,
         api_name=False
-    )
+    )

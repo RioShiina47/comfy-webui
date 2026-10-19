@@ -7,8 +7,8 @@ import base64
 import time
 
 from .hunyuan3d2_mv23d_logic import process_inputs
-from core.backend_manager import backend_manager
-from core.comfy_api import execute_workflow_and_wait, format_gradio_file_url
+from comfy_webui_core.backend_manager import backend_manager
+from comfy_webui_core.comfy_api import execute_workflow_and_wait, format_gradio_file_url
 
 
 def _download_and_decode_image(image_url: str = None, image_data: str = None) -> Image.Image:
@@ -96,4 +96,4 @@ def _3DGen_Hunyuan3D_2_multiview(
 
 _3DGen_Hunyuan3D_2_multiview.__name__ = "3DGen_Hunyuan3D_2_multiview"
 globals()["3DGen_Hunyuan3D_2_multiview"] = _3DGen_Hunyuan3D_2_multiview
-MCP_FUNCTIONS = [_3DGen_Hunyuan3D_2_multiview]
+MCP_FUNCTIONS = [_3DGen_Hunyuan3D_2_multiview]

@@ -1,6 +1,6 @@
 import gradio as gr
 from .qwen_image_layered_logic import process_inputs, PREFIX
-from core.utils import create_batched_run_generation
+from comfy_webui_core.utils import create_batched_run_generation
 
 UI_INFO = {
     "main_tab": "ImageEdit",
