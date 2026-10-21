@@ -6,6 +6,23 @@ Default:
   positive_prompt: ""
   negative_prompt: ""
 
+Fibo-2.0:
+  _defaults:
+    steps: 4
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+  "Fibo-2.0-Edit-Turbo":
+    steps: 4
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+  "Fibo-2.0-Dev":
+    steps: 30
+    cfg: 5.0
+    sampler_name: "euler"
+    scheduler: "simple"
+
 FLUX.3:
   _defaults:
     steps: 25

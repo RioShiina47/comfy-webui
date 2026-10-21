@@ -236,6 +236,21 @@ mage_flow_reference_edit:
     required:
       - image
 
+fibo2_reference_edit:
+  chains: reference_image
+  display_name: "Fibo-2.0 Reference Edit"
+  description: "For Fibo 2.0 models, this feature enables reference image editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine."
+  max_count: 10
+  usage_guideline: "Supply reference image as Base64 Data URI or HTTP/HTTPS URL."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
 krea2_identity_edit:
   chains: krea2_identity_edit
   display_name: "KREA2 Identity Edit"

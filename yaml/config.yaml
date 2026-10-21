@@ -16,4 +16,4 @@ login_credentials:
   - username: 
     password: 
 
-auto_download_models: true
+auto_download_models: false

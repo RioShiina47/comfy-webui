@@ -35,12 +35,12 @@ Checkpoints:
       - display_name: "MOSS-Image-SFT"
         components:
           unet: "moss_image_sft_int8_convrot.safetensors"
-          clip: "qwen3.5_9b_int8_convrot.safetensors"
+          clip: "qwen3.5_9b_w4a8_gptq.safetensors"
           vae: "flux2-vae.safetensors"
       - display_name: "MOSS-Image-Base"
         components:
           unet: "moss_image_base_int8_convrot.safetensors"
-          clip: "qwen3.5_9b_int8_convrot.safetensors"
+          clip: "qwen3.5_9b_w4a8_gptq.safetensors"
           vae: "flux2-vae.safetensors"
   Ming-Image:
     latent_type: latent
@@ -63,6 +63,19 @@ Checkpoints:
           unet: "qwen_image_2.1_turbo_int8_convrot.safetensors"
           vae: "qwen_image_2.1_vae_bf16.safetensors"
           clip: "qwen3vl_8b_nvfp4.safetensors"
+  Fibo-2.0:
+    latent_type: none
+    models:
+      - display_name: "Fibo-2.0-Edit-Turbo"
+        components:
+          unet: "fibo2_edit_turbo_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "flux2-vae.safetensors"
+      - display_name: "Fibo-2.0-Dev"
+        components:
+          unet: "fibo2_dev_int8_convrot.safetensors"
+          clip: "qwen3vl_4b_fp8_scaled.safetensors"
+          vae: "flux2-vae.safetensors"
   SenseNova-U1.5:
     latent_type: hidream_o1_latent
     models:
