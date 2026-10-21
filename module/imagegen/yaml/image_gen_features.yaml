@@ -8,6 +8,12 @@ default:
   - conditioning
   - vae
 
+fibo-2.0:
+  enabled_chains:
+  - lora
+  - reference_image
+  - pid
+
 flux3:
   enabled_chains:
   - lora

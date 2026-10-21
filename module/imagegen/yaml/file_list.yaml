@@ -203,6 +203,15 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # Fibo 2.0
+    - filename: "fibo2_dev_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Fibo-2.0"
+      repository_file_path: "diffusion_models/fibo2_dev_int8_convrot.safetensors"
+    - filename: "fibo2_edit_turbo_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Fibo-2.0"
+      repository_file_path: "diffusion_models/fibo2_edit_turbo_int8_convrot.safetensors"
     # Flux-3
     - filename: "flux3-image-klein-nvfp4.safetensors"
       source: "hf"
@@ -694,11 +703,11 @@ file:
       repository_file_path: "model_patches/qwen_image_2.1_fun_controlnet_union_int8_convrot.safetensors"
   text_encoders: 
     # MOSS-Image
-    - filename: "qwen3.5_9b_int8_convrot.safetensors"
+    - filename: "qwen3.5_9b_w4a8_gptq.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/MOSS-Image"
-      repository_file_path: "text_encoders/qwen3.5_9b_int8_convrot.safetensors"
-    # Krea-2
+      repository_file_path: "text_encoders/qwen3.5_9b_w4a8_gptq.safetensors"
+    # Krea-2 / Fibo-2.0
     - filename: "qwen3vl_4b_fp8_scaled.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Krea-2"
