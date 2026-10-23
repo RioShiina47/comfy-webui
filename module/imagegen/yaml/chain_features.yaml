@@ -524,3 +524,38 @@ flux3_prompt_upsampler:
         type: string
         description: "Optional custom system prompt override (defaults to official t2i/i2i or t2i_bbox/i2i_bbox templates)."
 
+moss_image_control:
+  chains: moss_image_control
+  display_name: "MOSS-Image Color/Depth Control"
+  description: "Controls MOSS-Image generation using a color region map (object/region spatial layout) and/or a depth map (3D spatial depth, near is white) via darask0/MOSS-Image-color-depth-control adapter and MOSSImageControl node."
+  max_count: 1
+  usage_guideline: "Supply color_map (RGB region ID map) and/or depth_map (near=white grayscale map) as Base64 Data URI or HTTP/HTTPS URL. Set strength (default 1.0) and timestep range (start_percent 0.0, end_percent 0.5)."
+  parameters_schema:
+    type: object
+    properties:
+      color_map:
+        type: string
+        description: "Color region map image encoded as Base64 Data URI or HTTP/HTTPS URL. Each region uses a flat RGB color as a region ID."
+      depth_map:
+        type: string
+        description: "Depth map image encoded as Base64 Data URI or HTTP/HTTPS URL (near is white, far is dark)."
+      strength:
+        type: number
+        default: 1.0
+        minimum: 0.0
+        maximum: 2.0
+        description: "Control influence strength multiplier (default 1.0)."
+      start_percent:
+        type: number
+        default: 0.0
+        minimum: 0.0
+        maximum: 1.0
+        description: "Sampling percentage at which control begins (default 0.0)."
+      end_percent:
+        type: number
+        default: 0.5
+        minimum: 0.0
+        maximum: 1.0
+        description: "Sampling percentage at which control ends (default 0.5, use 0.5 for 3D mannequin)."
+
+

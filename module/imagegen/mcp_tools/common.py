@@ -414,6 +414,28 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                     parsed_style_ref_img = _parse_image_param(item.get("image"))
                     if parsed_style_ref_img:
                         ui_values[f"{prefix}_krea2_style_reference_images"] = ui_values.get(f"{prefix}_krea2_style_reference_images", []) + [parsed_style_ref_img]
+                elif itype == "moss_image_control":
+                    parsed_color_map = _parse_image_param(item.get("color_map"))
+                    if parsed_color_map:
+                        ui_values[f"{prefix}_moss_image_control_color_map"] = parsed_color_map
+                    parsed_depth_map = _parse_image_param(item.get("depth_map"))
+                    if parsed_depth_map:
+                        ui_values[f"{prefix}_moss_image_control_depth_map"] = parsed_depth_map
+                    if "strength" in item:
+                        try:
+                            ui_values[f"{prefix}_moss_image_control_strength"] = float(item["strength"])
+                        except (ValueError, TypeError):
+                            pass
+                    if "start_percent" in item:
+                        try:
+                            ui_values[f"{prefix}_moss_image_control_start_percent"] = float(item["start_percent"])
+                        except (ValueError, TypeError):
+                            pass
+                    if "end_percent" in item:
+                        try:
+                            ui_values[f"{prefix}_moss_image_control_end_percent"] = float(item["end_percent"])
+                        except (ValueError, TypeError):
+                            pass
                 elif itype == "vae":
                     src = item.get("source") or item.get("vae_source", "File")
                     val = item.get("vae_value") or item.get("value") or item.get("vae_id") or item.get("vae_name", "")
