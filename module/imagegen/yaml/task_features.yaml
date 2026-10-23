@@ -24,6 +24,7 @@ txt2img:
   - reference_image
   - qwen_image_2_1_prompt_enhancer
   - ming_image_prompt_enhancer
+  - moss_image_control
   - flux3_prompt_upsampler
   - pid
   - vae
@@ -49,6 +50,7 @@ img2img:
   - reference_image
   - qwen_image_2_1_prompt_enhancer
   - ming_image_prompt_enhancer
+  - moss_image_control
   - flux3_prompt_upsampler
   - vae
 
@@ -73,6 +75,7 @@ inpaint:
   - reference_image
   - qwen_image_2_1_prompt_enhancer
   - ming_image_prompt_enhancer
+  - moss_image_control
   - flux3_prompt_upsampler
   - vae
 
@@ -97,6 +100,7 @@ outpaint:
   - reference_image
   - qwen_image_2_1_prompt_enhancer
   - ming_image_prompt_enhancer
+  - moss_image_control
   - flux3_prompt_upsampler
   - vae
 
@@ -121,5 +125,6 @@ hires_fix:
   - reference_image
   - qwen_image_2_1_prompt_enhancer
   - ming_image_prompt_enhancer
+  - moss_image_control
   - flux3_prompt_upsampler
   - vae

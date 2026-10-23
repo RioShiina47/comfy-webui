@@ -578,5 +578,38 @@ def create_flux3_prompt_upsampler_ui(components, prefix):
             )
 
 
+def create_moss_image_control_ui(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("MOSS-Image Color/Depth Control Settings", open=False) as control_accordion:
+        components[key('moss_image_control_accordion')] = control_accordion
+        gr.Markdown("💡 **Tip:** Uses the [darask0/MOSS-Image-color-depth-control](https://huggingface.co/darask0/MOSS-Image-color-depth-control) adapter.")
+        with gr.Row():
+            components[key('moss_image_control_color_map')] = gr.Image(
+                type="pil", label="Color Region Map (Optional)", sources=["upload"], height=200
+            )
+            components[key('moss_image_control_depth_map')] = gr.Image(
+                type="pil", label="Depth Map (Optional, near=white)", sources=["upload"], height=200
+            )
+
+        with gr.Row():
+            components[key('moss_image_control_strength')] = gr.Slider(
+                label="Control Strength",
+                value=1.0,
+                minimum=0.0,
+                maximum=2.0,
+                step=0.05,
+                interactive=True
+            )
+            components[key('moss_image_control_end_percent')] = gr.Slider(
+                label="End Percent (0.5 for 3D mannequin)",
+                value=0.5,
+                minimum=0.0,
+                maximum=1.0,
+                step=0.01,
+                interactive=True
+            )
+
+
+
 
 

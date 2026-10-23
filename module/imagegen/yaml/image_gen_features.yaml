@@ -96,6 +96,7 @@ z-image:
 moss-image:
   enabled_chains:
   - lora
+  - moss_image_control
   - pid
 
 ming-image:

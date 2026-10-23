@@ -420,6 +420,54 @@ def process_flux3_prompt_upsampler_inputs(all_ui_values: dict, prefix: str):
     return [res]
 
 
+def process_moss_image_control_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    color_map_val = all_ui_values.get(key('moss_image_control_color_map'))
+    depth_map_val = all_ui_values.get(key('moss_image_control_depth_map'))
+
+    color_filename = None
+    depth_filename = None
+
+    if color_map_val is not None:
+        if isinstance(color_map_val, str):
+            color_filename = color_map_val
+        else:
+            color_filename = save_temp_image(color_map_val)
+
+    if depth_map_val is not None:
+        if isinstance(depth_map_val, str):
+            depth_filename = depth_map_val
+        else:
+            depth_filename = save_temp_image(depth_map_val)
+
+    if not color_filename and not depth_filename:
+        return []
+
+    try:
+        strength = float(all_ui_values.get(key('moss_image_control_strength'), 1.0))
+    except (ValueError, TypeError):
+        strength = 1.0
+
+    try:
+        start_percent = float(all_ui_values.get(key('moss_image_control_start_percent'), 0.0))
+    except (ValueError, TypeError):
+        start_percent = 0.0
+
+    try:
+        end_percent = float(all_ui_values.get(key('moss_image_control_end_percent'), 0.5))
+    except (ValueError, TypeError):
+        end_percent = 0.5
+
+    return [{
+        'color_map': color_filename,
+        'depth_map': depth_filename,
+        'strength': strength,
+        'start_percent': start_percent,
+        'end_percent': end_percent
+    }]
+
+
+
 
 
 
