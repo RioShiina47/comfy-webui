@@ -12,7 +12,8 @@ from ..shared_ui import (
     create_qwen_image_2_1_prompt_enhancer_ui,
     create_ming_image_prompt_enhancer_ui,
     create_flux3_prompt_upsampler_ui,
-    create_moss_image_control_ui
+    create_moss_image_control_ui,
+    create_moss_image_edit_ui
 )
 from .config_loader import load_constants_config, load_model_config, load_architectures_config
 from .vae_utils import on_vae_upload

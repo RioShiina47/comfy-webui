@@ -558,4 +558,20 @@ moss_image_control:
         maximum: 1.0
         description: "Sampling percentage at which control ends (default 0.5, use 0.5 for 3D mannequin)."
 
+moss_image_edit:
+  chains: moss_image_edit
+  display_name: "MOSS-Image Edit"
+  description: "Edits images or generates variants using MOSS-Image Edit LoRA (officially packaged by Comfy-Org as moss_image_edit_lora_rank_64_bf16.safetensors) and native TextEncodeMOSSImageEdit node."
+  max_count: 10
+  usage_guideline: "Upload 1-10 reference images and specify prompt. Automatically uses the official MOSS-Image Edit LoRA layout."
+  parameters_schema:
+    type: object
+    properties:
+      images:
+        type: array
+        items:
+          type: string
+        description: "List of 1 to 10 reference images encoded as Base64 Data URI, HTTP/HTTPS URL, or local file path."
+
+
 

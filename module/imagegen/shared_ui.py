@@ -610,6 +610,36 @@ def create_moss_image_control_ui(components, prefix):
             )
 
 
+def create_moss_image_edit_ui(components, prefix, max_units=None):
+    if max_units is None:
+        constants = get_ui_constants()
+        max_units = constants.get('MAX_MOSS_IMAGE_EDITS', 10)
+    key = lambda name: f"{prefix}_{name}"
+    with gr.Accordion("MOSS-Image Edit Settings", open=False) as ref_accordion:
+        components[key('moss_image_edit_accordion')] = ref_accordion
+        gr.Markdown("💡 **Tip:** For multimodal models, this feature enables powerful editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine. Uses [chinoll/Moss-Image-Edit](https://huggingface.co/chinoll/Moss-Image-Edit).")
+        
+        ref_image_groups = []
+        ref_image_inputs = []
+        with gr.Row():
+            for i in range(max_units):
+                with gr.Column(visible=(i < 1), min_width=160) as img_col:
+                    img_comp = gr.Image(type="pil", label=f"Ref. {i+1}", sources=["upload"], height=150)
+                    ref_image_groups.append(img_col)
+                    ref_image_inputs.append(img_comp)
+        
+        components[key('moss_image_edit_rows')] = ref_image_groups
+        components[key('moss_image_edit_images')] = ref_image_inputs
+
+        with gr.Row():
+            components[key('add_moss_image_edit_button')] = gr.Button("✚ Add Reference Image")
+            components[key('delete_moss_image_edit_button')] = gr.Button("➖ Delete Reference Image", visible=False)
+        components[key('moss_image_edit_count_state')] = gr.State(1)
+        
+        components[key('all_moss_image_edit_components_flat')] = ref_image_inputs
+
+
+
 
 
 

@@ -81,6 +81,14 @@ dynamic_moss_image_control_chains:
     neg_prompt_node: "neg_prompt"
     vae_loader_node: "vae_loader"
 
+dynamic_moss_image_edit_chains:
+  moss_image_edit_chain:
+    ksampler_node: "ksampler"
+    pos_prompt_node: "pos_prompt"
+    neg_prompt_node: "neg_prompt"
+    clip_loader_node: "clip_loader"
+    vae_loader_node: "vae_loader"
+
 ui_map:
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"

@@ -467,6 +467,32 @@ def process_moss_image_control_inputs(all_ui_values: dict, prefix: str):
     }]
 
 
+def process_moss_image_edit_inputs(all_ui_values: dict, prefix: str):
+    key = lambda name: f"{prefix}_{name}"
+    ref_images = all_ui_values.get(key('moss_image_edit_images'), [])
+    if not ref_images:
+        return []
+
+    valid_images = []
+    for image_pil in ref_images:
+        if image_pil is not None:
+            if isinstance(image_pil, str):
+                valid_images.append(image_pil)
+            else:
+                image_filename = save_temp_image(image_pil)
+                valid_images.append(image_filename)
+
+    if not valid_images:
+        return []
+
+    return [{
+        'images': valid_images,
+        'edit_format': 'Moss-Image-Edit',
+        'strength': 1.0
+    }]
+
+
+
 
 
 

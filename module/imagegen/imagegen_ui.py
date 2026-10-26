@@ -14,6 +14,7 @@ from .shared.ui_components import (
     create_ming_image_prompt_enhancer_ui,
     create_flux3_prompt_upsampler_ui,
     create_moss_image_control_ui,
+    create_moss_image_edit_ui,
 )
 from .shared.event_handlers import register_shared_events
 from .shared.generation import create_run_generation_logic
@@ -237,6 +238,7 @@ def create_ui():
             create_vae_override_ui(components, PREFIX)
             create_style_ui(components, PREFIX)
             create_moss_image_control_ui(components, PREFIX)
+            create_moss_image_edit_ui(components, PREFIX)
             create_pid_ui(components, PREFIX)
             create_qwen_image_2_1_prompt_enhancer_ui(components, PREFIX)
             create_ming_image_prompt_enhancer_ui(components, PREFIX)
