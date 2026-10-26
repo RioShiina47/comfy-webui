@@ -634,6 +634,11 @@ file:
       source: "hf"
       repo_id: "darask0/MOSS-Image-color-depth-control"
       repository_file_path: "moss-control.safetensors"
+    # MOSS-Image Edit LoRA
+    - filename: "moss_image_edit_lora_rank_64_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MOSS-Image"
+      repository_file_path: "loras/moss_image_edit_lora_rank_64_bf16.safetensors"
     # Krea2 Identity Edit
     - filename: "krea2_identity_edit_v1_2.safetensors"
       source: "hf"

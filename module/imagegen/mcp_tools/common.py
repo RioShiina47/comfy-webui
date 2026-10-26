@@ -436,6 +436,17 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                             ui_values[f"{prefix}_moss_image_control_end_percent"] = float(item["end_percent"])
                         except (ValueError, TypeError):
                             pass
+                elif itype == "moss_image_edit":
+                    imgs = item.get("images", [])
+                    if isinstance(imgs, list):
+                        for img_param in imgs:
+                            p_img = _parse_image_param(img_param)
+                            if p_img:
+                                ui_values[f"{prefix}_moss_image_edit_images"] = ui_values.get(f"{prefix}_moss_image_edit_images", []) + [p_img]
+                    elif isinstance(imgs, (str, dict)):
+                        p_img = _parse_image_param(imgs)
+                        if p_img:
+                            ui_values[f"{prefix}_moss_image_edit_images"] = ui_values.get(f"{prefix}_moss_image_edit_images", []) + [p_img]
                 elif itype == "vae":
                     src = item.get("source") or item.get("vae_source", "File")
                     val = item.get("vae_value") or item.get("value") or item.get("vae_id") or item.get("vae_name", "")

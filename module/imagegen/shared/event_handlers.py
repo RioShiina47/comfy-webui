@@ -126,6 +126,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     ming_image_prompt_enhancer_accordion = components.get(key('ming_image_prompt_enhancer_accordion'))
     flux3_prompt_upsampler_accordion = components.get(key('flux3_prompt_upsampler_accordion'))
     moss_image_control_accordion = components.get(key('moss_image_control_accordion'))
+    moss_image_edit_accordion = components.get(key('moss_image_edit_accordion'))
 
 
     def on_architecture_filter_change(arch_filter, current_cat="ALL"):
@@ -173,7 +174,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'qwen_image_2_1_prompt_enhancer': qwen_image_2_1_prompt_enhancer_accordion,
             'ming_image_prompt_enhancer': ming_image_prompt_enhancer_accordion,
             'flux3_prompt_upsampler': flux3_prompt_upsampler_accordion,
-            'moss_image_control': moss_image_control_accordion
+            'moss_image_control': moss_image_control_accordion,
+            'moss_image_edit': moss_image_edit_accordion
         }
 
         for chain_key, accordion_component in chain_map.items():
@@ -291,7 +293,8 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "qwen_image_2_1_prompt_enhancer_accordion": qwen_image_2_1_prompt_enhancer_accordion,
         "ming_image_prompt_enhancer_accordion": ming_image_prompt_enhancer_accordion,
         "flux3_prompt_upsampler_accordion": flux3_prompt_upsampler_accordion,
-        "moss_image_control_accordion": moss_image_control_accordion
+        "moss_image_control_accordion": moss_image_control_accordion,
+        "moss_image_edit_accordion": moss_image_edit_accordion
     }
     
     positive_prompt_textbox = components.get(key('positive_prompt'))
@@ -505,5 +508,47 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             image_input = components[f"{prefix}_input_image"]
             image_input.upload(fn=on_image_upload, inputs=[image_input, model_type_state], outputs=[width_num, height_num, aspect_ratio_dropdown], api_name=False)
             image_input.change(fn=on_image_upload, inputs=[image_input, model_type_state], outputs=[width_num, height_num, aspect_ratio_dropdown], api_name=False)
-
     register_ui_chain_events(components, prefix)
+    register_moss_image_edit_events(components, prefix)
+
+
+def register_moss_image_edit_events(components, prefix):
+    key = lambda name: f"{prefix}_{name}"
+    count_st = components.get(key('moss_image_edit_count_state'))
+    add_btn = components.get(key('add_moss_image_edit_button'))
+    del_btn = components.get(key('delete_moss_image_edit_button'))
+    rows = components.get(key('moss_image_edit_rows'), [])
+    images = components.get(key('moss_image_edit_images'), [])
+    max_count = len(rows)
+
+    if count_st and add_btn and del_btn and rows:
+        def _add_row(count):
+            count += 1
+            return (count, gr.update(visible=count < max_count), gr.update(visible=count > 1)) + tuple(gr.update(visible=i < count) for i in range(max_count))
+
+        add_btn.click(
+            fn=_add_row,
+            inputs=[count_st],
+            outputs=[count_st, add_btn, del_btn] + rows,
+            show_progress=False,
+            api_name=False
+        )
+
+        def _delete_row(count):
+            count -= 1
+            count_update = count
+            add_btn_update = gr.update(visible=True)
+            del_btn_update = gr.update(visible=count > 1)
+            row_updates = [gr.update(visible=i < count) for i in range(max_count)]
+            img_updates = [gr.update()] * len(images)
+            if 0 <= count < len(images):
+                img_updates[count] = gr.update(value=None)
+            return (count_update, add_btn_update, del_btn_update) + tuple(row_updates) + tuple(img_updates)
+
+        del_btn.click(
+            fn=_delete_row,
+            inputs=[count_st],
+            outputs=[count_st, add_btn, del_btn] + rows + images,
+            show_progress=False,
+            api_name=False
+        )

@@ -28,7 +28,8 @@ from .input_processors import (
     process_qwen_image_2_1_prompt_enhancer_inputs,
     process_ming_image_prompt_enhancer_inputs,
     process_flux3_prompt_upsampler_inputs,
-    process_moss_image_control_inputs
+    process_moss_image_control_inputs,
+    process_moss_image_edit_inputs
 )
 from .shared.config_loader import load_ipadapter_presets
 from .shared.utils import (
@@ -172,6 +173,7 @@ def process_inputs(task_type: str, ui_values: dict, seed_override=None, prefix: 
         'ming_image_prompt_enhancer_chain': process_ming_image_prompt_enhancer_inputs(ui_values, prefix),
         'flux3_prompt_upsampler_chain': process_flux3_prompt_upsampler_inputs(ui_values, prefix),
         'moss_image_control_chain': process_moss_image_control_inputs(ui_values, prefix),
+        'moss_image_edit_chain': process_moss_image_edit_inputs(ui_values, prefix),
     }
 
     final_values_for_assembler = {**vals, **processed_chains}
