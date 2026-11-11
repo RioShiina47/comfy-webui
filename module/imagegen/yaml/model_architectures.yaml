@@ -1,6 +1,7 @@
 architecture_order:
   - "FLUX.3"
   - "MiniMax-H3-Image"
+  - "P-H3-Image"
   - "Krea-2"
   - "Qwen-Image-2.1"
   - "Fibo-2.0"
@@ -46,6 +47,8 @@ architectures:
     model_type: "flux3"
   "MiniMax-H3-Image":
     model_type: "minimax-h3-image"
+  "P-H3-Image":
+    model_type: "p-h3-image"
   Krea-2:
     model_type: "krea-2"
   "SenseNova-U1.5":

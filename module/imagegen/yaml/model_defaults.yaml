@@ -52,6 +52,14 @@ MiniMax-H3-Image:
     sampler_name: "euler"
     scheduler: "simple"
 
+P-H3-Image:
+  _defaults:
+    steps: 8
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+    positive_prompt: "NOTE: P-H3-Image only supports the Txt2Img task."
+
 Krea-2:
   _defaults:
     steps: 52
