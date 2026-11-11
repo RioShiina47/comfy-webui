@@ -12,6 +12,65 @@ def create_node(assembler, class_type, title):
     node['_meta']['title'] = title
     return node
 
+
+def _get_autogrow_image_slot_names(assembler, target_node_id, input_name='images'):
+    """
+    Resolve the real per-image slot key template for an Autogrow image input.
+
+    ComfyUI exposes two flavours of Autogrow template:
+      * TemplatePrefix(prefix="image_") -> names are 0-based: image_0, image_1, ...
+      * TemplateNames(names=["image_1", ...]) -> names start at image_1
+
+    Returns a list of slot names indexed from 0 (i.e. index i is the name for the i-th image),
+    or None when the node schema cannot be introspected.
+    """
+    target_node = assembler.workflow.get(target_node_id)
+    if not isinstance(target_node, dict):
+        return None
+
+    class_type = target_node.get('class_type')
+    if not class_type:
+        return None
+
+    node_info = None
+    try:
+        from comfy_webui_core import node_info_manager
+        node_info = node_info_manager.get_node_info(class_type)
+    except Exception:
+        node_info = None
+
+    if not isinstance(node_info, dict):
+        return None
+
+    spec = None
+    inputs_cfg = node_info.get('input', {}) or {}
+    for category in ('required', 'optional'):
+        candidate = (inputs_cfg.get(category) or {}).get(input_name)
+        if candidate:
+            spec = candidate
+            break
+
+    if not isinstance(spec, (list, tuple)) or len(spec) < 2 or not isinstance(spec[1], dict):
+        return None
+
+    template = spec[1].get('template')
+    if not isinstance(template, dict):
+        return None
+
+    names = template.get('names')
+    if isinstance(names, (list, tuple)) and names:
+        return [str(n) for n in names]
+
+    prefix = template.get('prefix')
+    if isinstance(prefix, str):
+        max_count = template.get('max', 100)
+        if not isinstance(max_count, int) or max_count <= 0:
+            max_count = 100
+        return [f"{prefix}{i}" for i in range(max_count)]
+
+    return None
+
+
 def inject(assembler, chain_definition, chain_items):
     if not chain_items:
         return
@@ -69,7 +128,23 @@ def inject(assembler, chain_definition, chain_items):
     megapixels = chain_definition.get('megapixels', 1.0)
     resolution_steps = chain_definition.get('resolution_steps', 1)
 
+    # Derive the node's real autogrow slot naming (0-based prefix vs 1-based names)
+    # instead of assuming image_1..image_N, which silently breaks 0-based nodes.
+    input_name = chain_definition.get('input_name', 'images')
+    slot_names = _get_autogrow_image_slot_names(assembler, target_node_id, input_name=input_name)
+    index_base = chain_definition.get('slot_index_base')
+
     for i, img_filename in enumerate(valid_images):
+        if slot_names is not None:
+            if i >= len(slot_names):
+                print(f"Warning: Reference Image chain reached the node's slot limit ({len(slot_names)}). Stopping.")
+                break
+            slot_key = f"{input_name}.{slot_names[i]}"
+        else:
+            # Fallback when node schema is unavailable: honor explicit chain config or use 1-based legacy default.
+            base = 1 if index_base is None else int(index_base)
+            slot_key = f"{input_name}.image_{i + base}"
+
         load_id = assembler._get_unique_id()
         load_node = create_node(assembler, "LoadImage", f"Load Reference Image {i+1}")
         load_node['inputs']['image'] = img_filename
@@ -83,8 +158,7 @@ def inject(assembler, chain_definition, chain_items):
         scale_node['inputs']['image'] = [load_id, 0]
         assembler.workflow[scale_id] = scale_node
 
-        input_key = f"images.image_{i+1}"
-        assembler.workflow[target_node_id]['inputs'][input_key] = [scale_id, 0]
+        assembler.workflow[target_node_id]['inputs'][slot_key] = [scale_id, 0]
 
     node_class = assembler.workflow[target_node_id].get('class_type', 'Unknown')
-    print(f"Reference Image injector applied: {len(valid_images)} image(s) injected into '{target_node_id}' ({node_class}), max_images={max_images}.")
+    print(f"Reference Image injector applied: {len(valid_images)} image(s) injected into '{target_node_id}' ({node_class}), max_images={max_images}, slots={slot_key if valid_images else '-'}.")

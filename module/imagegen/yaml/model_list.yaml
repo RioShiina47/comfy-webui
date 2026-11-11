@@ -17,6 +17,14 @@ Checkpoints:
           unet: "flux3-image-klein-base-nvfp4.safetensors"
           clip: "qwen3vl_4b_fp8_scaled.safetensors"
           vae: "flux2-vae.safetensors"
+  MiniMax-H3-Image:
+    latent_type: none
+    models:
+      - display_name: "MiniMaxAI/MiniMax-H3-Image"
+        components:
+          unet: "minimax_h3_image_pruned_w4a8.safetensors"
+          clip: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+          vae: "minimax_h3_image_vae_fp16.safetensors"
   Krea-2:
     latent_type: latent
     models:

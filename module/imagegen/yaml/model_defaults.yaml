@@ -45,6 +45,13 @@ FLUX.3:
     sampler_name: "euler"
     scheduler: "simple"
 
+MiniMax-H3-Image:
+  _defaults:
+    steps: 6
+    cfg: 1.0
+    sampler_name: "euler"
+    scheduler: "simple"
+
 Krea-2:
   _defaults:
     steps: 52

@@ -21,6 +21,11 @@ flux3:
   - flux3_prompt_upsampler
   - pid
 
+minimax-h3-image:
+  enabled_chains:
+  - lora
+  - reference_image
+
 krea-2:
   enabled_chains:
     - lora

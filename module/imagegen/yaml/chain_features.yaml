@@ -251,6 +251,21 @@ fibo2_reference_edit:
     required:
       - image
 
+minimax_h3_image_reference_edit:
+  chains: reference_image
+  display_name: "MiniMax-H3-Image Reference Edit"
+  description: "For MiniMax-H3-Image, this feature enables reference image editing and combining capabilities. In txt2img mode, adding a single reference image performs an Image Edit, while adding multiple images performs an Image Combine. The prompt refers to them as <Picture 1>, <Picture 2>, ..."
+  max_count: 8
+  usage_guideline: "Supply reference image(s) encoded as Base64 Data URI or HTTP/HTTPS URL (up to 8). Refer to them in the prompt as <Picture 1>, <Picture 2>, ...; <Picture 1> is the picture to edit."
+  parameters_schema:
+    type: object
+    properties:
+      image:
+        type: string
+        description: "Reference image encoded as Base64 Data URI or HTTP/HTTPS URL."
+    required:
+      - image
+
 krea2_identity_edit:
   chains: krea2_identity_edit
   display_name: "KREA2 Identity Edit"

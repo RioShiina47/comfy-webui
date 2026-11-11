@@ -251,6 +251,9 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
             if found_arch:
                 break
 
+        if not found_arch and model in checkpoints:
+            found_arch = model
+
         arch_defaults_section = model_defaults.get(found_arch, {}) if found_arch else {}
         arch_level_defaults = arch_defaults_section.get("_defaults", {})
         model_specific_defaults = arch_defaults_section.get(model, {})
@@ -263,7 +266,15 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
         scheduler = params.get("scheduler") or merged_defaults.get("scheduler", "simple")
 
         prefix = task_type
-        model_type_state = found_arch.lower().replace(" ", "-").replace(".", "") if found_arch else "sdxl"
+        arch_config = _load_yaml(_MODEL_ARCHITECTURES_PATH)
+        architectures_map = arch_config.get("architectures", {}) if isinstance(arch_config, dict) else {}
+        if found_arch and found_arch in architectures_map and "model_type" in architectures_map[found_arch]:
+            model_type_state = architectures_map[found_arch]["model_type"]
+        elif found_arch:
+            model_type_state = found_arch.lower().replace(" ", "-")
+        else:
+            from ..shared.utils import get_model_type
+            model_type_state = get_model_type(model, model_list)
 
         ui_values = {
             f"{prefix}_model_name": model,
