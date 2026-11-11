@@ -203,6 +203,11 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # MiniMax-H3-Image
+    - filename: "minimax_h3_image_pruned_w4a8.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3-Image"
+      repository_file_path: "diffusion_models/minimax_h3_image_pruned_w4a8.safetensors"
     # Fibo 2.0
     - filename: "fibo2_dev_int8_convrot.safetensors"
       source: "hf"
@@ -712,6 +717,11 @@ file:
       repo_id: "Kijai/QwenImage_experimental"
       repository_file_path: "model_patches/qwen_image_2.1_fun_controlnet_union_int8_convrot.safetensors"
   text_encoders: 
+    # MiniMax-H3-Image
+    - filename: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3-Image"
+      repository_file_path: "text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
     # MOSS-Image
     - filename: "qwen3.5_9b_w4a8_gptq.safetensors"
       source: "hf"
@@ -860,6 +870,11 @@ file:
       repo_id: "black-forest-labs/flux-3-image-klein-comfy"
       repository_file_path: "text_encoders/qwen3.5_9b_flux3_prompt_upsampler_w4a8.safetensors"
   vae: 
+    # MiniMax-H3-Image
+    - filename: "minimax_h3_image_vae_fp16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/MiniMax-H3-Image"
+      repository_file_path: "vae/minimax_h3_image_vae_fp16.safetensors"
     - filename: "wan_2.1_vae.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Wan_2.1_ComfyUI_repackaged"

@@ -15,6 +15,14 @@ RESOLUTION_MAP:
     "3:4 (Classic Portrait)": [896, 1152]
     "3:2 (Photography)": [1216, 832]
     "2:3 (Photography Portrait)": [832, 1216]
+  minimax-h3-image:
+    "1:1 (Square)": [2048, 2048]
+    "16:9 (Landscape)": [2048, 1152]
+    "9:16 (Portrait)": [1152, 2048]
+    "4:3 (Classic)": [1792, 1344]
+    "3:4 (Classic Portrait)": [1344, 1792]
+    "3:2 (Photography)": [1920, 1280]
+    "2:3 (Photography Portrait)": [1280, 1920]
   krea-2:
     "1:1 (Square)": [1024, 1024]
     "16:9 (Landscape)": [1344, 768]
