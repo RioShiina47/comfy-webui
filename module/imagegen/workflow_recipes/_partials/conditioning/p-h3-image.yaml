@@ -1,0 +1,117 @@
+nodes:
+  unet_loader:
+    class_type: UNETLoader
+    title: "Load Diffusion Model"
+    params:
+      weight_dtype: "default"
+  vae_loader:
+    class_type: VAELoader
+    title: "Load VAE"
+  clip_loader:
+    class_type: CLIPLoader
+    title: "Load CLIP"
+    params:
+      type: "minimax"
+      device: "default"
+  sigma_shift:
+    class_type: MiniMaxH3SigmaShift
+    title: "ModelSamplingMiniMaxH3 (keep at 1.0)"
+    params:
+      shift_video: 1.0
+      shift_audio: 1.0
+  prompt:
+    class_type: PH3ImageConditioning
+    title: "p-h3-image Conditioning"
+    params:
+      width: 2912
+      height: 2912
+  guider:
+    class_type: BasicGuider
+    title: "Basic Guider"
+  sampler_select:
+    class_type: KSamplerSelect
+    title: "KSamplerSelect"
+    params:
+      sampler_name: "euler"
+  manual_sigmas:
+    class_type: ManualSigmas
+    title: "ManualSigmas (fixed 8-step grid)"
+    params:
+      sigmas: "1.0, 0.984753, 0.967905, 0.951688, 0.925372, 0.881923, 0.810083, 0.528718, 0.0"
+  random_noise:
+    class_type: RandomNoise
+    title: "RandomNoise"
+  # Overrides the stock KSampler from _base_sampler.yaml: P-H3-Image samples on a
+  # fixed ManualSigmas grid with no CFG, so SamplerCustomAdvanced is used instead.
+  ksampler:
+    class_type: SamplerCustomAdvanced
+    title: "SamplerCustomAdvanced"
+
+connections:
+  - from: "unet_loader:0"
+    to: "sigma_shift:model"
+  - from: "sigma_shift:0"
+    to: "guider:model"
+
+  - from: "clip_loader:0"
+    to: "prompt:clip"
+  - from: "vae_loader:0"
+    to: "prompt:vae"
+
+  - from: "prompt:0"
+    to: "guider:conditioning"
+
+  - from: "random_noise:0"
+    to: "ksampler:noise"
+  - from: "guider:0"
+    to: "ksampler:guider"
+  - from: "sampler_select:0"
+    to: "ksampler:sampler"
+  - from: "manual_sigmas:0"
+    to: "ksampler:sigmas"
+  - from: "prompt:1"
+    to: "ksampler:latent_image"
+
+  - from: "ksampler:0"
+    to: "vae_decode:samples"
+  - from: "vae_loader:0"
+    to: "vae_decode:vae"
+  - from: "vae_loader:0"
+    to: "vae_encode:vae"
+
+dynamic_lora_chains:
+  lora_chain:
+    template: "LoraLoader"
+    output_map:
+      "unet_loader:0": "model"
+      "clip_loader:0": "clip"
+    input_map:
+      "model": "model"
+      "clip": "clip"
+    end_input_map:
+      "model": ["sigma_shift:model"]
+      "clip": ["prompt:clip"]
+
+dynamic_reference_image_chains:
+  reference_image_chain:
+    text_encode_node: "prompt"
+    vae_node: "vae_loader"
+    max_images: 8
+
+# Steps / CFG are intentionally discarded: P-H3-Image is trained and sampled on a
+# fixed 8-step ManualSigmas grid with cfg = 1 (no CFG / no negative prompt).
+# Pointing these keys at the non-existent "dummy" node makes the assembler skip them.
+ui_map:
+  positive_prompt: "prompt:prompt"
+  negative_prompt: "dummy:negative_prompt"
+  unet_name: "unet_loader:unet_name"
+  clip_name: "clip_loader:clip_name"
+  vae_name: "vae_loader:vae_name"
+  width: "prompt:width"
+  height: "prompt:height"
+  seed: "random_noise:noise_seed"
+  steps: "dummy:steps"
+  cfg: "dummy:cfg"
+  sampler_name: "dummy:sampler_name"
+  scheduler: "dummy:scheduler"
+  denoise: "dummy:denoise"

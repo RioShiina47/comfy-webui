@@ -203,6 +203,11 @@ file:
       repo_id: "comfyanonymous/ControlNet-v1-1_fp16_safetensors"
       repository_file_path: "control_v11u_sd15_tile_fp16.safetensors"
   diffusion_models: 
+    # P-H3-Image
+    - filename: "p-h3-image_w4a8.safetensors"
+      source: "hf"
+      repo_id: "PrunaAI/P-H3-Image-Comfy"
+      repository_file_path: "diffusion_models/p-h3-image_w4a8.safetensors"
     # MiniMax-H3-Image
     - filename: "minimax_h3_image_pruned_w4a8.safetensors"
       source: "hf"
@@ -717,6 +722,11 @@ file:
       repo_id: "Kijai/QwenImage_experimental"
       repository_file_path: "model_patches/qwen_image_2.1_fun_controlnet_union_int8_convrot.safetensors"
   text_encoders: 
+    # P-H3-Image
+    - filename: "p-h3-image_text_encoder_w4a8.safetensors"
+      source: "hf"
+      repo_id: "PrunaAI/P-H3-Image-Comfy"
+      repository_file_path: "text_encoders/p-h3-image_text_encoder_w4a8.safetensors"
     # MiniMax-H3-Image
     - filename: "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
       source: "hf"
@@ -870,6 +880,11 @@ file:
       repo_id: "black-forest-labs/flux-3-image-klein-comfy"
       repository_file_path: "text_encoders/qwen3.5_9b_flux3_prompt_upsampler_w4a8.safetensors"
   vae: 
+    # P-H3-Image
+    - filename: "p-h3-image_vae_int8_convrot.safetensors"
+      source: "hf"
+      repo_id: "PrunaAI/P-H3-Image-Comfy"
+      repository_file_path: "vae/p-h3-image_vae_int8_convrot.safetensors"
     # MiniMax-H3-Image
     - filename: "minimax_h3_image_vae_fp16.safetensors"
       source: "hf"
