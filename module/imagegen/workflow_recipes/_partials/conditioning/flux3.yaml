@@ -82,9 +82,10 @@ dynamic_pid_chains:
   pid_chain:
     ksampler_node: "ksampler"
 
-dynamic_flux3_prompt_upsampler_chains:
-  flux3_prompt_upsampler_chain:
+dynamic_prompt_enhancer_chains:
+  prompt_enhancer_chain:
     target_node: "pos_prompt"
+    framework: "flux3"
 
 ui_map:
   unet_name: "unet_loader:unet_name"

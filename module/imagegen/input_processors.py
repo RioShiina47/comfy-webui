@@ -357,66 +357,34 @@ def process_krea2_style_reference_inputs(all_ui_values: dict, prefix: str):
     return references
 
 
-def process_qwen_image_2_1_prompt_enhancer_inputs(all_ui_values: dict, prefix: str):
+def process_prompt_enhancer_inputs(all_ui_values: dict, prefix: str):
     key = lambda name: f"{prefix}_{name}"
-    val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_enable'), False)
+    val = all_ui_values.get(key('prompt_enhancer_enable'), False)
     is_on = val is True or str(val).lower() in ("on", "true", "yes", "1")
     if not is_on:
         return []
-    thinking_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_thinking'), False)
+    thinking_val = all_ui_values.get(key('prompt_enhancer_thinking'), False)
     is_thinking = thinking_val is True or str(thinking_val).lower() in ("on", "true", "yes", "1")
-    max_length_val = all_ui_values.get(key('qwen_image_2_1_prompt_enhancer_max_length'), 4096)
+    max_length_val = all_ui_values.get(key('prompt_enhancer_max_length'), 4096)
     try:
         max_length = int(max_length_val)
     except (ValueError, TypeError):
         max_length = 4096
-    return [{"enable": True, "thinking": is_thinking, "max_length": max_length}]
 
-
-def process_ming_image_prompt_enhancer_inputs(all_ui_values: dict, prefix: str):
-    key = lambda name: f"{prefix}_{name}"
-    val = all_ui_values.get(key('ming_image_prompt_enhancer_enable'), False)
-    is_on = val is True or str(val).lower() in ("on", "true", "yes", "1")
-    if not is_on:
-        return []
-    thinking_val = all_ui_values.get(key('ming_image_prompt_enhancer_thinking'), False)
-    is_thinking = thinking_val is True or str(thinking_val).lower() in ("on", "true", "yes", "1")
-    max_length_val = all_ui_values.get(key('ming_image_prompt_enhancer_max_length'), 4096)
-    try:
-        max_length = int(max_length_val)
-    except (ValueError, TypeError):
-        max_length = 4096
-    system_prompt = all_ui_values.get(key('ming_image_prompt_enhancer_system_prompt'), None)
-    res = {"enable": True, "thinking": is_thinking, "max_length": max_length}
-    if system_prompt:
-        res["system_prompt"] = str(system_prompt)
-    return [res]
-
-
-def process_flux3_prompt_upsampler_inputs(all_ui_values: dict, prefix: str):
-    key = lambda name: f"{prefix}_{name}"
-    val = all_ui_values.get(key('flux3_prompt_upsampler_enable'), False)
-    is_on = val is True or str(val).lower() in ("on", "true", "yes", "1")
-    if not is_on:
-        return []
-    thinking_val = all_ui_values.get(key('flux3_prompt_upsampler_thinking'), False)
-    is_thinking = thinking_val is True or str(thinking_val).lower() in ("on", "true", "yes", "1")
-    bbox_val = all_ui_values.get(key('flux3_prompt_upsampler_bbox_mode'), False)
-    is_bbox = bbox_val is True or str(bbox_val).lower() in ("on", "true", "yes", "1")
-    max_length_val = all_ui_values.get(key('flux3_prompt_upsampler_max_length'), 3584)
-    try:
-        max_length = int(max_length_val)
-    except (ValueError, TypeError):
-        max_length = 3584
     res = {
         "enable": True,
         "thinking": is_thinking,
-        "bbox_mode": is_bbox,
         "max_length": max_length,
     }
-    system_prompt = all_ui_values.get(key('flux3_prompt_upsampler_system_prompt'), None)
-    if system_prompt:
-        res["system_prompt"] = str(system_prompt)
+
+    model_val = all_ui_values.get(key('prompt_enhancer_model'))
+    if model_val and str(model_val) != "auto":
+        res["model"] = str(model_val)
+
+    system_prompt_val = all_ui_values.get(key('prompt_enhancer_system_prompt'))
+    if system_prompt_val and str(system_prompt_val) != "auto":
+        res["system_prompt"] = str(system_prompt_val)
+
     return [res]
 
 

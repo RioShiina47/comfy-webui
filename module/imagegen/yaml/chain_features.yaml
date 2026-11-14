@@ -478,81 +478,33 @@ embedding:
       - source
       - embedding_value
 
-qwen_image_2_1_prompt_enhancer:
-  chains: qwen_image_2_1_prompt_enhancer
-  display_name: "Qwen-Image-2.1 Prompt Enhancer Settings"
-  description: "Enhance prompts using Qwen-Image-2.1 Prompt Enhancer with automatic model selection (T2I vs I2I/reference images) and optional reasoning CoT thinking mode."
+prompt_enhancer:
+  chains: prompt_enhancer
+  display_name: "Prompt Enhancer Settings"
+  description: "Enhance or upsample prompts with any registered prompt-enhancer model (Qwen-Image-2.1 PE T2I/I2I, Qwen3.8-27B, FLUX.3 Prompt Upsampler), optional reasoning CoT thinking mode, and optional system prompt. The clip and system_prompt registries are independent, so they are freely mixable across architectures."
   max_count: 1
-  usage_guideline: "Set enable to true to activate prompt enhancement. Enable thinking to allow reasoning CoT (reasoning tags are automatically stripped from the resulting prompt). Set max_length to control generation length."
+  usage_guideline: "Set enable to true to activate prompt enhancement. Pick model from the clip registry and system_prompt from the system_prompt registry in yaml/prompt_enhancer.yaml; both lists are global, so any architecture may select any clip paired with any system prompt. Defaults for each framework come from the architecture section and reset when the base model changes. Nothing is auto-detected from images, so an explicit system prompt always wins. Enable thinking for reasoning CoT (reasoning tags are stripped from the result), and set max_length for generation length."
   parameters_schema:
     type: object
     properties:
       enable:
         type: boolean
         default: false
-        description: "Enable Qwen-Image-2.1 Prompt Enhancer."
+        description: "Enable prompt enhancement."
       thinking:
         type: boolean
         default: false
-        description: "Enable thinking (reasoning CoT). Thought text inside <think> tags will be automatically stripped before passing prompt to downstream text encoding."
+        description: "Enable thinking (reasoning CoT). Thought text inside <think> tags is automatically stripped before the prompt reaches downstream text encoding."
+      model:
+        type: string
+        description: "Prompt Enhancer Model name from the clip registry in yaml/prompt_enhancer.yaml (e.g. Qwen-Image-2.1-Prompt-Enhancer-T2I, Qwen-Image-2.1-Prompt-Enhancer-I2I, Qwen3.8-27B, Qwen3.5-9B-FLUX.3-Prompt-Upsampler). Any model may select any registered clip regardless of architecture; clip_type travels with the clip. Defaults to the architecture entry for the active framework."
+      system_prompt:
+        type: string
+        description: "System Prompt name from the system_prompt registry in yaml/prompt_enhancer.yaml (e.g. none, Ming-Image-PE-Template, FLUX.3-T2I-PE-Template, FLUX.3-I2I-PE-Template, FLUX.3-T2I-Bbox-PE-Template, FLUX.3-I2I-Bbox-PE-Template). Independent of the selected clip and never inferred from images; an empty prompt means no system prompt."
       max_length:
         type: integer
         default: 4096
         description: "Maximum generation length for prompt enhancement (default 4096)."
-
-ming_image_prompt_enhancer:
-  chains: ming_image_prompt_enhancer
-  display_name: "Ming-Image Prompt Enhancer Settings"
-  description: "Enhance prompts using Ming-Image Prompt Enhancer (Qwen3.8-27B) guided by official Figma-style rewriter System Prompt, with optional reasoning CoT thinking mode."
-  max_count: 1
-  usage_guideline: "Set enable to true to activate Ming-Image prompt enhancement. Supports single/multi-reference images, thinking mode, and custom system prompt."
-  parameters_schema:
-    type: object
-    properties:
-      enable:
-        type: boolean
-        default: false
-        description: "Enable Ming-Image Prompt Enhancer."
-      thinking:
-        type: boolean
-        default: false
-        description: "Enable thinking (reasoning CoT)."
-      max_length:
-        type: integer
-        default: 4096
-        description: "Maximum generation length for prompt enhancement (default 4096)."
-      system_prompt:
-        type: string
-        description: "System prompt for Qwen3.8-27B prompt enhancer (defaults to official Ming-Image Figma-style rewriter prompt)."
-
-flux3_prompt_upsampler:
-  chains: flux3_prompt_upsampler
-  display_name: "FLUX.3 Prompt Upsampler Settings"
-  description: "Expand short prompts into detailed generative captions using FLUX.3 Prompt Upsampler (qwen3.5_9b_flux3_prompt_upsampler_w4a8) with automatic official template selection (t2i, i2i, t2i_bbox, i2i_bbox), multi-reference image stitching, and reasoning CoT thinking mode."
-  max_count: 1
-  usage_guideline: "Set enable to true to activate FLUX.3 prompt upsampler. Automatically selects official BFL t2i or i2i template based on input image detection. Supports bbox_mode, thinking mode, and multi-reference image stitching."
-  parameters_schema:
-    type: object
-    properties:
-      enable:
-        type: boolean
-        default: false
-        description: "Enable FLUX.3 Prompt Upsampler."
-      thinking:
-        type: boolean
-        default: false
-        description: "Enable thinking (reasoning CoT)."
-      bbox_mode:
-        type: boolean
-        default: false
-        description: "Enable BBox mode (automatically selects t2i_bbox or i2i_bbox official system prompt templates to output bounding boxes)."
-      max_length:
-        type: integer
-        default: 3584
-        description: "Maximum generation length for prompt upsampler (default 3584)."
-      system_prompt:
-        type: string
-        description: "Optional custom system prompt override (defaults to official t2i/i2i or t2i_bbox/i2i_bbox templates)."
 
 moss_image_control:
   chains: moss_image_control

@@ -18,7 +18,7 @@ flux3:
   enabled_chains:
   - lora
   - reference_latent
-  - flux3_prompt_upsampler
+  - prompt_enhancer
   - pid
 
 minimax-h3-image:
@@ -114,14 +114,14 @@ ming-image:
   enabled_chains:
   - lora
   - reference_image
-  - ming_image_prompt_enhancer
+  - prompt_enhancer
 
 qwen-image-2.1:
   enabled_chains:
   - lora
   - controlnet
   - reference_image
-  - qwen_image_2_1_prompt_enhancer
+  - prompt_enhancer
 
 qwen-image:
   enabled_chains:

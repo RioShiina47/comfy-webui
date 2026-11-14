@@ -122,9 +122,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
     krea2_identity_edit_accordion = components.get(key('krea2_identity_edit_accordion'))
     krea2_style_reference_accordion = components.get(key('krea2_style_reference_accordion'))
     vae_accordion = components.get(key('vae_accordion'))
-    qwen_image_2_1_prompt_enhancer_accordion = components.get(key('qwen_image_2_1_prompt_enhancer_accordion'))
-    ming_image_prompt_enhancer_accordion = components.get(key('ming_image_prompt_enhancer_accordion'))
-    flux3_prompt_upsampler_accordion = components.get(key('flux3_prompt_upsampler_accordion'))
+    prompt_enhancer_accordion = components.get(key('prompt_enhancer_accordion'))
     moss_image_control_accordion = components.get(key('moss_image_control_accordion'))
     moss_image_edit_accordion = components.get(key('moss_image_edit_accordion'))
 
@@ -171,9 +169,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             'krea2_style_reference': krea2_style_reference_accordion,
             'vae': vae_accordion,
             'pid': pid_accordion,
-            'qwen_image_2_1_prompt_enhancer': qwen_image_2_1_prompt_enhancer_accordion,
-            'ming_image_prompt_enhancer': ming_image_prompt_enhancer_accordion,
-            'flux3_prompt_upsampler': flux3_prompt_upsampler_accordion,
+            'prompt_enhancer': prompt_enhancer_accordion,
             'moss_image_control': moss_image_control_accordion,
             'moss_image_edit': moss_image_edit_accordion
         }
@@ -290,9 +286,7 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
         "krea2_identity_edit_accordion": krea2_identity_edit_accordion,
         "krea2_style_reference_accordion": krea2_style_reference_accordion,
         "vae_accordion": vae_accordion, "pid_accordion": pid_accordion,
-        "qwen_image_2_1_prompt_enhancer_accordion": qwen_image_2_1_prompt_enhancer_accordion,
-        "ming_image_prompt_enhancer_accordion": ming_image_prompt_enhancer_accordion,
-        "flux3_prompt_upsampler_accordion": flux3_prompt_upsampler_accordion,
+        "prompt_enhancer_accordion": prompt_enhancer_accordion,
         "moss_image_control_accordion": moss_image_control_accordion,
         "moss_image_edit_accordion": moss_image_edit_accordion
     }
@@ -510,6 +504,42 @@ def register_shared_events(components, prefix, sdxl_gallery_height, demo):
             image_input.change(fn=on_image_upload, inputs=[image_input, model_type_state], outputs=[width_num, height_num, aspect_ratio_dropdown], api_name=False)
     register_ui_chain_events(components, prefix)
     register_moss_image_edit_events(components, prefix)
+    register_prompt_enhancer_events(components, prefix)
+
+
+def register_prompt_enhancer_events(components, prefix):
+    """Reset the Prompt Enhancer Model / System Prompt dropdowns to the framework defaults on model change.
+
+    The two dropdowns are independent lists (``clip`` and ``system_prompt``), so
+    changing one never narrows the other. Only the base-model selection resets
+    them, using the ``architecture`` defaults.
+    """
+    key = lambda name: f"{prefix}_{name}"
+    model_dropdown = components.get(key('prompt_enhancer_model'))
+    system_prompt_dropdown = components.get(key('prompt_enhancer_system_prompt'))
+    if not model_dropdown or not system_prompt_dropdown:
+        return
+
+    from ..shared_ui import get_prompt_enhancer_architecture_defaults
+
+    def on_framework_change(framework):
+        defaults = get_prompt_enhancer_architecture_defaults(framework)
+        return (
+            gr.update(value=defaults["model"] or "auto"),
+            gr.update(value=defaults["system_prompt"] or "auto"),
+        )
+
+    framework_state = components.get(key('model_type_state'))
+    if framework_state is None:
+        return
+
+    framework_state.change(
+        fn=on_framework_change,
+        inputs=[framework_state],
+        outputs=[model_dropdown, system_prompt_dropdown],
+        show_progress=False,
+        api_name=False
+    )
 
 
 def register_moss_image_edit_events(components, prefix):

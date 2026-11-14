@@ -262,6 +262,8 @@ Each functional module (such as `module/imagegen/`, `module/video_gen/`) encapsu
 - `task_features.yaml` & `chain_features.yaml` (in `module/imagegen/yaml/`): **Task & Chain Feature Schemas (MCP / Semantic API)**
   - Declaratively defines schemas, argument types, dynamic enum sources (e.g. available ControlNet/IP-Adapter models), and runnable example payloads for all tasks and chain injectors exposed via MCP.
 
+- `prompt_enhancer.yaml` (in `module/imagegen/yaml/`): **Prompt Enhancer / Upsampler Registry (Data-Driven)**
+
 - `constants.yaml`: **Module Constants**
   - Defines fixed domain presets, such as resolution options (`RESOLUTION_MAP`), aspect ratios, and maximum LoRA stack limits.
 

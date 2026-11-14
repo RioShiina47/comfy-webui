@@ -470,44 +470,26 @@ def _execute_imagegen_pipeline(task_id: str, params: dict):
                         is_enabled = is_enabled.upper() in ("ON", "TRUE", "1")
                     ui_values[f"{prefix}_pid_settings"] = "ON" if is_enabled else "OFF"
                     ui_values["pid_settings"] = "ON" if is_enabled else "OFF"
-                elif itype == "qwen_image_2_1_prompt_enhancer":
+                elif itype == "prompt_enhancer":
                     is_enabled = item.get("enable", item.get("enabled", True))
                     if isinstance(is_enabled, str):
                         is_enabled = is_enabled.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_qwen_image_2_1_prompt_enhancer_enable"] = bool(is_enabled)
+                    ui_values[f"{prefix}_prompt_enhancer_enable"] = bool(is_enabled)
+
                     is_thinking = item.get("thinking", False)
                     if isinstance(is_thinking, str):
                         is_thinking = is_thinking.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_qwen_image_2_1_prompt_enhancer_thinking"] = bool(is_thinking)
-                    ui_values[f"{prefix}_qwen_image_2_1_prompt_enhancer_max_length"] = int(item.get("max_length", 4096))
-                elif itype == "ming_image_prompt_enhancer":
-                    is_enabled = item.get("enable", item.get("enabled", True))
-                    if isinstance(is_enabled, str):
-                        is_enabled = is_enabled.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_ming_image_prompt_enhancer_enable"] = bool(is_enabled)
-                    is_thinking = item.get("thinking", False)
-                    if isinstance(is_thinking, str):
-                        is_thinking = is_thinking.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_ming_image_prompt_enhancer_thinking"] = bool(is_thinking)
-                    ui_values[f"{prefix}_ming_image_prompt_enhancer_max_length"] = int(item.get("max_length", 4096))
-                    if "system_prompt" in item:
-                        ui_values[f"{prefix}_ming_image_prompt_enhancer_system_prompt"] = str(item["system_prompt"])
-                elif itype == "flux3_prompt_upsampler":
-                    is_enabled = item.get("enable", item.get("enabled", True))
-                    if isinstance(is_enabled, str):
-                        is_enabled = is_enabled.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_flux3_prompt_upsampler_enable"] = bool(is_enabled)
-                    is_thinking = item.get("thinking", False)
-                    if isinstance(is_thinking, str):
-                        is_thinking = is_thinking.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_flux3_prompt_upsampler_thinking"] = bool(is_thinking)
-                    is_bbox_mode = item.get("bbox_mode", False)
-                    if isinstance(is_bbox_mode, str):
-                        is_bbox_mode = is_bbox_mode.upper() in ("ON", "TRUE", "1")
-                    ui_values[f"{prefix}_flux3_prompt_upsampler_bbox_mode"] = bool(is_bbox_mode)
-                    ui_values[f"{prefix}_flux3_prompt_upsampler_max_length"] = int(item.get("max_length", 3584))
-                    if "system_prompt" in item:
-                        ui_values[f"{prefix}_flux3_prompt_upsampler_system_prompt"] = str(item["system_prompt"])
+                    ui_values[f"{prefix}_prompt_enhancer_thinking"] = bool(is_thinking)
+
+                    ui_values[f"{prefix}_prompt_enhancer_max_length"] = int(item.get("max_length", 4096))
+
+                    model_value = item.get("model")
+                    if model_value:
+                        ui_values[f"{prefix}_prompt_enhancer_model"] = str(model_value)
+
+                    prompt_value = item.get("system_prompt")
+                    if prompt_value:
+                        ui_values[f"{prefix}_prompt_enhancer_system_prompt"] = str(prompt_value)
 
 
 
