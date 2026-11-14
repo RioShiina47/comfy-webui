@@ -98,6 +98,13 @@ dynamic_reference_image_chains:
     vae_node: "vae_loader"
     max_images: 8
 
+# The prompt upsampler reads the same reference images the conditioning node holds,
+# so this chain must run after reference_image (see image_gen_features.yaml order).
+dynamic_prompt_enhancer_chains:
+  prompt_enhancer_chain:
+    target_node: "prompt"
+    framework: "p-h3-image"
+
 # Steps / CFG are intentionally discarded: P-H3-Image is trained and sampled on a
 # fixed 8-step ManualSigmas grid with cfg = 1 (no CFG / no negative prompt).
 # Pointing these keys at the non-existent "dummy" node makes the assembler skip them.

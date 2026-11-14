@@ -25,11 +25,13 @@ minimax-h3-image:
   enabled_chains:
   - lora
   - reference_image
+  - prompt_enhancer
 
 p-h3-image:
   enabled_chains:
   - lora
   - reference_image
+  - prompt_enhancer
 
 krea-2:
   enabled_chains:
@@ -37,6 +39,7 @@ krea-2:
     - controlnet
     - krea2_identity_edit
     - krea2_style_reference
+    - prompt_enhancer
     - pid
 
 sensenova-u1.5:
@@ -108,6 +111,7 @@ moss-image:
   - lora
   - moss_image_control
   - moss_image_edit
+  - prompt_enhancer
   - pid
 
 ming-image:

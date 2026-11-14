@@ -89,6 +89,14 @@ dynamic_moss_image_edit_chains:
     clip_loader_node: "clip_loader"
     vae_loader_node: "vae_loader"
 
+# Runs after moss_image_edit on purpose (see image_gen_features.yaml order): that chain
+# replaces the CLIPTextEncode pair with TextEncodeMOSSImageEdit, so the prompt enhancer
+# has to bind to the replacement node or its output would be orphaned.
+dynamic_prompt_enhancer_chains:
+  prompt_enhancer_chain:
+    target_node: "pos_prompt"
+    framework: "moss-image"
+
 ui_map:
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"

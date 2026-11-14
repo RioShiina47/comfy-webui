@@ -735,12 +735,12 @@ file:
     # MOSS-Image
     - filename: "qwen3.5_9b_w4a8_gptq.safetensors"
       source: "hf"
-      repo_id: "Comfy-Org/MOSS-Image"
+      repo_id: "Comfy-Org/Qwen3.5"
       repository_file_path: "text_encoders/qwen3.5_9b_w4a8_gptq.safetensors"
     # Krea-2 / Fibo-2.0
     - filename: "qwen3vl_4b_fp8_scaled.safetensors"
       source: "hf"
-      repo_id: "Comfy-Org/Krea-2"
+      repo_id: "Comfy-Org/Qwen3-VL"
       repository_file_path: "text_encoders/qwen3vl_4b_fp8_scaled.safetensors"
     # JoyAI-Image
     - filename: "qwen3vl_8b_joyimage_edit_int8_convrot.safetensors"
@@ -879,6 +879,11 @@ file:
       source: "hf"
       repo_id: "black-forest-labs/flux-3-image-klein-comfy"
       repository_file_path: "text_encoders/qwen3.5_9b_flux3_prompt_upsampler_w4a8.safetensors"
+    # P-H3-Image Prompt Upsampler
+    - filename: "p-h3-image_prompt_upsampler_w4a8.safetensors"
+      source: "hf"
+      repo_id: "PrunaAI/P-H3-Image-Comfy"
+      repository_file_path: "text_encoders/p-h3-image_prompt_upsampler_w4a8.safetensors"
   vae: 
     # P-H3-Image
     - filename: "p-h3-image_vae_int8_convrot.safetensors"

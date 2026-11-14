@@ -80,6 +80,14 @@ dynamic_pid_chains:
   pid_chain:
     ksampler_node: "ksampler"
 
+# Runs after krea2_identity_edit / krea2_style_reference on purpose (see
+# image_gen_features.yaml order): both replace the CLIPTextEncode pair with their own
+# encode node, so the prompt enhancer must bind to the replacement node.
+dynamic_prompt_enhancer_chains:
+  prompt_enhancer_chain:
+    target_node: "pos_prompt"
+    framework: "krea-2"
+
 ui_map:
   positive_prompt: "pos_prompt:text"
   negative_prompt: "neg_prompt:text"
