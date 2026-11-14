@@ -9,9 +9,7 @@ from ..shared_ui import (
     create_reference_image_ui,
     create_qwen_image_edit_ui,
     create_krea2_identity_edit_ui, create_krea2_style_reference_ui,
-    create_qwen_image_2_1_prompt_enhancer_ui,
-    create_ming_image_prompt_enhancer_ui,
-    create_flux3_prompt_upsampler_ui,
+    create_prompt_enhancer_ui,
     create_moss_image_control_ui,
     create_moss_image_edit_ui
 )

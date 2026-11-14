@@ -89,10 +89,10 @@ dynamic_reference_image_chains:
     vae_node: "vae_loader"
     max_images: 8
 
-dynamic_ming_image_prompt_enhancer_chains:
-  ming_image_prompt_enhancer_chain:
+dynamic_prompt_enhancer_chains:
+  prompt_enhancer_chain:
     target_node: "prompt"
-
+    framework: "ming-image"
 
 ui_map:
   positive_prompt: "prompt:prompt"

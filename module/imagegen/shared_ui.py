@@ -456,125 +456,74 @@ def create_krea2_style_reference_ui(components, prefix, max_units=None):
         components[key('all_krea2_style_reference_components_flat')] = ref_image_inputs
 
 
-def create_qwen_image_2_1_prompt_enhancer_ui(components, prefix):
+def _pe_module():
+    """Import the injector module so the UI and the injector share one source of truth."""
+    from .chain_injectors import prompt_enhancer_injector
+    return prompt_enhancer_injector
+
+
+def get_prompt_enhancer_model_choices():
+    """Return the selectable Prompt Enhancer Model names, in ``clip`` declaration order."""
+    return _pe_module().get_clip_names()
+
+
+def get_prompt_enhancer_system_prompt_choices():
+    """Return the selectable System Prompt names, in ``system_prompt`` declaration order."""
+    return _pe_module().get_system_prompt_names()
+
+
+def get_prompt_enhancer_architecture_defaults(framework=None):
+    """Return the ``{model, system_prompt}`` defaults declared for a model framework."""
+    return _pe_module().get_architecture_defaults(framework)
+
+
+def create_prompt_enhancer_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
-    with gr.Accordion("Qwen-Image-2.1 Prompt Enhancer Settings", open=False) as enhancer_accordion:
-        components[key('qwen_image_2_1_prompt_enhancer_accordion')] = enhancer_accordion
-        gr.Markdown("💡 **Tip:** Automatically selects between [Qwen-Image-2.1-PE-T2I](https://huggingface.co/Qwen/Qwen-Image-2.1-PE-T2I) and [Qwen-Image-2.1-PE-I2I](https://huggingface.co/Qwen/Qwen-Image-2.1-PE-I2I) for prompt enhancement based on input context.")
-        with gr.Row():
-            components[key('qwen_image_2_1_prompt_enhancer_enable')] = gr.Checkbox(
-                label="Enable Qwen-Image-2.1 Prompt Enhancer",
-                value=False,
-                interactive=True,
-                scale=2
-            )
-            components[key('qwen_image_2_1_prompt_enhancer_thinking')] = gr.Checkbox(
-                label="Enable Thinking (Reasoning CoT)",
-                value=False,
-                interactive=True,
-                scale=2
-            )
-            components[key('qwen_image_2_1_prompt_enhancer_max_length')] = gr.Number(
-                label="Max Length",
-                value=4096,
-                precision=0,
-                minimum=16,
-                step=16,
-                interactive=True,
-                scale=1
-            )
+    model_labels = get_prompt_enhancer_model_choices()
+    system_prompt_labels = get_prompt_enhancer_system_prompt_choices()
 
-
-DEFAULT_MING_IMAGE_SYSTEM_PROMPT = (
-    "You are a senior visual designer and image-prompt engineer. Expand the user's request into one precise, high-resolution Figma-style caption. Return only one JSON object. "
-    "Use exactly two top-level keys. `canvas_settings` contains exactly `aspect_ratio`, `ambient_lighting`, and `image_style`. `layers` lists visible groups from background to topmost overlay. Every layer contains exactly `description`, `coordinates`, `hierarchy_and_relation`, and `color_specs`; `color_specs` is an array of hex colors. "
-    '`coordinates` MUST be one string, never an object or array, in exactly this form: `"cx: 0.500, cy: 0.500, w: 1.000, h: 1.000"`. Values are normalized; each bbox encloses its complete owned object and stays inside the canvas. '
-    "A layer is one selectable visible semantic group: background, full person, coherent object, panel, card, row, or text block. Prefer the fewest groups that preserve the layout. Keep people and objects intact. Never create invisible parents, guides, placeholders, empty layers, duplicate summaries, or multiple owners for one element. "
-    "Preserve every user-supplied rendered string character-for-character and as one contiguous string. Unless multiple visible copies are requested, it must occur exactly once across all `description` fields and zero times in `hierarchy_and_relation`. Quote it only where describing its visible rendering; refer to the related subject elsewhere with unquoted semantic wording. Enumerate intended copy, invent extra copy sparingly, and never hide content behind \"other text\", \"remaining labels\", or \"etc.\" "
-    "Describe concrete composition, typography, materials, texture, lighting, pose, and camera treatment without literary filler. Use `hierarchy_and_relation` only for ownership, alignment, containment, stacking, and occlusion. "
-    "Infer structured layouts first. Use one complete layer per card and state its row and column. A compact secondary table may be one layer only if every header and cell is listed; otherwise use a visible shared frame when present, one complete header, and one complete layer per body row, binding values to columns and stating blanks. Enumerate sequences, schedules, spans, gaps, and vacant tracks in visual order. Do not mistake ordinary alignment for a table. "
-    "Silently verify schema, string coordinates, Z-order, exact-text counts, geometry, bbox validity, and completeness."
-)
-
-
-def create_ming_image_prompt_enhancer_ui(components, prefix):
-    key = lambda name: f"{prefix}_{name}"
-    with gr.Accordion("Ming-Image Prompt Enhancer Settings", open=False) as enhancer_accordion:
-        components[key('ming_image_prompt_enhancer_accordion')] = enhancer_accordion
-        gr.Markdown("💡 **Tip:** Leverages [Qwen3.8-27B](https://huggingface.co/Qwen/Qwen3.8-27B) guided by the official [System Prompt](https://github.com/inclusionAI/Ming-Image#text-to-image-prompt-rewriting) to automatically enhance prompts into structured layouts based on input context.")
-        with gr.Row():
-            components[key('ming_image_prompt_enhancer_enable')] = gr.Checkbox(
-                label="Enable Ming-Image Prompt Enhancer",
-                value=False,
-                interactive=True,
-                scale=2
-            )
-            components[key('ming_image_prompt_enhancer_thinking')] = gr.Checkbox(
-                label="Enable Thinking (Reasoning CoT)",
-                value=False,
-                interactive=True,
-                scale=2
-            )
-            components[key('ming_image_prompt_enhancer_max_length')] = gr.Number(
-                label="Max Length",
-                value=4096,
-                precision=0,
-                minimum=16,
-                step=16,
-                interactive=True,
-                scale=1
-            )
-        components[key('ming_image_prompt_enhancer_system_prompt')] = gr.Textbox(
-            label="System Prompt",
-            value=DEFAULT_MING_IMAGE_SYSTEM_PROMPT,
-            lines=4,
-            max_lines=12,
-            interactive=True
-        )
-
-
-DEFAULT_FLUX3_SYSTEM_PROMPT = (
-    "You are the prompt upsampler of a text-to-image model. Expand the user's short request into ONE detailed, self-contained caption: the exact text the image model receives. Output only the caption, with no greetings, explanations, refusals, questions, Markdown, headings, JSON, coordinates, ids or angle-bracket tokens, and no quotes around it. If the input is not clearly an image request, caption a visualization of its concept. The request may begin with a \"TARGET CANVAS: W:H\" line: compose for that canvas (wide spreads content sideways, tall stacks it) and never mention the ratio or the canvas.\n\n"
-    "Fidelity and planning: keep every explicit subject, attribute, count, spatial constraint, style cue and piece of wording; never contradict, substitute, drop or narrow the request, and keep an abstract concept abstract. Decide everything left open as ONE concrete, consistent plan; never offer alternatives or hedge. Never re-express a stated constraint through another mechanism; add camera optics (depth of field, bokeh, blur) only when asked for or implied. Without a stated style, plan an actual photograph and open with the medium convention (\"Full-color outdoor photograph, ...\", \"Full-color indoor photograph, ...\", \"Studio photograph, ...\", \"Close-up photograph, ...\"); keep \"Photorealistic\" for renders, and turn \"photorealistic\" or \"realistic\" requests for photos into the photograph convention. Give a photograph a few ordinary, non-ideal specifics drawn from the scene's own objects instead of the stock-photo ideal. Do not invent names, brands, logos or celebrities; keep user-named ones. A long request keeps its content but not its wording: drop appraisal and sales vocabulary, turn moods into observable physical facts, and add only new concrete content with positions. Time of day is lighting, not rendered text.\n\n"
-    "Caption format: one continuous prose block in the generative voice, never \"this image shows\", \"we can see\" or \"is visible\". Lead with medium and style, then scene, lighting and camera, then the subjects with concrete colors, materials and state. Every person in focus gets an observable profile: ethnicity, gender, age range, skin tone (\"fair skin\", \"brown skin\"), hair and clothing. Make the layout reconstructable from words: frame-relative positions (frame-left, frame-right, upper, lower, foreground, midground, background), sentence-initial anchors (\"On the left, ...\", \"In the background, ...\"), relations (holds, faces, behind) and a consistent order; describe up to about ten instances one by one, beyond that give the exact count and arrangement. Out-of-focus or distant planes are shapes, colors and silhouettes, never identities or readable text, and the background takes about a sixth of the caption. Be definite: no hedging adverbs, no quality or emotion judgments, no closing sentence about mood; state negations as what is present. Rendered text: transcribe every wording verbatim inside double quotes in its original language and script, keep the line breaks of multi-line text, and give its typography, color and placement; author concrete, domain-correct wording when the request needs text it does not supply, and name canonical structures (calendar, keyboard, periodic table) exactly with their full layout. All prose is English; only quoted text keeps its language. Typical length is 100 to 350 words, more for complex scenes.\n\n"
-    "Output only the caption.\n"
-)
-
-
-def create_flux3_prompt_upsampler_ui(components, prefix):
-    key = lambda name: f"{prefix}_{name}"
-    with gr.Accordion("FLUX.3 Prompt Upsampler Settings", open=False) as enhancer_accordion:
-        components[key('flux3_prompt_upsampler_accordion')] = enhancer_accordion
+    with gr.Accordion("Prompt Enhancer Settings", open=False) as enhancer_accordion:
+        components[key('prompt_enhancer_accordion')] = enhancer_accordion
         gr.Markdown(
-            "💡 **Tip:** System prompt automatically matches the official [black-forest-labs/flux-3-image-klein-pup](https://huggingface.co/black-forest-labs/flux-3-image-klein-pup/blob/main/system_prompts.json) templates: uses `t2i` when no image is provided, and automatically switches to `i2i` when image input is detected; enabling **BBox Mode** switches respectively to `t2i_bbox` and `i2i_bbox` to output target bounding box annotations."
+            "💡 **Tip:** Automatically selects Prompt Enhancer Model and System Prompt based on the selected Base Model; "
+            "free mixing is also supported."
         )
         with gr.Row():
-            components[key('flux3_prompt_upsampler_enable')] = gr.Checkbox(
-                label="Enable FLUX.3 Prompt Upsampler",
+            components[key('prompt_enhancer_enable')] = gr.Checkbox(
+                label="Enable Prompt Enhancer",
                 value=False,
                 interactive=True,
                 scale=2
             )
-            components[key('flux3_prompt_upsampler_thinking')] = gr.Checkbox(
-                label="Enable Thinking (Reasoning CoT)",
+            components[key('prompt_enhancer_thinking')] = gr.Checkbox(
+                label="Enable Thinking",
                 value=False,
                 interactive=True,
                 scale=2
             )
-            components[key('flux3_prompt_upsampler_bbox_mode')] = gr.Checkbox(
-                label="BBox Mode",
-                value=False,
-                interactive=True,
-                scale=1
-            )
-            components[key('flux3_prompt_upsampler_max_length')] = gr.Number(
+            components[key('prompt_enhancer_max_length')] = gr.Number(
                 label="Max Length",
-                value=3584,
+                value=4096,
                 precision=0,
                 minimum=16,
                 step=16,
                 interactive=True,
                 scale=1
+            )
+        with gr.Row():
+            components[key('prompt_enhancer_model')] = gr.Dropdown(
+                choices=["auto"] + model_labels,
+                value="auto",
+                label="Prompt Enhancer Model",
+                interactive=True,
+                scale=3
+            )
+            components[key('prompt_enhancer_system_prompt')] = gr.Dropdown(
+                choices=["auto"] + system_prompt_labels,
+                value="auto",
+                label="System Prompt",
+                interactive=True,
+                scale=2
             )
 
 

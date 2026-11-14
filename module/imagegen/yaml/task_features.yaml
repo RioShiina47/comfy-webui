@@ -22,11 +22,9 @@ txt2img:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
-  - qwen_image_2_1_prompt_enhancer
-  - ming_image_prompt_enhancer
+  - prompt_enhancer
   - moss_image_control
   - moss_image_edit
-  - flux3_prompt_upsampler
   - pid
   - vae
 
@@ -49,11 +47,9 @@ img2img:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
-  - qwen_image_2_1_prompt_enhancer
-  - ming_image_prompt_enhancer
+  - prompt_enhancer
   - moss_image_control
   - moss_image_edit
-  - flux3_prompt_upsampler
   - vae
 
 inpaint:
@@ -75,11 +71,9 @@ inpaint:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
-  - qwen_image_2_1_prompt_enhancer
-  - ming_image_prompt_enhancer
+  - prompt_enhancer
   - moss_image_control
   - moss_image_edit
-  - flux3_prompt_upsampler
   - vae
 
 outpaint:
@@ -101,11 +95,9 @@ outpaint:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
-  - qwen_image_2_1_prompt_enhancer
-  - ming_image_prompt_enhancer
+  - prompt_enhancer
   - moss_image_control
   - moss_image_edit
-  - flux3_prompt_upsampler
   - vae
 
 hires_fix:
@@ -127,9 +119,7 @@ hires_fix:
   - krea2_style_reference
   - qwen_image_edit
   - reference_image
-  - qwen_image_2_1_prompt_enhancer
-  - ming_image_prompt_enhancer
+  - prompt_enhancer
   - moss_image_control
   - moss_image_edit
-  - flux3_prompt_upsampler
   - vae

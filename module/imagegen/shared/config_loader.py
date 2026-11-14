@@ -10,6 +10,7 @@ _constants_config = None
 _features_config = None
 _architectures_config = None
 _pid_config = None
+_prompt_enhancer_config = None
 
 def _load_local_yaml(filename: str):
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -75,6 +76,12 @@ def load_features_config():
     if _features_config is None:
         _features_config = _load_local_yaml("image_gen_features.yaml")
     return _features_config
+
+def load_prompt_enhancer_config():
+    global _prompt_enhancer_config
+    if _prompt_enhancer_config is None:
+        _prompt_enhancer_config = _load_local_yaml("prompt_enhancer.yaml")
+    return _prompt_enhancer_config
 
 def load_pid_config():
     global _pid_config
