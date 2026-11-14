@@ -62,6 +62,13 @@ dynamic_reference_image_chains:
     vae_node: "vae_loader"
     max_images: 8
 
+# The prompt upsampler reads the same reference images the conditioning node holds,
+# so this chain must run after reference_image (see image_gen_features.yaml order).
+dynamic_prompt_enhancer_chains:
+  prompt_enhancer_chain:
+    target_node: "prompt"
+    framework: "minimax-h3-image"
+
 ui_map:
   positive_prompt: "prompt:prompt"
   negative_prompt: "dummy:negative_prompt"

@@ -7,20 +7,25 @@ flux3_prompt_upsampler injectors into a single implementation driven by
 The YAML declares three independent modules, named after their UI labels in the
 "Prompt Enhancer Settings" accordion:
 
-* ``architecture`` Model framework -> default ``clip`` (Prompt Enhancer Model) and
-  default ``system_prompt`` (System Prompt). These are the dropdown defaults
-  applied whenever the base model changes. A missing entry falls back to the
-  first registry item.
+* ``architecture`` Model framework -> default ``clip`` (Prompt Enhancer Model),
+  optional ``clip_type`` override and default ``system_prompt`` (System Prompt).
+  These are the dropdown defaults applied whenever the base model changes. A
+  missing entry falls back to the first registry item.
 * ``clip``         Every name shown in the "Prompt Enhancer Model" dropdown,
-  mapped to its checkpoint ``filename`` and ``clip_type``. Declaration order is
-  dropdown order.
+  mapped to its checkpoint ``filename`` and, when the checkpoint is only valid as
+  one encoder, an optional ``clip_type``. Declaration order is dropdown order.
 * ``system_prompt`` Every name shown in the "System Prompt" dropdown, mapped to
   the system prompt sent to ``TextGenerateV2``. An empty value means no system
   prompt.
 
 The modules are fully decoupled: any framework may pick any clip, and any clip
-may be paired with any system prompt. ``clip_type`` therefore travels with the
-clip, not with the framework. There is no image-based or bbox auto-detection.
+may be paired with any system prompt. ``clip_type`` describes the *framework's*
+encoder, not the checkpoint: the same Qwen3.5-9B weights are a ``minimax``
+encoder for MiniMax-H3-Image and a ``moss_image`` encoder for MOSS-Image, and
+the official ComfyUI workflows load them exactly that way. It is therefore
+declared on every ``architecture`` entry and applies to whatever clip the user
+selects, so a MOSS-Image run can host the Qwen-Image-2.1 upsampler as
+``moss_image``. There is no image-based or bbox auto-detection.
 
 The injector then:
 
@@ -52,6 +57,11 @@ _CONFIG_PATH = os.path.join(_YAML_DIR, "prompt_enhancer.yaml")
 _TARGET_HINTS = (
     ("TextEncodeQwenImage21", ("prompt",), ("prompt",)),
     ("TextEncodeMingImageEdit", ("prompt",), ("prompt",)),
+    ("PH3ImageConditioning", ("prompt",), ("prompt",)),
+    ("MiniMaxH3ImageConditioning", ("prompt",), ("prompt",)),
+    ("TextEncodeMOSSImageEdit", ("prompt",), ("prompt",)),
+    ("Krea2EditGroundedEncode", ("prompt",), ("prompt",)),
+    ("TextEncodeQwenImageEditPlus", ("prompt",), ("prompt",)),
     ("CLIPTextEncode", ("pos_prompt",), ("text", "prompt")),
 )
 
@@ -72,7 +82,7 @@ def load_prompt_enhancer_config():
 
 
 def get_clip_registry():
-    """Return the ordered ``clip name -> {filename, clip_type}`` registry."""
+    """Return the ordered ``clip name -> {filename[, clip_type]}`` registry."""
     return load_prompt_enhancer_config().get("clip", {}) or {}
 
 
@@ -92,7 +102,7 @@ def get_clip_names():
 
 
 def get_clip_entry(name):
-    """Return the ``{filename, clip_type}`` registry entry for a clip name."""
+    """Return the ``{filename[, clip_type]}`` registry entry for a clip name."""
     entry = get_clip_registry().get(str(name))
     return entry if isinstance(entry, dict) else {}
 
@@ -108,7 +118,7 @@ def get_all_system_prompt_keys():
 
 
 def get_architecture_defaults(framework=None):
-    """Return ``{model, system_prompt}`` defaults for a model framework.
+    """Return ``{model, system_prompt, clip_type}`` defaults for a model framework.
 
     Reads the ``architecture`` module. Falls back to the first registry entry
     when the framework is unknown or omits a field, so the UI always has a
@@ -129,7 +139,11 @@ def get_architecture_defaults(framework=None):
     if system_prompt not in prompt_names:
         system_prompt = prompt_names[0] if prompt_names else None
 
-    return {"model": model, "system_prompt": system_prompt}
+    return {
+        "model": model,
+        "system_prompt": system_prompt,
+        "clip_type": defaults.get("clip_type"),
+    }
 
 
 def create_node(assembler, class_type, title):
@@ -202,8 +216,46 @@ def _infer_clip_type(clip_filename):
     if "flux2" in name:
         print(f"Warning: 'clip_type' missing for '{clip_filename}'; inferred 'flux2' from the filename.")
         return "flux2"
+    if "p-h3" in name or "minimax" in name:
+        print(f"Warning: 'clip_type' missing for '{clip_filename}'; inferred 'minimax' from the filename.")
+        return "minimax"
+    if "moss" in name:
+        print(f"Warning: 'clip_type' missing for '{clip_filename}'; inferred 'moss_image' from the filename.")
+        return "moss_image"
+    if "krea2" in name or "krea-2" in name:
+        print(f"Warning: 'clip_type' missing for '{clip_filename}'; inferred 'krea2' from the filename.")
+        return "krea2"
     print(f"Warning: 'clip_type' missing for '{clip_filename}'; defaulting to 'qwen_image'. Add it to prompt_enhancer.yaml.")
     return "qwen_image"
+
+
+def _resolve_clip_type(clip_name, framework=None):
+    """Resolve the ``CLIPLoader.type`` to load the Prompt Enhancer checkpoint with.
+
+    ``clip_type`` is a property of the *framework*, not of the checkpoint: the
+    same Qwen3-VL-4B weights are loaded as ``flux3`` by FLUX.3, ``krea2`` by
+    Krea-2, ``mage`` by Mage-Flow and ``qwen_image`` by Qwen-Image, and the same
+    Qwen3.5-9B weights as ``minimax`` by MiniMax-H3-Image and ``moss_image`` by
+    MOSS-Image. The official ComfyUI workflows do exactly this.
+
+    A prompt enhancer is prompt engineering on top of an LLM, so any registered
+    upsampler may run under any framework as long as the framework's encoder
+    class can host those weights. Resolution order:
+
+    1. ``architecture[framework].clip_type`` - always wins, including for a clip
+       the user picked from another architecture (MOSS-Image + Qwen-Image-2.1 PE
+       still loads as ``moss_image``).
+    2. ``clip[name].clip_type`` - only for a checkpoint that genuinely cannot be
+       re-hosted, and for calls with no framework context.
+    3. Filename inference, then ``qwen_image``.
+    """
+    defaults = get_architecture_defaults(framework)
+    entry = get_clip_entry(clip_name)
+    if defaults.get("clip_type"):
+        return str(defaults["clip_type"])
+    if entry.get("clip_type"):
+        return str(entry["clip_type"])
+    return _infer_clip_type(str(entry.get("filename") or clip_name))
 
 
 def _resolve_model(params, chain_definition=None):
@@ -222,9 +274,19 @@ def _resolve_model(params, chain_definition=None):
         if requested in available:
             return requested
         # Tolerate the checkpoint filename being supplied instead of the name.
-        for name in available:
-            if str(get_clip_entry(name).get("filename") or "") == requested:
-                return name
+        # One checkpoint can be registered twice with different clip_types (the
+        # MiniMax-H3 PE upsampler is a `minimax` encoder, the same file is a
+        # `qwen_image` encoder for other frameworks), so prefer the framework's
+        # own default before falling back to declaration order.
+        by_filename = [
+            name for name in available
+            if str(get_clip_entry(name).get("filename") or "") == requested
+        ]
+        if by_filename:
+            framework_default = get_architecture_defaults(
+                (chain_definition or {}).get("framework")
+            )["model"]
+            return framework_default if framework_default in by_filename else by_filename[0]
         # Unknown name: fall through to the framework default.
 
     defaults = get_architecture_defaults((chain_definition or {}).get("framework"))
@@ -394,7 +456,7 @@ def inject(assembler, chain_definition, chain_items):
     framework = (chain_definition or {}).get("framework")
     entry = get_clip_entry(model_name)
     clip_model_name = str(entry.get("filename") or model_name)
-    clip_type = str(entry.get("clip_type") or _infer_clip_type(clip_model_name))
+    clip_type = _resolve_clip_type(model_name, framework)
 
     target_node_id, class_hint = _find_target_node(assembler, chain_definition)
     if not target_node_id:
@@ -421,15 +483,30 @@ def inject(assembler, chain_definition, chain_items):
         except Exception as e:
             print(f"Warning: Failed to ensure '{clip_model_name}' downloaded: {e}")
 
-    # 1. Load the selected Prompt Enhancer Model checkpoint
-    clip_node_id = assembler._get_unique_id()
-    clip_node = create_node(assembler, "CLIPLoader", "Load CLIP")
-    clip_node['inputs'] = {
-        "clip_name": clip_model_name,
-        "type": clip_type,
-        "device": "default"
-    }
-    assembler.workflow[clip_node_id] = clip_node
+    # 1. Load the selected Prompt Enhancer Model checkpoint. Reuse an existing
+    #    CLIPLoader with the same checkpoint and type: MOSS-Image upsamples with the
+    #    very encoder it conditions on, and a second loader would hold the same
+    #    7 GB checkpoint twice.
+    clip_node_id = None
+    for existing_id, existing_node in assembler.workflow.items():
+        if not isinstance(existing_node, dict) or existing_node.get('class_type') != 'CLIPLoader':
+            continue
+        existing_inputs = existing_node.get('inputs', {})
+        if (existing_inputs.get('clip_name') == clip_model_name
+                and existing_inputs.get('type') == clip_type):
+            clip_node_id = existing_id
+            print(f"[Injector] Reusing existing CLIPLoader '{existing_id}' for prompt enhancer.")
+            break
+
+    if clip_node_id is None:
+        clip_node_id = assembler._get_unique_id()
+        clip_node = create_node(assembler, "CLIPLoader", "Load CLIP")
+        clip_node['inputs'] = {
+            "clip_name": clip_model_name,
+            "type": clip_type,
+            "device": "default"
+        }
+        assembler.workflow[clip_node_id] = clip_node
 
     # 2. Materialise the system prompt when the selected System Prompt carries text
     system_prompt_conn = None

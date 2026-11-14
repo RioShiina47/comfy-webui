@@ -481,9 +481,9 @@ embedding:
 prompt_enhancer:
   chains: prompt_enhancer
   display_name: "Prompt Enhancer Settings"
-  description: "Enhance or upsample prompts with any registered prompt-enhancer model (Qwen-Image-2.1 PE T2I/I2I, Qwen3.8-27B, FLUX.3 Prompt Upsampler), optional reasoning CoT thinking mode, and optional system prompt. The clip and system_prompt registries are independent, so they are freely mixable across architectures."
+  description: "Enhance or upsample prompts with any registered prompt-enhancer model (Qwen-Image-2.1 PE T2I/I2I, Qwen3.8-27B, Qwen3.5-9B, Qwen3-VL-4B-Instruct, FLUX.3 Prompt Upsampler, P-H3-Image Prompt Upsampler), optional reasoning CoT thinking mode, and optional system prompt. The clip and system_prompt registries are independent, so they are freely mixable across architectures."
   max_count: 1
-  usage_guideline: "Set enable to true to activate prompt enhancement. Pick model from the clip registry and system_prompt from the system_prompt registry in yaml/prompt_enhancer.yaml; both lists are global, so any architecture may select any clip paired with any system prompt. Defaults for each framework come from the architecture section and reset when the base model changes. Nothing is auto-detected from images, so an explicit system prompt always wins. Enable thinking for reasoning CoT (reasoning tags are stripped from the result), and set max_length for generation length."
+  usage_guideline: "Set enable to true to activate prompt enhancement. Pick model from the clip registry and system_prompt from the system_prompt registry in yaml/prompt_enhancer.yaml; both lists are global, so any architecture may select any clip paired with any system prompt. Defaults for each framework come from the architecture section and reset when the base model changes. architecture[framework].clip_type is the framework's own encoder and applies to whatever clip is selected, so a prompt upsampler built for one vendor still runs under another framework's encoder. Nothing is auto-detected from images, so an explicit system prompt always wins. Enable thinking for reasoning CoT (reasoning tags are stripped from the result), and set max_length for generation length."
   parameters_schema:
     type: object
     properties:
@@ -497,7 +497,7 @@ prompt_enhancer:
         description: "Enable thinking (reasoning CoT). Thought text inside <think> tags is automatically stripped before the prompt reaches downstream text encoding."
       model:
         type: string
-        description: "Prompt Enhancer Model name from the clip registry in yaml/prompt_enhancer.yaml (e.g. Qwen-Image-2.1-Prompt-Enhancer-T2I, Qwen-Image-2.1-Prompt-Enhancer-I2I, Qwen3.8-27B, Qwen3.5-9B-FLUX.3-Prompt-Upsampler). Any model may select any registered clip regardless of architecture; clip_type travels with the clip. Defaults to the architecture entry for the active framework."
+        description: "Prompt Enhancer Model name from the clip registry in yaml/prompt_enhancer.yaml (e.g. Qwen-Image-2.1-Prompt-Enhancer-T2I, Qwen/Qwen3.8-27B, Qwen/Qwen3.5-9B, Qwen/Qwen3-VL-4B-Instruct, black-forest-labs/Qwen3.5-9B-FLUX.3-Prompt-Upsampler, PrunaAI/P-H3-Image-Prompt-Upsampler). Any model may select any registered clip regardless of architecture. The CLIPLoader type is the framework's, not the checkpoint's: architecture[framework].clip_type applies to whatever clip is selected (same Qwen3.5-9B weights load as `minimax` for MiniMax-H3-Image and `moss_image` for MOSS-Image), so a Qwen-Image-2.1 upsampler still runs as `moss_image` under MOSS-Image. A clip entry may also declare its own clip_type for calls without framework context. Defaults to the architecture entry for the active framework."
       system_prompt:
         type: string
         description: "System Prompt name from the system_prompt registry in yaml/prompt_enhancer.yaml (e.g. none, Ming-Image-PE-Template, FLUX.3-T2I-PE-Template, FLUX.3-I2I-PE-Template, FLUX.3-T2I-Bbox-PE-Template, FLUX.3-I2I-Bbox-PE-Template). Independent of the selected clip and never inferred from images; an empty prompt means no system prompt."
