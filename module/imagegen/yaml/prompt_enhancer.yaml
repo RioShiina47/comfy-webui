@@ -42,6 +42,12 @@ clip:
     filename: "qwen3.8_27b_w4a8.safetensors"
   Qwen/Qwen3.5-9B:
     filename: "qwen3.5_9b_w4a8_gptq.safetensors"
+  Qwen/Qwen3.5-4B:
+    filename: "qwen3.5_4b_bf16.safetensors"
+  Qwen/Qwen3.5-2B:
+    filename: "qwen3.5_2b_bf16.safetensors"
+  Qwen/Qwen3-VL-8B-Instruct:
+    filename: "qwen3vl_8b_nvfp4.safetensors"
   Qwen/Qwen3-VL-4B-Instruct:
     filename: "qwen3vl_4b_fp8_scaled.safetensors"
 

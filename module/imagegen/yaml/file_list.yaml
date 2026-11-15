@@ -732,12 +732,21 @@ file:
       source: "hf"
       repo_id: "Comfy-Org/MiniMax-H3-Image"
       repository_file_path: "text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors"
-    # MOSS-Image
+    # PE 
+    - filename: "qwen3.5_2b_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen3.5"
+      repository_file_path: "text_encoders/qwen3.5_2b_bf16.safetensors"
+    - filename: "qwen3.5_4b_bf16.safetensors"
+      source: "hf"
+      repo_id: "Comfy-Org/Qwen3.5"
+      repository_file_path: "text_encoders/qwen3.5_4b_bf16.safetensors"
+    # MOSS-Image / PE
     - filename: "qwen3.5_9b_w4a8_gptq.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Qwen3.5"
       repository_file_path: "text_encoders/qwen3.5_9b_w4a8_gptq.safetensors"
-    # Krea-2 / Fibo-2.0
+    # Krea-2 / Fibo-2.0 / PE
     - filename: "qwen3vl_4b_fp8_scaled.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Qwen3-VL"
@@ -756,7 +765,7 @@ file:
       source: "hf"
       repo_id: "comfyanonymous/cosmos_1.0_text_encoder_and_VAE_ComfyUI"
       repository_file_path: "text_encoders/oldt5_xxl_fp8_e4m3fn_scaled.safetensors"
-    # Ideogram-4 & Boogu-Image
+    # Ideogram-4 & Boogu-Image & PE
     - filename: "qwen3vl_8b_nvfp4.safetensors"
       source: "hf"
       repo_id: "Comfy-Org/Ideogram-4"
