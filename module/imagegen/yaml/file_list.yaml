@@ -640,10 +640,10 @@ file:
       repository_file_path: "flux1-redux-dev.safetensors"
   loras: 
     # MOSS-Image Color/Depth Control
-    - filename: "moss-control.safetensors"
+    - filename: "moss_image_color_depth_control.safetensors"
       source: "hf"
-      repo_id: "darask0/MOSS-Image-color-depth-control"
-      repository_file_path: "moss-control.safetensors"
+      repo_id: "Comfy-Org/MOSS-Image"
+      repository_file_path: "loras/moss_image_color_depth_control.safetensors"
     # MOSS-Image Edit LoRA
     - filename: "moss_image_edit_lora_rank_64_bf16.safetensors"
       source: "hf"

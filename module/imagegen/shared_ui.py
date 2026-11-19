@@ -531,7 +531,7 @@ def create_moss_image_control_ui(components, prefix):
     key = lambda name: f"{prefix}_{name}"
     with gr.Accordion("MOSS-Image Color/Depth Control Settings", open=False) as control_accordion:
         components[key('moss_image_control_accordion')] = control_accordion
-        gr.Markdown("💡 **Tip:** Uses the [darask0/MOSS-Image-color-depth-control](https://huggingface.co/darask0/MOSS-Image-color-depth-control) adapter.")
+        gr.Markdown("💡 **Tip:** Uses the [Comfy-Org/MOSS-Image](https://huggingface.co/Comfy-Org/MOSS-Image) color/depth control LoRA.")
         with gr.Row():
             components[key('moss_image_control_color_map')] = gr.Image(
                 type="pil", label="Color Region Map (Optional)", sources=["upload"], height=200

@@ -509,7 +509,7 @@ prompt_enhancer:
 moss_image_control:
   chains: moss_image_control
   display_name: "MOSS-Image Color/Depth Control"
-  description: "Controls MOSS-Image generation using a color region map (object/region spatial layout) and/or a depth map (3D spatial depth, near is white) via darask0/MOSS-Image-color-depth-control adapter and MOSSImageControl node."
+  description: "Controls MOSS-Image generation using a color region map (object/region spatial layout) and/or a depth map (3D spatial depth, near is white) via Comfy-Org/MOSS-Image color/depth control LoRA and MOSSImageControl node."
   max_count: 1
   usage_guideline: "Supply color_map (RGB region ID map) and/or depth_map (near=white grayscale map) as Base64 Data URI or HTTP/HTTPS URL. Set strength (default 1.0) and timestep range (start_percent 0.0, end_percent 0.5)."
   parameters_schema:

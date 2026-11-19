@@ -26,7 +26,7 @@ def create_node(assembler, class_type, title=None):
 def inject(assembler, chain_definition, chain_items):
     """
     Injects MOSS-Image Color/Depth Control into the workflow:
-    1. Loads the darask0/MOSS-Image-color-depth-control LoRA adapter (moss-control.safetensors)
+    1. Loads the Comfy-Org/MOSS-Image color/depth control LoRA adapter (moss_image_color_depth_control.safetensors)
        which widens the video_embedder from 128 to 384 channels.
     2. Loads and scales the color map and/or depth map.
     3. Adds the MOSSImageControl node to encode maps into latents, concatenate them into
@@ -52,7 +52,7 @@ def inject(assembler, chain_definition, chain_items):
     if not color_map and not depth_map:
         return
 
-    lora_filename = "moss-control.safetensors"
+    lora_filename = "moss_image_color_depth_control.safetensors"
     if ensure_file_downloaded:
         try:
             ensure_file_downloaded(lora_filename)
