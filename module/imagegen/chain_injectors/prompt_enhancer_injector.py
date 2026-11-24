@@ -216,7 +216,7 @@ def _infer_clip_type(clip_filename):
     if "flux2" in name:
         print(f"Warning: 'clip_type' missing for '{clip_filename}'; inferred 'flux2' from the filename.")
         return "flux2"
-    if "p-h3" in name or "minimax" in name:
+    if "p-h3" in name or "p-image" in name or "minimax" in name:
         print(f"Warning: 'clip_type' missing for '{clip_filename}'; inferred 'minimax' from the filename.")
         return "minimax"
     if "moss" in name:

@@ -23,7 +23,7 @@ RESOLUTION_MAP:
     "3:4 (Classic Portrait)": [1344, 1792]
     "3:2 (Photography)": [1920, 1280]
     "2:3 (Photography Portrait)": [1280, 1920]
-  p-h3-image:
+  p-image-oss:
     "1:1 (Square)": [2912, 2912]
     "16:9 (Landscape)": [3872, 2176]
     "9:16 (Portrait)": [2176, 3872]

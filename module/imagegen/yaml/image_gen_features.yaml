@@ -27,7 +27,7 @@ minimax-h3-image:
   - reference_image
   - prompt_enhancer
 
-p-h3-image:
+p-image-oss:
   enabled_chains:
   - lora
   - reference_image

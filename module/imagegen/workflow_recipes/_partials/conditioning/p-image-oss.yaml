@@ -21,7 +21,7 @@ nodes:
       shift_audio: 1.0
   prompt:
     class_type: PH3ImageConditioning
-    title: "p-h3-image Conditioning"
+    title: "p-image-oss Conditioning"
     params:
       width: 2912
       height: 2912
@@ -41,7 +41,7 @@ nodes:
   random_noise:
     class_type: RandomNoise
     title: "RandomNoise"
-  # Overrides the stock KSampler from _base_sampler.yaml: P-H3-Image samples on a
+  # Overrides the stock KSampler from _base_sampler.yaml: P-Image-OSS samples on a
   # fixed ManualSigmas grid with no CFG, so SamplerCustomAdvanced is used instead.
   ksampler:
     class_type: SamplerCustomAdvanced
@@ -103,9 +103,9 @@ dynamic_reference_image_chains:
 dynamic_prompt_enhancer_chains:
   prompt_enhancer_chain:
     target_node: "prompt"
-    framework: "p-h3-image"
+    framework: "p-image-oss"
 
-# Steps / CFG are intentionally discarded: P-H3-Image is trained and sampled on a
+# Steps / CFG are intentionally discarded: P-Image-OSS is trained and sampled on a
 # fixed 8-step ManualSigmas grid with cfg = 1 (no CFG / no negative prompt).
 # Pointing these keys at the non-existent "dummy" node makes the assembler skip them.
 ui_map:

@@ -3,12 +3,12 @@ architecture:
     clip: "black-forest-labs/Qwen3.5-9B-FLUX.3-Prompt-Upsampler"
     clip_type: flux3
     system_prompt: "FLUX.3-T2I-PE-Template"
-  p-h3-image:
-    clip: "PrunaAI/P-H3-Image-Prompt-Upsampler"
+  p-image-oss:
+    clip: "PrunaAI/P-Image-OSS-Prompt-Upsampler"
     clip_type: minimax
     system_prompt: "none"
   minimax-h3-image:
-    clip: "Qwen/Qwen3.5-9B"
+    clip: "MiniMaxAI/MiniMax-H3-Image-PE"
     clip_type: minimax
     system_prompt: "MiniMax-H3-Image-PE-Template"
   krea-2:
@@ -32,8 +32,10 @@ architecture:
 clip:
   black-forest-labs/Qwen3.5-9B-FLUX.3-Prompt-Upsampler:
     filename: "qwen3.5_9b_flux3_prompt_upsampler_w4a8.safetensors"
-  PrunaAI/P-H3-Image-Prompt-Upsampler:
-    filename: "p-h3-image_prompt_upsampler_w4a8.safetensors"
+  MiniMaxAI/MiniMax-H3-Image-PE:
+    filename: "qwen3.8_27b_minimax_h3_image_pe_w4a8_gptq.safetensors"
+  PrunaAI/P-Image-OSS-Prompt-Upsampler:
+    filename: "p-image-oss_prompt_upsampler_w4a8.safetensors"
   Qwen/Qwen-Image-2.1-PE-T2I:
     filename: "qwen3.5_9b_qwen_image_2.1_pe_t2i.int8_convrot.safetensors"
   Qwen/Qwen-Image-2.1-PE-I2I:
